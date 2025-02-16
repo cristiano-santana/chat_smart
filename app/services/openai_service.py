@@ -9,7 +9,7 @@ def init_openai():
     """
     print("Inicializando OpenAI...")
 
-def extrair_query_sql(padrao, texto):
+def extrair_query_sql(texto):
     """
     Extrai o bloco de código SQL de um texto com explicações.
 
@@ -17,22 +17,45 @@ def extrair_query_sql(padrao, texto):
         texto (str): Texto que contém a query SQL dentro de blocos de código.
 
     Returns:
-        str: A query SQL extraída do bloco de código.
+        str: A primeira query SQL extraída do bloco de código.
+             Retorna `None` se nenhuma query for encontrada.
     """
-    # Usando expressão regular para capturar o conteúdo sql entre ```sql e ```
-    match = re.search(padrao, texto, flags=re.DOTALL | re.IGNORECASE)
+    pattern = r"```sql\s*\n?(.*?)```"
+    matches = re.findall(pattern, texto, flags=re.DOTALL | re.IGNORECASE)
     
-    if match:
-        # Extrai o bloco de código capturado
-        consulta_sql = match.group(1).strip()
-
-        current_app.logger.info(f"query: {consulta_sql} extraida do texto: {texto}")
-        return consulta_sql
+    if matches:
+        consulta_sql = matches[0].strip()
+        if consulta_sql.upper().startswith("SELECT"):
+            current_app.logger.info(f"query: {consulta_sql} extraída do texto.")
+            return consulta_sql
+        else:
+            current_app.logger.error("A query extraída não é uma SELECT.")
+            return None
     else:
-        current_app.logger.error(f"Nenhuma query SQL encontrada no texto: {texto}")
-        # Retorna vazio ou uma mensagem caso não encontre a query SQL
-        return 0
+        current_app.logger.error("Nenhuma query SQL encontrada no texto.")
+        return None
 
+def extrair_todas_queries_sql(texto):
+    """
+    Extrai todos os blocos de código SQL de um texto com explicações.
+
+    Args:
+        texto (str): Texto que contém as queries SQL dentro de blocos de código.
+
+    Returns:
+        list: Lista de queries SQL extraídas dos blocos de código.
+              Retorna lista vazia se nenhuma query for encontrada.
+    """
+    pattern = r"```sql\s*\n?(.*?)```"
+    matches = re.findall(pattern, texto, flags=re.DOTALL | re.IGNORECASE)
+    
+    if matches:
+        consultas_sql = [match.strip() for match in matches]
+        current_app.logger.info(f"{len(consultas_sql)} queries extraídas do texto.")
+        return consultas_sql
+    else:
+        current_app.logger.error("Nenhuma query SQL encontrada no texto.")
+        return []
 
 def traduzir_para_query(schema, pergunta):
     """
@@ -315,7 +338,7 @@ def traduzir_para_query(schema, pergunta):
         response = client.chat.completions.create(
             model="gpt-4o",  # ou outro modelo disponível
             messages=[
-                {"role": "system", "content": prompt},
+                {"role": "assistant", "content": prompt},
                 {"role": "user", "content": f"""Args: pergunta (str): A pergunta em linguagem natural. pergunta: {pergunta}"""},
             ],
             temperature=1,  # Para respostas mais determinísticas
@@ -325,17 +348,12 @@ def traduzir_para_query(schema, pergunta):
         content = response.choices[0].message.content
 
         # Extrai o bloco de código SQL de um texto com explicações.
-        query = extrair_query_sql(r'```sql\s+([\s\S]*?)\s+```', content)
-
-        # Se não encontrar a query, tenta extrair de outro padrão
-        if query == 0:
-            query = extrair_query_sql(r'```\s+([\s\S]*?)\s+```', content)
-
-        # Validação simples: Garantir que a query começa com SELECT
-        if not re.match(r'^SELECT', query, re.IGNORECASE):
-            raise ValueError(f"Problemas ao buscar a query na RESPOSTA do agente: {content}")
-
-        return query
+        query = extrair_query_sql(content)
+        if query: 
+            return query
+        else: 
+            return "Nenhuma query válida foi extraída da resposta."
+            
     except Exception as e:
         current_app.logger.error(str(e))
         return str(e)

@@ -1,68 +1,235 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat SQL Bot</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> <!-- Biblioteca XLSX -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px; /* Aumentamos para melhor visualização */
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            resize: none;
         }
+
         button {
-            padding: 10px 20px;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            color: #fff;
+            background: #007bff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .output {
+            margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
             font-size: 16px;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            background: #ffdddd;
+            color: #d8000c;
+            padding: 10px;
+            border: 1px solid #d8000c;
+            border-radius: 6px;
             margin-top: 10px;
         }
-        table {
-            border-collapse: collapse;
-            margin-top: 20px;
+
+        /* Estilização da Tabela */
+        .tabela-container {
             width: 100%;
+            overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 10px;
         }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
         th, td {
-            padding: 8px 12px;
-            border: 1px solid #ccc;
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            white-space: nowrap; /* Mantém as colunas organizadas */
         }
+
         th {
-            background-color: #f4f4f4;
+            background: #007bff;
+            color: white;
+            text-transform: uppercase;
         }
-        .error {
-            color: red;
+
+        hr {
+            border: 0;
+            border-bottom: 2px solid #CCC;
+            height: 1px;
+        }
+
+        tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+
+        /* Botão de Download sempre visível */
+        .download-container {
+            text-align: right;
+            margin-top: 10px;
+            display: none; /* Esconde até a tabela carregar */
+        }
+
+        #download-btn {
+            background: #28a745;
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        #download-btn:hover {
+            background: #218838;
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .download-container {
+                text-align: center;
+            }
+
+            button {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Chat SQL Bot</h1>
-    <textarea id="pergunta" rows="4" cols="50" placeholder="Digite sua pergunta..."></textarea><br>
-    <button onclick="enviarPergunta()">Enviar</button>
-    <h2>Query Gerada:</h2>
-    <pre id="query"></pre>
-    <h2>Resultados:</h2>
-    <div id="resultados"></div> <!-- Altere para div para inserir HTML -->
+    <div class="container">
+        <h1>Chat SQL Bot</h1>
+
+        <textarea id="pergunta" rows="4" placeholder="Digite sua pergunta sobre SQL..."></textarea>
+        <button onclick="enviarPergunta()">🔍 Consultar</button>
+
+        <div class="output">
+            <h2>Query Gerada:</h2>
+            <pre id="query"></pre>
+
+            <h2>Resultados:</h2>
+            <hr />
+            <div class="download-container">
+                <button id="download-btn" onclick="baixarExcel()">⬇️ Baixar Excel</button>
+            </div>
+            <hr />
+            <div class="tabela-container">
+                <div id="resultados"></div>
+            </div>
+
+        </div>
+    </div>
 
     <script>
         async function enviarPergunta() {
             const pergunta = document.getElementById('pergunta').value;
+
+            if (!pergunta.trim()) {
+                document.getElementById('resultados').innerHTML = '<div class="error">⚠️ Digite uma pergunta antes de enviar!</div>';
+                document.querySelector('.download-container').style.display = "none";
+                return;
+            }
+
             const response = await fetch('/pergunta', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ pergunta }),
-                
             });
 
             const data = await response.json();
-            if(data.erro){
+
+            if (data.erro) {
                 document.getElementById('query').innerText = "";
-                document.getElementById('resultados').innerHTML = `<span class="error">${data.erro}</span>`;
+                document.getElementById('resultados').innerHTML = `<div class="error">⚠️ ${data.erro}</div>`;
+                document.querySelector('.download-container').style.display = "none";
             } else {
                 document.getElementById('query').innerText = data.query;
                 document.getElementById('resultados').innerHTML = data.tabela_html;
+                document.querySelector('.download-container').style.display = "block";
             }
+        }
+
+        function baixarExcel() {
+            const tabela = document.querySelector("#resultados table");
+
+            if (!tabela) {
+                alert("⚠️ Nenhum resultado para baixar!");
+                return;
+            }
+
+            const wb = XLSX.utils.book_new(); // Cria um novo arquivo Excel
+            const ws = XLSX.utils.table_to_sheet(tabela); // Converte a tabela HTML para planilha
+
+            XLSX.utils.book_append_sheet(wb, ws, "Resultados"); // Adiciona a planilha ao arquivo
+            XLSX.writeFile(wb, "resultado.xlsx"); // Faz o download
         }
     </script>
 </body>
