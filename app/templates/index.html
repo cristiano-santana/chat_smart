@@ -54,6 +54,7 @@
                 body: JSON.stringify({ pergunta }),
                 
             });
+
             const data = await response.json();
             if(data.erro){
                 document.getElementById('query').innerText = "";
