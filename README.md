@@ -10,6 +10,10 @@ Um chatbot que converte perguntas em linguagem natural para queries SQL no MySQL
 - Limitação de requisições para segurança.
 - Apenas queries SELECT são permitidas.
 
+## Leia
+- https://medium.com/everyday-ai/every-ai-engineer-should-know-these-15-python-libraries-in-2025-b83726ecc86d
+- https://medium.com/@jagadeesan.ganesh/mastering-llm-ai-agents-building-and-using-ai-agents-in-python-with-real-world-use-cases-c578eb640e35
+
 ## Configuração
 
 ### 1. Clone o Repositório

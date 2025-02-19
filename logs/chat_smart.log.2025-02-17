@@ -1,0 +1,157 @@
+2025-02-17 08:27:38,339 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-17 08:27:38,926 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-17 09:30:37,390 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-17 09:30:37,987 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-17 09:32:11,117 INFO: query: SELECT SUM(nf.valor_bruto) AS total_emitido
+FROM notas_fiscais nf
+JOIN empresas e ON e.id = nf.empresa_id
+WHERE e.nome = 'GB'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:32:31,036 INFO: query: SELECT SUM(nf.valor_liquido) AS total_valor_liquido
+FROM notas_fiscais nf
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE e.nome = 'GB estética'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:35:09,141 INFO: query: SELECT SUM(nf.valor_liquido) AS total_valor_nf
+FROM notas_fiscais nf
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE e.nome = 'BH Estética' AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:35:50,618 INFO: query: SELECT SUM(nf.valor_liquido) AS total_emitido
+FROM notas_fiscais nf
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE nf.cancelada = 0
+AND e.nome = 'BH Estética'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:38:44,679 INFO: query: SELECT SUM(osv.valor_venda) AS total_vendas_filme
+FROM os
+JOIN os_servicos osv ON os.id = osv.os_id
+JOIN servicos s ON osv.servico_id = s.id
+JOIN servico_produtos sp ON sp.servico_id = s.id
+JOIN produtos p ON sp.produto_id = p.id
+JOIN caixas c ON os.id = c.os_id
+WHERE p.nome LIKE '%PLOTTER%'
+AND MONTH(c.data_pagamento) = 1
+AND YEAR(c.data_pagamento) = 2025; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:39:25,708 INFO: query: SELECT SUM(osv.valor_venda) AS total_vendas_filme_solar
+FROM os_servicos osv
+JOIN produtos p ON osv.servico_id = p.id
+WHERE p.nome = 'Filme Solar'
+AND osv.data_fechamento BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:40:02,989 INFO: query: SELECT SUM(osv.valor_venda) AS total_vendas
+FROM os_servicos osv
+JOIN servicos s ON osv.servico_id = s.id
+JOIN grupos_servicos gs ON s.grupo_servico_id = gs.id
+WHERE gs.nome = 'filme solar'
+AND osv.data_fechamento BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:40:31,192 INFO: query: SELECT SUM(osv.valor_venda) AS total_vendas
+FROM os_servicos osv
+JOIN servicos s ON osv.servico_id = s.id
+JOIN grupos_servicos gs ON s.grupo_servico_id = gs.id
+JOIN os ON osv.os_id = os.id
+WHERE gs.nome = 'filme solar'
+AND os.data_fechamento BETWEEN '2025-01-01' AND '2025-01-31'
+AND os.fechada = 1
+AND os.cancelada = 0; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:40:38,336 INFO: query: SELECT SUM(os_servicos.valor_venda) AS total_vendas
+FROM os
+JOIN os_servicos ON os.id = os_servicos.os_id
+JOIN servicos ON os_servicos.servico_id = servicos.id
+JOIN grupos_servicos ON servicos.grupo_servico_id = grupos_servicos.id
+WHERE grupos_servicos.nome = 'filme solar'
+AND os.paga = 1
+AND os.data_pagamento BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:41:01,781 INFO: query: SELECT SUM(osv.valor_venda) AS total_vendas
+FROM os
+JOIN os_servicos osv ON os.id = osv.os_id
+JOIN servicos s ON osv.servico_id = s.id
+JOIN grupos_servicos gs ON s.grupo_servico_id = gs.id
+WHERE gs.nome = 'filme' 
+AND os.data_finalizacao BETWEEN '2025-01-01' AND '2025-01-31'
+AND os.finalizada = 1; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:41:11,739 INFO: query: SELECT SUM(osv.valor_venda) AS total_vendas_filme
+FROM os
+JOIN os_servicos osv ON os.id = osv.os_id
+JOIN servicos s ON osv.servico_id = s.id
+JOIN grupos_servicos gs ON s.grupo_servico_id = gs.id
+WHERE gs.nome = 'filme'
+  AND os.paga = 1
+  AND MONTH(os.data_pagamento) = 1
+  AND YEAR(os.data_pagamento) = 2025; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:41:47,432 INFO: query: SELECT SUM(osv.valor_venda) AS total_vendas
+FROM os_servicos osv
+JOIN servicos s ON osv.servico_id = s.id
+JOIN subgrupos_servicos sg ON s.subgrupo_servico_id = sg.id
+WHERE sg.nome = 'filme'
+AND osv.data_fechamento BETWEEN '2025-01-01' AND '2025-01-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:42:37,535 INFO: query: SELECT f.nome AS vendedora_nome, COUNT(o.id) AS total_vendas
+FROM os o
+JOIN funcionarios f ON o.vendedor_id = f.id
+WHERE f.genero = 'feminino' 
+AND o.paga = 1 
+AND o.data_pagamento BETWEEN '2025-01-01' AND '2025-01-31'
+GROUP BY f.nome
+ORDER BY total_vendas DESC
+LIMIT 10; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:42:37,603 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'f.genero' in 'where clause' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-17 09:43:10,648 INFO: query: SELECT 
+    f.nome AS vendedor_nome, 
+    SUM(os.valor_venda) AS total_vendas
+FROM os
+JOIN os_servicos os ON os.id = os_servicos.os_id
+JOIN funcionarios f ON os.vendedor_id = f.id
+WHERE os.paga = 1 
+AND os.data_pagamento BETWEEN '2025-01-01' AND '2025-01-31'
+GROUP BY vendedor_nome
+ORDER BY total_vendas DESC
+LIMIT 10; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:43:10,672 ERROR: Erro ao executar a query: 1066 (42000): Not unique table/alias: 'os' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-17 09:43:44,774 INFO: query: SELECT f.nome AS vendedor_nome, COUNT(os.id) AS total_vendas
+FROM os
+JOIN funcionarios f ON os.vendedor_id = f.id
+WHERE os.paga = 1 
+AND os.data_pagamento BETWEEN '2025-01-01' AND '2025-01-31'
+GROUP BY vendedor_nome
+ORDER BY total_vendas DESC
+LIMIT 10; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:43:48,838 INFO: query: SELECT 
+    f.nome AS vendedor_nome, 
+    COUNT(o.id) AS total_vendas
+FROM 
+    os o
+JOIN 
+    funcionarios f ON o.vendedor_id = f.id
+WHERE 
+    o.paga = 1 
+    AND o.data_pagamento BETWEEN '2025-01-01' AND '2025-01-31'
+GROUP BY 
+    f.nome
+ORDER BY 
+    total_vendas DESC
+LIMIT 10; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:45:02,435 INFO: query: SELECT 
+    f.nome AS vendedor_nome,
+    SUM(osv.valor_venda) AS total_vendas, 
+    SUM(osv.valor_venda) / COUNT(DISTINCT os.id) AS ticket_medio
+FROM 
+    os
+JOIN 
+    os_servicos osv ON os.id = osv.os_id
+JOIN 
+    funcionarios f ON os.vendedor_id = f.id
+WHERE 
+    os.data_pagamento BETWEEN '2025-01-01' AND '2025-01-31'
+GROUP BY 
+    vendedor_nome
+ORDER BY 
+    total_vendas DESC
+LIMIT 10; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:53:23,564 INFO: query: SELECT COUNT(id) AS quantidade_usuarios
+FROM funcionarios
+WHERE ativo = 1; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:53:23,587 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'ativo' in 'where clause' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-17 09:53:41,133 INFO: query: SELECT COUNT(*) AS total_usuarios
+FROM usuarios; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-17 09:54:23,084 INFO: query: SELECT COUNT(*) AS total_usuarios
+FROM usuarios
+WHERE MONTH(created_at) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+AND YEAR(created_at) = YEAR(CURRENT_DATE); extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
