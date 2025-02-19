@@ -351,6 +351,24 @@ SCHEMA = {
         "descricao": "Tabela de tonalidades",
         "colunas": ["id","nome","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {}
+    },
+    "cortesia_os": {
+        "descricao": "Tabela de cortesia_os, tabela pivot entre 'os' e 'cortesias'" ,
+        "colunas": ["id","os_id","cortesia_id","ativo","created_at","updated_at","deleted_at"],
+        "relacionamentos": {
+            "cortesias": "cortesias.id = cortesia_os.cortesia_id",
+            "os": "os.id = cortesia_os.os_id"
+        }
+    },
+    "cortesias": {
+        "descricao": "Tabela de cortesias, uma cortesia agrupa varias os`s",
+        "colunas": ["id","mes_referencia","valor_bruto","valor_liquido","retensao_iss","paga","data_pagamento","valor_pago","fechada","data_fechamento","finalizada","data_finalizacao","cancelada","data_cancelamento","solicitado_cancelamento","motivo_cancelamento","observacao","email_enviado","data_envio_email","pagamento_deposito","concessionaria_id","departamento_id","empresa_id","funcionario_cancelamento_id","ativo","created_at","updated_at","deleted_at"],
+        "relacionamentos": {
+            "concessionarias": "concessionarias.id = cortesias.concessionaria_id",
+            "departamentos": "departamentos.id = cortesias.departamento_id",
+            "empresas": "empresas.id = cortesias.empresa_id",
+            "funcionarios": "funcionarios.id = cortesias.funcionario_cancelamento_id"
+        }
     }
 }
 
