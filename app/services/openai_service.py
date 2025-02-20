@@ -110,9 +110,9 @@ def traduzir_para_query(schema, pergunta):
         content = response.choices[0].message.content
 
         # Extrai o bloco de código SQL de um texto com explicações.
-        query = extrair_query_sql(content)
-        if query: 
-            return query
+        queries = extrair_todas_queries_sql(content)
+        if queries: 
+            return queries
         else: 
             return "Nenhuma query válida foi extraída da resposta."
             

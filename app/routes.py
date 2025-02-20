@@ -385,15 +385,19 @@ def pergunta():
         return jsonify({"erro": "Pergunta não fornecida."}), 400
 
     # Traduzir pergunta para query SQL
-    query_sql = traduzir_para_query(SCHEMA, pergunta)
-    
-    # Executar a query no banco de dados
-    resultados = executar_query(query_sql)
-    
-    # Converter os resultados para uma tabela HTML
-    tabela_html = dados_para_tabela_html(resultados) if isinstance(resultados, list) else resultados
-    
-    return jsonify({
-        "query": query_sql,
-        "tabela_html": tabela_html
-    })
+    queries_sql = traduzir_para_query(SCHEMA, pergunta)
+
+    # Garantir que queries_sql seja uma lista
+    if not isinstance(queries_sql, list):
+        queries_sql = [queries_sql]
+
+    # Lista para armazenar as tabelas HTML
+    tabelas_html = []
+
+    # Executar cada query e gerar a tabela HTML correspondente
+    for query_sql in queries_sql:
+        resultados = executar_query(query_sql)
+        tabela_html = dados_para_tabela_html(resultados) if isinstance(resultados, list) else resultados
+        tabelas_html.append({"query": query_sql, "tabela_html": tabela_html})
+
+    return jsonify({"tabelas": tabelas_html})

@@ -1,0 +1,563 @@
+2025-02-19 09:18:02,177 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 09:18:02,723 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 09:23:40,770 INFO: query: SELECT f.nome AS vendedora, COUNT(o.id) AS quantidade_vendas
+FROM os o
+JOIN funcionarios f ON o.vendedor_id = f.id
+JOIN departamentos d ON o.departamento_id = d.id
+WHERE d.nome = 'veiculos usados'
+AND f.sexo = 'Feminino'
+AND o.paga = 1
+GROUP BY f.nome
+ORDER BY quantidade_vendas DESC; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-19 09:23:40,948 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'f.sexo' in 'where clause' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-19 09:25:12,799 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 09:25:29,828 INFO: query: SELECT f.nome AS vendedor, COUNT(o.id) AS total_vendas
+FROM os o
+JOIN funcionarios f ON o.vendedor_id = f.id
+JOIN departamentos d ON o.departamento_id = d.id
+WHERE d.nome = 'Veículos Usados'
+GROUP BY f.nome
+ORDER BY total_vendas DESC; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:29]
+2025-02-19 09:28:37,084 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 09:28:42,603 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 09:28:45,103 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 09:28:56,633 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 09:29:13,205 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:05:00,690 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:05:10,279 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:05:13,823 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:05:15,367 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:05:17,902 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:05:39,490 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:07:15,395 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:07:25,937 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:08:09,644 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:08:25,227 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:17:11,812 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:19:59,000 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:20:07,583 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:22:28,638 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:16,361 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:17,897 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:22,436 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:24,978 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:41,555 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:45,075 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:46,620 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:50,150 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:23:51,673 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:24:01,292 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:24:04,828 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:24:08,359 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:24:22,952 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:25:59,860 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:29:04,669 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:29:05,078 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:31:21,136 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:37:07,967 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:37:25,567 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:37:27,101 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:37:42,690 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:38:29,371 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:38:31,911 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:38:38,439 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:39:56,262 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:40:02,843 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:42:54,034 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:44:03,849 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:44:04,260 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 11:49:10,968 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:19:00,805 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:19:01,215 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:21:09,204 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:21:10,715 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:21:12,232 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:21:15,818 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:21:20,388 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:21:20,795 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:23:56,955 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:33:14,343 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:33:14,749 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:35:39,815 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:36:08,548 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:36:08,958 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:39:23,864 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:39:24,274 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:39:35,717 INFO: query: SELECT f.nome AS vendedor_nome, COUNT(o.id) AS total_vendas
+FROM os o
+JOIN funcionarios f ON o.vendedor_id = f.id
+JOIN departamentos d ON o.departamento_id = d.id
+WHERE d.nome = 'veiculos usados' AND o.paga = 1
+GROUP BY vendedor_nome
+ORDER BY total_vendas DESC; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:47]
+2025-02-19 12:41:19,276 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:41:24,822 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:48:48,987 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:49:00,665 INFO: query: SELECT f.nome AS vendedora_nome, COUNT(o.id) AS total_vendas
+FROM os o
+JOIN funcionarios f ON o.vendedor_id = f.id
+JOIN departamentos d ON o.departamento_id = d.id
+WHERE d.nome = 'veiculos usados'
+GROUP BY vendedora_nome
+ORDER BY total_vendas DESC; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 12:50:04,808 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 12:50:07,334 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:19:35,867 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:20:01,326 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:20:02,335 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:20:17,435 ERROR: Missing some input keys: {''} [in /home/lenovo/code/chat_smart/app/services/openai_service.py:137]
+2025-02-19 13:20:28,284 ERROR: Missing some input keys: {''} [in /home/lenovo/code/chat_smart/app/services/openai_service.py:137]
+2025-02-19 13:21:58,050 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:22:27,338 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:22:55,314 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:23:07,926 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:23:08,751 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:23:12,127 ERROR: Missing some input keys: {''} [in /home/lenovo/code/chat_smart/app/services/openai_service.py:137]
+2025-02-19 13:24:26,167 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:24:27,044 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:24:29,233 ERROR: Missing some input keys: {''} [in /home/lenovo/code/chat_smart/app/services/openai_service.py:137]
+2025-02-19 13:27:39,329 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:27:56,574 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:28:08,752 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:28:37,011 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:28:39,117 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:28:45,993 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:28:46,858 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:28:48,552 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:137]
+2025-02-19 13:29:01,055 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:29:04,081 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:137]
+2025-02-19 13:30:03,554 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:30:08,335 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:137]
+2025-02-19 13:30:28,813 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:30:44,067 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:30:46,210 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:31:30,015 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:31:41,686 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:32:27,817 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:32:30,937 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:32:31,793 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:32:46,075 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:32:46,957 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:32:50,455 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:33:15,233 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:33:19,980 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:34:06,639 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:34:08,743 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:34:11,847 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:34:16,955 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:34:36,125 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:34:37,373 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:43:19,236 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:43:21,368 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:43:26,488 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:43:31,033 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['pergunta']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:43:38,712 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:43:40,761 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:43:58,989 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:47:43,388 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:47:52,524 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:47:58,657 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:48:17,069 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:48:58,549 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:48:59,404 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:49:04,076 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:50:37,264 ERROR: "Input to PromptTemplate is missing variables {'            caixa_status', 'eu quero um relatorio com as vendedoras que mais venderam no departamento usados?'}.  Expected: ['            caixa_status', 'eu quero um relatorio com as vendedoras que mais venderam no departamento usados?'] Received: ['question']\nNote: if you intended {            caixa_status} to be part of the string and not a variable, please escape it with double curly braces like: '{{            caixa_status}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:52:27,719 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:52:38,850 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:52:42,488 ERROR: "Input to PromptTemplate is missing variables {'            caixa_status', 'eu quero um relatorio com as vendedoras que mais venderam no departamento usados?'}.  Expected: ['            caixa_status', 'eu quero um relatorio com as vendedoras que mais venderam no departamento usados?'] Received: ['question']\nNote: if you intended {            caixa_status} to be part of the string and not a variable, please escape it with double curly braces like: '{{            caixa_status}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:139]
+2025-02-19 13:53:36,322 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:53:38,479 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:53:47,094 ERROR: "Input to PromptTemplate is missing variables {''}.  Expected: [''] Received: ['question']\nNote: if you intended {} to be part of the string and not a variable, please escape it with double curly braces like: '{{}}'.\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/INVALID_PROMPT_INPUT " [in /home/lenovo/code/chat_smart/app/services/openai_service.py:138]
+2025-02-19 13:55:45,427 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:55:54,542 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 13:58:03,462 INFO: query: SELECT f.nome AS vendedora_nome, COUNT(o.id) AS total_vendas
+FROM os o
+JOIN funcionarios f ON o.vendedor_id = f.id
+JOIN departamentos d ON o.departamento_id = d.id
+WHERE d.nome = 'veiculos usados'
+GROUP BY f.nome
+ORDER BY total_vendas DESC; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:03:46,914 INFO: query: SELECT SUM(c.valor) AS faturamento_gerencial
+FROM os
+JOIN caixas c ON os.id = c.os_id
+WHERE c.data_pagamento BETWEEN '2024-12-01' AND '2024-12-31'
+AND os.cancelada = 0
+AND c.cancelado = 0; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:03:53,951 INFO: query: SELECT SUM(caixas.valor) AS faturamento_gerencial
+FROM caixas
+WHERE caixas.data_pagamento BETWEEN '2024-12-01' AND '2024-12-31'
+  AND caixas.cancelado = 0; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:04:18,145 INFO: query: SELECT 
+    os.empresa_faturamento_id AS empresa_id,
+    SUM(caixas.valor) AS faturamento_total
+FROM 
+    caixas
+JOIN 
+    os ON caixas.os_id = os.id
+WHERE 
+    os.paga = 1
+    AND MONTH(caixas.data_pagamento) = 12
+    AND YEAR(caixas.data_pagamento) = 2024
+GROUP BY 
+    os.empresa_faturamento_id; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:04:18,167 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'os.empresa_faturamento_id' in 'field list' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-19 14:04:45,696 INFO: query: SELECT 
+    (SELECT nome FROM empresas WHERE id = o.empresa_faturamento_id) AS empresa_nome,
+    SUM(c.valor) AS faturamento
+FROM 
+    caixas c
+JOIN 
+    os o ON c.os_id = o.id
+WHERE 
+    c.data_pagamento BETWEEN '2024-12-01' AND '2024-12-31'
+GROUP BY 
+    o.empresa_faturamento_id; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:04:45,732 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'o.empresa_faturamento_id' in 'where clause' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-19 14:06:48,779 INFO: query: SELECT 
+    empresa_id,
+    SUM(valor_liquido) AS faturamento_gerencial
+FROM 
+    notas_fiscais
+WHERE 
+    data_emissao BETWEEN '2024-12-01' AND '2024-12-31'
+GROUP BY 
+    empresa_id; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:09:18,489 INFO: query: SELECT e.nome AS empresa_nome, SUM(nf.valor_liquido) AS faturamento_total
+FROM notas_fiscais nf
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31'
+GROUP BY e.nome
+ORDER BY faturamento_total DESC; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:13:02,952 INFO: query: SELECT 
+    e.nome AS nome_empresa,
+    nf.tipo_nota,
+    COUNT(nf.id) AS total_notas_fiscais_emitidas,
+    SUM(nf.valor_bruto) AS total_valor_bruto,
+    SUM(nf.valor_liquido) AS total_valor_liquido
+FROM
+    notas_fiscais nf
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+WHERE
+    DATE_FORMAT(nf.data_emissao, '%Y-%m') = '2024-12'
+GROUP BY 
+    e.nome, nf.tipo_nota
+ORDER BY 
+    nome_empresa, nf.tipo_nota; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:50:12,522 INFO: query: SELECT DISTINCT cfop
+FROM nf_devolucao_itens
+WHERE cfop IS NOT NULL; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:52:44,981 INFO: query: SELECT 
+    nf.numero_nota,
+    nf.valor_bruto,
+    nfi.cfop,
+    nf.os_id
+FROM 
+    notas_fiscais nf
+JOIN 
+    nf_devolucao_itens nfi ON nf.id = nfi.nota_fiscal_id
+WHERE 
+    nf.tipo_nota = 'D'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:53:59,067 INFO: query: SELECT
+    nf.data_emissao,
+    nf.numero_nota,
+    nf.valor_liquido,
+    nf.os_id AS ordem_servico,
+    ni.cfop
+FROM
+    notas_fiscais nf
+JOIN 
+    nf_devolucao_itens ni ON nf.id = ni.nota_fiscal_id
+WHERE
+    nf.devolvida = 1
+ORDER BY
+    nf.data_emissao; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:54:19,025 INFO: query: SELECT nf.data_emissao, 
+       nf.numero_nota,
+       nf.valor_bruto AS valor,
+       os.id AS os_id,
+       nf_devolucao.cfop
+FROM notas_fiscais nf
+JOIN nf_devolucao_itens nf_devolucao ON nf.id = nf_devolucao.nota_fiscal_id
+JOIN os ON nf.os_id = os.id
+WHERE nf.tipo_nota = 'D'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:55:30,681 INFO: query: SELECT 
+    nf.data_emissao, 
+    nf.numero_nota, 
+    nf.valor_bruto AS valor_total, 
+    ndi.cfop, 
+    os.id AS os_id
+FROM 
+    notas_fiscais nf
+JOIN 
+    nf_devolucao_itens ndi ON nf.id = ndi.nota_fiscal_id
+LEFT JOIN 
+    os ON nf.os_id = os.id
+WHERE 
+    nf.tipo_nota = 'D'  -- 'D' para devolução
+ORDER BY 
+    nf.data_emissao; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 14:57:59,854 INFO: query: SELECT 
+    f.nome AS fornecedor_nome,
+    nf.data_emissao,
+    nf.numero_nota,
+    nf.valor_bruto,
+    ndi.cfop,
+    o.id AS os_id
+FROM 
+    notas_fiscais nf
+JOIN 
+    nf_devolucao_itens ndi ON nf.id = ndi.nota_fiscal_id
+JOIN 
+    fornecedores f ON nf.fornecedor_id = f.id
+LEFT JOIN 
+    os o ON nf.os_id = o.id
+WHERE 
+    nf.tipo_nota = 'D'
+ORDER BY 
+    nf.data_emissao; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:46:16,607 INFO: query: SELECT os.id AS ordem_servico_id, os.os_concessionaria, d.nome AS departamento_nome, s.nome AS servico_nome
+FROM os
+JOIN concessionarias c ON os.concessionaria_id = c.id
+JOIN departamentos d ON os.departamento_id = d.id
+JOIN os_servicos os_s ON os.id = os_s.os_id
+JOIN servicos s ON os_s.servico_id = s.id
+WHERE c.nome = 'Audi Carbel'
+AND d.nome = 'Veículos Usados'
+AND s.nome = 'PS4'
+AND os.ativo = 1
+AND os.deleted_at IS NULL
+AND os_s.deleted_at IS NULL
+AND s.deleted_at IS NULL
+AND os.created_at BETWEEN '2023-10-01' AND '2023-10-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:47:58,945 INFO: query: SELECT os.id AS os_id, 
+       CONCAT(f.nome, ' ', f.sobrenome) AS vendedor, 
+       c.nome AS concessionaria, 
+       d.nome AS departamento, 
+       s.nome AS servico, 
+       os.data_fechamento
+FROM os
+JOIN concessionarias c ON os.concessionaria_id = c.id
+JOIN departamentos d ON os.departamento_id = d.id
+JOIN os_servicos os_s ON os.id = os_s.os_id
+JOIN servicos s ON os_s.servico_id = s.id
+JOIN funcionarios f ON os.vendedor_id = f.id
+WHERE c.nome LIKE '%Audi Carbel%'
+  AND d.nome LIKE '%veiculos usados%'
+  AND s.nome LIKE '%ps4%'
+  AND os.data_fechamento BETWEEN '2023-10-01' AND '2023-10-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:47:58,967 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'f.sobrenome' in 'field list' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-19 16:49:07,508 INFO: query: SELECT 
+    os.id AS os_id,
+    c.nome AS concessionaria_nome,
+    d.nome AS departamento_nome,
+    s.nome AS servico_nome,
+    os.created_at AS data_criacao_os
+FROM 
+    os
+JOIN 
+    concessionarias c ON os.concessionaria_id = c.id
+JOIN 
+    departamentos d ON os.departamento_id = d.id
+JOIN 
+    os_servicos osv ON os.id = osv.os_id
+JOIN 
+    servicos s ON osv.servico_id = s.id
+WHERE 
+    c.nome LIKE '%Audi Carbel%' 
+    AND d.nome = 'Veículos Usados' 
+    AND s.nome = 'PS4'
+    AND os.created_at BETWEEN '2023-10-01' AND '2023-10-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:49:29,529 INFO: query: SELECT os.id, os.os_concessionaria, d.nome AS departamento, s.nome AS servico, c.nome AS concessionaria
+FROM os
+JOIN departamentos d ON os.departamento_id = d.id
+JOIN os_servicos os_s ON os.id = os_s.os_id
+JOIN servicos s ON os_s.servico_id = s.id
+JOIN concessionarias c ON os.concessionaria_id = c.id
+WHERE c.nome = 'Audi Carbel'
+AND d.nome = 'Veículos Usados'
+AND s.nome LIKE '%PS4%'
+AND os.created_at BETWEEN '2023-10-01' AND '2023-10-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:53:07,878 INFO: query: SELECT e.nome AS empresa_nome, SUM(nf.valor_liquido) AS faturamento_total
+FROM notas_fiscais nf
+JOIN caixas c ON nf.os_id = c.os_id
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE e.nome = 'GB Estética'
+  AND nf.tipo_nota = 'S'  -- NFSE, ou seja, Nota Fiscal de Serviço
+  AND nf.data_emissao BETWEEN '2023-08-01' AND '2023-08-31'
+  AND nf.cortesia_id IS NOT NULL
+  AND c.caixa_tipo_id IN (
+    SELECT id FROM caixa_tipos WHERE nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')
+  )
+GROUP BY e.nome; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:53:41,062 INFO: query: SELECT SUM(nf.valor_bruto) AS faturamento_cortesias
+FROM notas_fiscais nf
+JOIN os o ON nf.os_id = o.id
+JOIN empresas e ON nf.empresa_id = e.id
+JOIN os_tipos ot ON o.os_tipo_id = ot.id
+WHERE e.nome = 'GB Estética'
+  AND ot.nome LIKE '%Cortesia%'
+  AND nf.tipo_nota = 'S'
+  AND nf.data_emissao BETWEEN '2024-08-01' AND '2024-08-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:54:23,002 INFO: query: SELECT SUM(nf.valor_liquido) AS faturamento
+FROM notas_fiscais nf
+JOIN os ON nf.os_id = os.id
+JOIN empresas e ON nf.empresa_id = e.id
+JOIN os_tipos ot ON os.os_tipo_id = ot.id
+WHERE e.nome = 'GB Estética'
+  AND ot.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')
+  AND nf.tipo_nota = 'S' -- NFSE
+  AND nf.data_emissao BETWEEN '2024-08-01' AND '2024-08-31'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:55:29,433 INFO: query: SELECT e.nome AS nome_empresa, SUM(nf.valor_bruto) AS faturamento_total
+FROM notas_fiscais nf
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE nf.data_emissao BETWEEN DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH) 
+                         AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+GROUP BY e.nome; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 16:56:28,181 INFO: query: SELECT 
+    empresas.nome AS empresa_nome,
+    CASE 
+        WHEN n.tipo_nota = 'S' THEN 'NFSE'
+        WHEN n.tipo_nota = 'P' THEN 'NFE'
+        WHEN n.tipo_nota = 'C' THEN 'NFCE'
+        WHEN n.tipo_nota = 'D' THEN 'DEVOLUCAO'
+        ELSE 'OUTRO'
+    END AS tipo_nota,
+    SUM(n.valor_liquido) AS faturamento
+FROM 
+    notas_fiscais n
+JOIN 
+    empresas ON n.empresa_id = empresas.id
+WHERE 
+    n.data_emissao BETWEEN DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m-01') 
+    AND LAST_DAY(NOW() - INTERVAL 1 MONTH)
+    AND n.cancelada = 0
+GROUP BY 
+    empresa_nome, tipo_nota; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 18:06:01,128 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:06:01,542 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:06:54,651 INFO: query: SELECT SUM(nf.valor_liquido) AS faturamento_cortesias
+FROM notas_fiscais nf
+JOIN os ON nf.os_id = os.id
+JOIN os_tipos ost ON os.os_tipo_id = ost.id
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE e.nome = 'GB Estetica'
+  AND (ost.nome = 'Cortesia Concessionária' OR ost.nome = 'Cortesia Funcionário')
+  AND nf.data_emissao BETWEEN '2024-06-01' AND '2024-06-30'; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 18:10:33,188 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:11:30,942 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:11:54,569 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:11:57,091 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:12:16,758 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:12:59,466 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:13:00,984 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:13:03,512 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 18:13:18,549 INFO: query: SELECT e.nome AS empresa, SUM(nf.valor_liquido) AS faturamento_cortesias
+FROM notas_fiscais nf
+JOIN empresas e ON nf.empresa_id = e.id
+WHERE e.nome = 'GB Estética'
+AND nf.cortesia_id IS NOT NULL
+AND nf.tipo_nota = 'S'  -- Normalmente usamos essa referência para NFSEs
+AND MONTH(nf.data_emissao) = 6
+AND YEAR(nf.data_emissao) = 2024
+GROUP BY e.nome; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 21:11:10,850 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:11:11,415 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:11:48,546 INFO: query: SELECT e.nome AS empresa_nome, SUM(nf.valor_liquido) AS faturamento_total
+            FROM notas_fiscais nf
+            JOIN caixas c ON nf.os_id = c.os_id
+            JOIN empresas e ON nf.empresa_id = e.id
+            WHERE e.nome = 'GB Estética'
+            AND nf.tipo_nota = 'S'  -- NFSE, ou seja, Nota Fiscal de Serviço
+            AND nf.data_emissao BETWEEN '2023-08-01' AND '2023-08-31'
+            AND nf.cortesia_id IS NOT NULL
+            AND c.caixa_tipo_id IN (
+                SELECT id FROM caixa_tipos WHERE nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')
+            )
+            GROUP BY e.nome; extraída do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:48]
+2025-02-19 21:12:43,298 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:13:03,882 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:13:12,489 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:13:17,023 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:13:20,554 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:13:23,452 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:14:13,280 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:14:47,940 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:14:50,948 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:15:31,643 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:16:21,356 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:16:35,940 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:16:42,506 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:18:11,397 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:18:18,974 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:18:24,565 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:18:27,110 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:18:29,697 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:19:18,454 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:27:31,845 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:28:00,481 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:28:00,892 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:28:03,971 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:32:56,931 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:33:05,791 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:34:55,544 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:34:59,842 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:35:07,895 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:35:08,300 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:35:11,360 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:35:12,019 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:35:12,199 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:35:14,984 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:35:19,346 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:39:16,769 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:39:21,293 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:40:14,558 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:40:20,100 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:40:23,527 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:40:43,711 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:40:46,286 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:40:59,390 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:41:07,312 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:41:08,833 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:41:25,398 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:41:37,988 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:42:04,622 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:42:06,285 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:42:14,530 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:42:14,939 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:42:20,196 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:42:32,526 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:42:34,743 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:42:34,828 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'f.sobrenome' in 'field list' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-19 21:42:56,162 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:42:59,173 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:43:33,091 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:43:40,997 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:46:08,801 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:48:04,461 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:50:10,002 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:50:29,487 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:50:38,261 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:51:28,725 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:52:09,816 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:52:47,011 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:52:52,550 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:52:58,098 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:52:59,614 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 21:53:43,732 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:54:30,592 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:55:12,063 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:55:51,999 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 21:56:52,311 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 23:47:23,276 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 23:48:10,646 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 23:49:58,616 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 23:50:45,207 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 23:53:02,256 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 23:53:02,667 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 23:53:12,816 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 23:54:12,498 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 23:54:14,032 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 23:54:16,557 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-19 23:56:32,753 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-19 23:57:59,941 INFO: 2 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]

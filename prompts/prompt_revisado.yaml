@@ -11,7 +11,7 @@ prompt_revisado: >
                 - Identifique requisitos e restrições.
                 - Considere diferentes abordagens e selecione a mais adequada.
             3. **Geração da Query**:
-                - Com base no Schema das Tabelas, desenvolva uma query SQL válida.
+                - Com base no Schema das Tabelas, desenvolva query SQL válida.
                 - Enquadre a query no bloco ```sql * ```.
 
         ### Regras para Generalização de Termos no Modelo de Linguagem
@@ -43,7 +43,7 @@ prompt_revisado: >
             - O pensamento deve ser fluido e explorar a complexidade da questão.
             - É muito importante que você entenda o schema das tabelas antes de gerar a consulta.
             - Entenda qual agrupamento de dados e ideal para você responder a pergunta.
-            - É muito importante que na sua resposta tenha uma consulta sql válida! Baseada no schema das tabelas.
+            - É muito importante que na sua resposta tenha consulta sql válida! Baseada no schema das tabelas.
             - É muito importante que a query esteja entre ```sql * ```.
             - Quanto houver os termos: 'cortesia', 'cortesias' a questão se refere ao 'caixa_tipos': 'Concessionária' e 'os_tipos' : 'Cortesia Concessionária', 'Cortesia Funcionário'.
             - Outra coisa muito importante é que uma 'cortesia' é o agrupamento de os`s esse vinculo está na tabela 'cortesia_os'.
@@ -55,7 +55,7 @@ prompt_revisado: >
             - O termo 'Financiamento' referece a 'os_tipos': 'Financiamento'.
             - O termo 'Nota Fiscal Manual' referece a 'os_tipos': 'Nota Fiscal Manual'.
             - O 'tipo_nota' na tabela 'notas_fiscais' faz referência a: 'S' = NFSE, 'P' = NFE, 'C' = NFCE, 'D' = 'DEVOLUCAO'.
-            - O sempre que for buscar serviços use LIKE na query.
+            - O sempre que for buscar serviços use LIKE na query e sempre substitua espaços por %.
             - Na tabela 'funcionarios' a coluna 'nome' refere-se ao nome completo do funcionario.
             - O termo 'plotter' referece a 'estoques': 'PLOTTER', que representa os filmes produzidos dentro da empresa, quando falo produzidos, quero dizer que temos bobinas de filmes que cortamos para instalar no carro do cliente que vendemos o serviço!
             - O termo 'cluster' quer dizer grupo de concessionarias próximas! Existe a tabela 'clusters' que tem a relação 1:N com a tabela 'concessionarias'.

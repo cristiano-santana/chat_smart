@@ -23,7 +23,7 @@
 
         .container {
             width: 100%;
-            max-width: 800px; /* Aumentamos para melhor visualização */
+            max-width: 2000px;
             background: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -46,11 +46,11 @@
         }
 
         button {
-            width: 100%;
+            width: 10%;
             padding: 12px;
             font-size: 18px;
             color: #fff;
-            background: #007bff;
+            background: #6eb447;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -60,7 +60,7 @@
         }
 
         button:hover {
-            background: #0056b3;
+            background: #56a72a;
         }
 
         .output {
@@ -93,7 +93,7 @@
         /* Estilização da Tabela */
         .tabela-container {
             width: 100%;
-            overflow-x: auto; /* Adiciona rolagem horizontal se necessário */
+            overflow-x: auto;
             margin-top: 10px;
             border-radius: 6px;
             border: 1px solid #ddd;
@@ -110,7 +110,7 @@
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
-            white-space: nowrap; /* Mantém as colunas organizadas */
+            white-space: nowrap;
         }
 
         th {
@@ -129,11 +129,11 @@
             background: #f2f2f2;
         }
 
-        /* Botão de Download sempre visível */
+        /* Botão de Download */
         .download-container {
             text-align: right;
             margin-top: 10px;
-            display: none; /* Esconde até a tabela carregar */
+            display: none;
         }
 
         #download-btn {
@@ -170,7 +170,7 @@
         <button onclick="enviarPergunta()">🔍 Consultar</button>
 
         <div class="output">
-            <h2>Query Gerada:</h2>
+            <h2>Queries Geradas:</h2>
             <pre id="query"></pre>
 
             <h2>Resultados:</h2>
@@ -182,7 +182,6 @@
             <div class="tabela-container">
                 <div id="resultados"></div>
             </div>
-
         </div>
     </div>
 
@@ -211,24 +210,37 @@
                 document.getElementById('resultados').innerHTML = `<div class="error">⚠️ ${data.erro}</div>`;
                 document.querySelector('.download-container').style.display = "none";
             } else {
-                document.getElementById('query').innerText = data.query;
-                document.getElementById('resultados').innerHTML = data.tabela_html;
+                document.getElementById('query').innerText = data.tabelas.map(t => t.query)
+                    .join("\n-------------------------------\n"); // Linha separadora
+
+                let html = "";
+                data.tabelas.forEach((item, index) => {
+                    html += `<h2>Resposta parte ${index + 1}:</h2>`;
+                    // html += `<pre>${item.query}</pre>`;
+                    html += item.tabela_html;
+                    html += "<hr />";
+                });
+
+                document.getElementById('resultados').innerHTML = html;
                 document.querySelector('.download-container').style.display = "block";
             }
         }
 
         function baixarExcel() {
-            const tabela = document.querySelector("#resultados table");
+            const tabelas = document.querySelectorAll("#resultados table");
 
-            if (!tabela) {
+            if (tabelas.length === 0) {
                 alert("⚠️ Nenhum resultado para baixar!");
                 return;
             }
 
             const wb = XLSX.utils.book_new(); // Cria um novo arquivo Excel
-            const ws = XLSX.utils.table_to_sheet(tabela); // Converte a tabela HTML para planilha
 
-            XLSX.utils.book_append_sheet(wb, ws, "Resultados"); // Adiciona a planilha ao arquivo
+            tabelas.forEach((tabela, index) => {
+                const ws = XLSX.utils.table_to_sheet(tabela); // Converte a tabela HTML para planilha
+                XLSX.utils.book_append_sheet(wb, ws, `Resultados ${index + 1}`); // Adiciona a planilha ao arquivo
+            });
+
             XLSX.writeFile(wb, "resultado.xlsx"); // Faz o download
         }
     </script>
