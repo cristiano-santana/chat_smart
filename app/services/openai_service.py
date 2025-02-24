@@ -28,7 +28,7 @@ def upload_file_yaml(file_path, file_name, schema):
 
     return config[file_name]
 
-def extrair_query_sql(texto):
+def extract_query_from_text(texto):
     """
     Extrai o bloco de código SQL de um texto com explicações.
 
@@ -54,7 +54,7 @@ def extrair_query_sql(texto):
         current_app.logger.error("Nenhuma query SQL encontrada no texto.")
         return None
 
-def extrair_todas_queries_sql(texto):
+def extract_all_queries_from_the_text(texto):
     """
     Extrai todos os blocos de código SQL de um texto com explicações.
 
@@ -71,12 +71,14 @@ def extrair_todas_queries_sql(texto):
     if matches:
         consultas_sql = [match.strip() for match in matches]
         current_app.logger.info(f"{len(consultas_sql)} queries extraídas do texto.")
+        current_app.logger.info(f"queries extraídas: {consultas_sql}.")
+        current_app.logger.info(f"do texto: {texto}")
         return consultas_sql
     else:
-        current_app.logger.error("Nenhuma query SQL encontrada no texto.")
+        current_app.logger.error("Nenhuma query SQL encontrada no texto: {texto}.")
         return []
 
-def traduzir_para_query(schema, pergunta):
+def translate_texts_queries(schema, pergunta):
     """
     Converte uma pergunta em linguagem natural para uma query SQL utilizando a API da OpenAI.
 
@@ -88,7 +90,7 @@ def traduzir_para_query(schema, pergunta):
         str: A query SQL gerada ou uma mensagem de erro.
     """
     # Prompt para a API da OpenAI
-    prompt = upload_file_yaml("./prompts/prompt_revisado.yaml", "prompt_revisado", schema)
+    prompt = upload_file_yaml("./prompts/query_builder.yaml", "query_builder", schema)
 
     try:
         # Inicializa a chave da API da OpenAI a partir das configurações da aplicação.
@@ -110,7 +112,7 @@ def traduzir_para_query(schema, pergunta):
         content = response.choices[0].message.content
 
         # Extrai o bloco de código SQL de um texto com explicações.
-        queries = extrair_todas_queries_sql(content)
+        queries = extract_all_queries_from_the_text(content)
         if queries: 
             return queries
         else: 

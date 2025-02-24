@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from .services.openai_service import traduzir_para_query
+from .services.openai_service import translate_texts_queries
 from .services.db_service import executar_query
 from .utils import dados_para_tabela_html 
 
@@ -385,7 +385,7 @@ def pergunta():
         return jsonify({"erro": "Pergunta não fornecida."}), 400
 
     # Traduzir pergunta para query SQL
-    queries_sql = traduzir_para_query(SCHEMA, pergunta)
+    queries_sql = translate_texts_queries(SCHEMA, pergunta)
 
     # Garantir que queries_sql seja uma lista
     if not isinstance(queries_sql, list):

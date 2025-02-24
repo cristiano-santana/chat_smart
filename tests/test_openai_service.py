@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 from app import create_app
-from app.services.openai_service import traduzir_para_query
+from app.services.openai_service import translate_texts_queries
 
 class TestOpenAIService(unittest.TestCase):
     def setUp(self):
@@ -15,7 +15,7 @@ class TestOpenAIService(unittest.TestCase):
         self.app_context.pop()
 
     @patch('openai.ChatCompletion.create')
-    def test_traduzir_para_query(self, mock_create):
+    def test_translate_texts_queries(self, mock_create):
         mock_create.return_value = {
             'choices': [
                 {'message': {'content': 'SELECT * FROM clientes;'}}
@@ -29,11 +29,11 @@ class TestOpenAIService(unittest.TestCase):
         - telefone (VARCHAR)
         """
         pergunta = "Liste todos os clientes."
-        query = traduzir_para_query(schema, pergunta)
+        query = translate_texts_queries(schema, pergunta)
         self.assertEqual(query, 'SELECT * FROM clientes;')
 
     @patch('openai.ChatCompletion.create')
-    def test_traduzir_para_query_invalid_command(self, mock_create):
+    def test_translate_texts_queries_invalid_command(self, mock_create):
         # Simular uma query não-SELECT
         mock_create.return_value = {
             'choices': [
@@ -48,7 +48,7 @@ class TestOpenAIService(unittest.TestCase):
         - telefone (VARCHAR)
         """
         pergunta = "Exclua o cliente com ID 1."
-        query = traduzir_para_query(schema, pergunta)
+        query = translate_texts_queries(schema, pergunta)
         self.assertIn("Erro na tradução da pergunta", query)
 
 if __name__ == '__main__':

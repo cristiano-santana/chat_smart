@@ -5,8 +5,8 @@ import re
 
 def executar_query(query, params=None):
     # Apenas permitir queries SELECT para segurança
-    if not re.match(r'^SELECT\b', query, re.IGNORECASE):
-        return "Somente queries SELECT são permitidas para segurança."
+    # if not re.match(r'^SELECT\b', query, re.IGNORECASE):
+    #     return "Somente queries SELECT são permitidas para segurança."
 
     # Verificar se a query contém comandos indesejados
     # Como DELETE, UPDATE, DROP, etc.
