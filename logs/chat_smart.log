@@ -1,343 +1,218 @@
-2025-02-23 21:18:14,450 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:18:15,337 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:27:53,858 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:28:46,221 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:32:52,752 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:34:29,591 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:35:21,007 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:42:40,949 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:43:34,192 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:46:28,670 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:46:29,291 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:46:58,385 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:47:33,606 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:47:55,130 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:47:57,968 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:48:12,962 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:48:30,120 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:48:30,727 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:48:48,972 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:49:11,318 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:49:35,668 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:52:43,622 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:52:46,442 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:53:31,711 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:53:47,689 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:54:12,987 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:54:12,987 INFO: queries: ['SELECT \n    s.nome AS servico_nome,\n    c.nome AS concessionaria_nome,\n    COUNT(osv.servico_id) AS quantidade_vendida,\n    SUM(osv.valor_venda_real) AS total_vendido,\n    SUM(CASE WHEN cx.id IS NOT NULL THEN cx.valor ELSE 0 END) AS total_recebido\nFROM\n    os\nJOIN\n    os_servicos osv ON os.id = osv.os_id\nJOIN\n    servicos s ON osv.servico_id = s.id\nJOIN\n    concessionarias c ON os.concessionaria_id = c.id\nLEFT JOIN\n    caixas cx ON cx.os_id = os.id AND cx.cancelado = 0\nWHERE\n    os.fechada = 1\n    AND os.data_fechamento BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND CURDATE()\nGROUP BY \n    servico_nome, concessionaria_nome\nORDER BY \n    quantidade_vendida DESC, concessionaria_nome;'] extraída do texto: Vamos decompôr esta solicitação passo a passo:
+2025-02-26 15:33:58,007 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-26 15:33:58,619 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-26 15:37:02,333 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 15:37:02,333 INFO: queries extraídas: ["SELECT nf.id AS nota_fiscal_id, nf.valor_bruto, nf.valor_liquido, c.nome AS concessionaria, nf.data_emissao\nFROM notas_fiscais nf\nJOIN cortesias cr ON nf.cortesia_id = cr.id\nJOIN cortesia_os co ON co.cortesia_id = cr.id\nJOIN os o ON co.os_id = o.id\nJOIN concessionarias c ON cr.concessionaria_id = c.id\nWHERE nf.cancelada = 0 AND nf.cortesia_id IS NOT NULL\nAND cr.ativo = 1 AND cr.cancelada = 0\nAND o.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 15:37:02,334 INFO: do texto: Vamos entender essa solicitação. O usuário deseja obter um relatório das "cortesias emitidas" em referência a "janeiro de 2025". 
 
-### Entendimento Inicial:
-A pergunta quer um relatório de vendas do último trimestre que inclua:
-1. Serviços mais vendidos.
-2. Concessionárias que mais venderam.
-3. Total vendido por concessionária.
-4. Comparativo entre o valor vendido e o valor recebido por concessionária.
+Para atender a essa consulta:
+- Devemos nos concentrar em buscar nas tabelas relacionadas às notas fiscais e cortesias, uma vez que a emissão de cortesias geralmente envolve a emissão de notas fiscais.
+- As "cortesias emitidas" referem-se especificamente a "notas fiscais que não estão canceladas" associadas a cortesias. E essas notas fiscais são o reflexo das ordens de serviço do mês anterior, ou seja, dezembro de 2024.
+- Precisaremos considerar a relação entre as tabelas `notas_fiscais`, `cortesias`, `cortesia_os`, e `os`.
+- Devemos garantir que as notas fiscais não estejam canceladas e que as cortesias estejam ativas e não canceladas. Além disso, precisamos garantir que os registros da tabela `cortesia_os` não tenham sido excluídos.
 
-### Análise e Solução:
-Para responder essa pergunta adequadamente, precisamos:
-- Extrair serviços vendidos e agrupá-los para determinar os mais vendidos.
-- Agrupar as vendas por concessionárias para saber quais venderam mais.
-- Calcular o total vendido e o total recebido por concessionária para um comparativo.
-
-### Geração da Query:
-Precisamos trabalhar com as tabelas `os`, `os_servicos`, `servicos`, `concessionarias`, e `caixas`:
-- `os` para obter informações principais das ordens de serviço.
-- `os_servicos` para vincular os serviços vendidos às ordens de serviço.
-- `servicos` para detalhes sobre os serviços.
-- `concessionarias` para detalhes das concessionárias.
-- `caixas` para verificar os valores recebidos (pagamentos).
-
-Agora vamos construir a query:
+Com isso em mente, a consulta precisa filtrar as ordens de serviço criadas em dezembro de 2024 e obter as notas fiscais de cortesia emitidas em janeiro de 2025 associadas a essas ordens. Aqui está a query SQL correspondente:
 
 ```sql
-SELECT 
-    s.nome AS servico_nome,
-    c.nome AS concessionaria_nome,
-    COUNT(osv.servico_id) AS quantidade_vendida,
-    SUM(osv.valor_venda_real) AS total_vendido,
-    SUM(CASE WHEN cx.id IS NOT NULL THEN cx.valor ELSE 0 END) AS total_recebido
-FROM
-    os
-JOIN
-    os_servicos osv ON os.id = osv.os_id
-JOIN
-    servicos s ON osv.servico_id = s.id
-JOIN
-    concessionarias c ON os.concessionaria_id = c.id
-LEFT JOIN
-    caixas cx ON cx.os_id = os.id AND cx.cancelado = 0
-WHERE
-    os.fechada = 1
-    AND os.data_fechamento BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AND CURDATE()
-GROUP BY 
-    servico_nome, concessionaria_nome
-ORDER BY 
-    quantidade_vendida DESC, concessionaria_nome;
+SELECT nf.id AS nota_fiscal_id, nf.valor_bruto, nf.valor_liquido, c.nome AS concessionaria, nf.data_emissao
+FROM notas_fiscais nf
+JOIN cortesias cr ON nf.cortesia_id = cr.id
+JOIN cortesia_os co ON co.cortesia_id = cr.id
+JOIN os o ON co.os_id = o.id
+JOIN concessionarias c ON cr.concessionaria_id = c.id
+WHERE nf.cancelada = 0 AND nf.cortesia_id IS NOT NULL
+AND cr.ativo = 1 AND cr.cancelada = 0
+AND o.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND co.deleted_at IS NULL;
 ```
 
-### Explicação:
-- **Serviço e Concessionária**: Enumeramos serviços e concessionárias e contamos a quantidade de serviços vendidos.
-- **Total Vendido**: Calculamos a soma do valor de venda real dos serviços.
-- **Total Recebido**: Verificamos os registros nas caixas para os valores recebidos, assegurando que não estejam cancelados.
-- **Intervalo de Data**: Consideramos o último trimestre usando a data de fechamento da OS.. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
-2025-02-23 21:55:48,958 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:55:51,814 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:55:53,592 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
-2025-02-23 21:56:18,043 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:56:18,043 INFO: queries extraídas: ['SELECT \n    s.nome AS servico_nome,\n    c.nome AS concessionaria_nome,\n    COUNT(osv.id) AS quantidade_vendida,\n    SUM(osv.valor_venda) AS total_vendido,\n    SUM(CASE WHEN o.paga = 1 THEN osv.valor_venda ELSE 0 END) AS total_recebido\nFROM os_servicos osv\nJOIN servicos s ON osv.servico_id = s.id\nJOIN os o ON osv.os_id = o.id\nJOIN concessionarias c ON o.concessionaria_id = c.id\nWHERE o.created_at >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)\nGROUP BY servico_nome, concessionaria_nome\nORDER BY quantidade_vendida DESC, total_vendido DESC;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
-2025-02-23 21:56:18,043 INFO: do texto: ### Entendimento Inicial
+Esse SQL vai retornar as notas fiscais emitidas em janeiro de 2025 cujas ordens de serviço de cortesia foram criadas em dezembro de 2024, ainda ativas e não canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 15:37:42,912 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 15:37:42,912 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_cortesias\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN os ON nf.os_id = os.id\nWHERE nf.cortesia_id IS NOT NULL\nAND nf.cancelada = 0\nAND c.ativo = 1\nAND c.cancelada = 0\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 15:37:42,912 INFO: do texto: Quando me pedem sobre o total de cortesias emitidas em um determinado mês, como em janeiro de 2025, preciso conectar isso ao conceito de notas fiscais de cortesias emitidas no mês especificado. Segundo o schema, cortesias estão ligadas às ordens de serviço e às notas fiscais. Aqui, estamos olhando para o momento em que essas notas foram emitidas, já que o termo "emitidas" indica um foco na ação fiscal final.
 
-A pergunta busca por um relatório de vendas detalhado do último trimestre, com foco em:
+Para responder corretamente a isso, preciso procurar pelas notas fiscais onde a coluna 'cortesia_id' não é nula, e onde a coluna 'ativo' em cortesias e também o status das notas são apropriados (não canceladas, por exemplo). As cortesias no mês específico são em referência ao mês anterior de suas respectivas ordens de serviço, razão pela qual especificamos que a consulta deve considerar serviços do mês anterior.
 
-1. Identificar quais serviços foram mais vendidos.
-2. Determinar quais concessionárias venderam mais.
-3. Obter o total vendido por concessionária.
-4. Comparar o total vendido com o recebido por cada concessionária.
-
-### Análise e Solução
-
-1. **Serviços Mais Vendidos**:
-   - Precisamos contar a quantidade de serviços vendidos por tipo de serviço.
-   
-2. **Concessionárias que Venderam Mais**:
-   - Devemos agrupar as vendas por concessionárias e somar o total vendido.
-   
-3. **Total Vendido por Concessionária**:
-   - Somar o valor das vendas de cada concessionária.
-   
-4. **Comparação do Vendido e Recebido**:
-   - Comparar o valor total vendido com o valor realmente recebido (pago) por concessionária.
-
-### Geração da Query
-
-- Iremos considerar que o "último trimestre" pode referir-se aos últimos três meses a partir de hoje.
-- O filtro para determinar o trimestre será atualizado dinamicamente segundo a data de consulta.
-- Utilizaremos a tabela `os` (ordens de serviço) e as tabelas relacionadas para acessar as informações necessárias.
+Agora, vamos para a query SQL:
 
 ```sql
-SELECT 
-    s.nome AS servico_nome,
-    c.nome AS concessionaria_nome,
-    COUNT(osv.id) AS quantidade_vendida,
-    SUM(osv.valor_venda) AS total_vendido,
-    SUM(CASE WHEN o.paga = 1 THEN osv.valor_venda ELSE 0 END) AS total_recebido
-FROM os_servicos osv
-JOIN servicos s ON osv.servico_id = s.id
-JOIN os o ON osv.os_id = o.id
-JOIN concessionarias c ON o.concessionaria_id = c.id
-WHERE o.created_at >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
-GROUP BY servico_nome, concessionaria_nome
-ORDER BY quantidade_vendida DESC, total_vendido DESC;
+SELECT SUM(nf.valor_bruto) AS total_cortesias
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN os ON nf.os_id = os.id
+WHERE nf.cortesia_id IS NOT NULL
+AND nf.cancelada = 0
+AND c.ativo = 1
+AND c.cancelada = 0
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
 ```
 
-### Estrutura da Resposta
+Nesta query, estou somando o `valor_bruto` de todas as notas fiscais de cortesias que foram emitidas em janeiro de 2025. Estou garantindo que essas notas estejam ativas, não canceladas e estão ligadas às ordens de serviço originalmente criadas em dezembro de 2024. Isso valida que estas eram as ordens relacionadas às cortesias do mês em questão. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 15:40:02,559 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-26 15:40:05,103 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-26 15:40:11,691 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-26 15:42:12,022 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 15:42:12,022 INFO: queries extraídas: ["SELECT SUM(nf.valor_liquido) AS total_cortesias\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias c ON co.cortesia_id = c.id\nJOIN os ON co.os_id = os.id\nWHERE nf.tipo_nota = 'C'\nAND nf.cancelada = 0\nAND c.ativo = 1\nAND DATE_FORMAT(nf.data_emissao, '%Y-%m') = '2025-01'\nAND DATE_FORMAT(os.created_at, '%Y-%m') = '2024-12';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 15:42:12,022 INFO: do texto: Certo, a pergunta "quero o total de cortesias emitidas em janeiro de 2025" leva-me a entender que precisamos obter o total das notas fiscais que foram emitidas como cortesias no mês de janeiro de 2025. Importante lembrar que, conforme o schema, as notas fiscais de cortesias emitidas em um determinado mês fazem referência às ordens de serviços ('os') do mês anterior. 
 
-- O relatório gerado mostra o nome do serviço e da concessionária, a quantidade de serviços vendidos, o total vendido, e o total efetivamente recebido.
-- O `ORDER BY` é usado para priorizar serviços e concessionárias com maior quantidade vendida e valor total, proporcionando um parecer rápido de desempenho. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
-2025-02-23 21:57:06,851 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:57:06,851 INFO: queries extraídas: ['WITH ultimo_trimestre AS (\n    SELECT DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AS inicio, CURDATE() AS fim\n),\nvendas AS (\n    SELECT \n        o.id AS os_id,\n        o.concessionaria_id,\n        os.concessionaria_id AS concessionaria_exec_id,\n        s.id AS servico_id,\n        osv.valor_venda,\n        SUM(caix.valor) AS valor_recebido,\n        c.nome AS concessionaria_nome,\n        s.nome AS servico_nome\n    FROM os o\n    JOIN os_servicos osv ON o.id = osv.os_id\n    JOIN servicos s ON osv.servico_id = s.id\n    JOIN concessionarias c ON o.concessionaria_id = c.id\n    LEFT JOIN caixas caix ON caix.os_id = o.id AND caix.cancelado = 0\n    WHERE o.paga = 1 \n    AND o.created_at BETWEEN (SELECT inicio FROM ultimo_trimestre) AND (SELECT fim FROM ultimo_trimestre)\n    GROUP BY o.id, osv.servico_id\n)\nSELECT \n    v.servico_nome,\n    v.concessionaria_nome,\n    COUNT(DISTINCT v.os_id) AS quantidade_vendida,\n    SUM(v.valor_venda) AS total_vendido,\n    SUM(v.valor_recebido) AS total_recebido,\n    SUM(v.valor_venda) - SUM(v.valor_recebido) AS diferenca\nFROM vendas v\nGROUP BY v.servico_id, v.concessionaria_id\nORDER BY quantidade_vendida DESC, total_vendido DESC;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
-2025-02-23 21:57:06,852 INFO: do texto: ### Entendimento Inicial
-A pergunta solicita um relatório das vendas do último trimestre. O foco é em identificar quais serviços foram mais vendidos, quais concessionárias tiveram mais vendas, o total vendido por cada concessionária e um comparativo entre o que foi vendido e o que foi recebido.
+Portanto, precisamos olhar para as 'os' criadas em dezembro de 2024 e verificar as notas fiscais de cortesias emitidas em janeiro de 2025. As notas fiscais de cortesias são aquelas que têm o campo 'cortesia_id' não nulo e a coluna 'cancelada' deve ser zero. Além disso, as cortesias devem ser ativas.
 
-### Análise e Solução
-1. **Período do Último Trimestre**: Considerarei o último trimestre completo com base na data atual. Por exemplo, se estivessem no início de outubro, o último trimestre seria julho a setembro.
-2. **Serviços Mais Vendidos**: Quantidade de cada serviço vendido durante o trimestre.
-3. **Concessionárias Com Mais Vendas**: Quantidade de vendas por concessionária.
-4. **Total Vendido por Concessionária**: Valor total das vendas por concessionária.
-5. **Comparativo Vendido e Recebido**: Valor das vendas comparado ao valor efetivamente recebido.
+Esse total pode ser o número de notas fiscais ou o valor total das cortesias, então vou considerar a soma dos valores líquidos. A query necessitará fazer uma combinação entre as tabelas 'notas_fiscais', 'cortesias', 'cortesia_os' e 'os' para garantir que temos os registros corretos.
 
-### Geração da Query
-
-Para gerar essa query, vamos considerar várias tabelas:
-- **os**: para ter ordens de serviço, filtrar vendas pagas e cortesia.
-- **os_servicos**: para detalhes dos serviços associados a cada OS.
-- **servicos**: para nomes ou informações dos serviços.
-- **concessionarias**: para filtrar vendas associadas a cada concessionária.
-- **caixas**: para verificar o recebimento de valores.
+Eis a query que pode representar isso:
 
 ```sql
-WITH ultimo_trimestre AS (
-    SELECT DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AS inicio, CURDATE() AS fim
-),
-vendas AS (
-    SELECT 
-        o.id AS os_id,
-        o.concessionaria_id,
-        os.concessionaria_id AS concessionaria_exec_id,
-        s.id AS servico_id,
-        osv.valor_venda,
-        SUM(caix.valor) AS valor_recebido,
-        c.nome AS concessionaria_nome,
-        s.nome AS servico_nome
-    FROM os o
-    JOIN os_servicos osv ON o.id = osv.os_id
-    JOIN servicos s ON osv.servico_id = s.id
-    JOIN concessionarias c ON o.concessionaria_id = c.id
-    LEFT JOIN caixas caix ON caix.os_id = o.id AND caix.cancelado = 0
-    WHERE o.paga = 1 
-    AND o.created_at BETWEEN (SELECT inicio FROM ultimo_trimestre) AND (SELECT fim FROM ultimo_trimestre)
-    GROUP BY o.id, osv.servico_id
-)
-SELECT 
-    v.servico_nome,
-    v.concessionaria_nome,
-    COUNT(DISTINCT v.os_id) AS quantidade_vendida,
-    SUM(v.valor_venda) AS total_vendido,
-    SUM(v.valor_recebido) AS total_recebido,
-    SUM(v.valor_venda) - SUM(v.valor_recebido) AS diferenca
-FROM vendas v
-GROUP BY v.servico_id, v.concessionaria_id
-ORDER BY quantidade_vendida DESC, total_vendido DESC;
+SELECT SUM(nf.valor_liquido) AS total_cortesias
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias c ON co.cortesia_id = c.id
+JOIN os ON co.os_id = os.id
+WHERE nf.tipo_nota = 'C'
+AND nf.cancelada = 0
+AND c.ativo = 1
+AND DATE_FORMAT(nf.data_emissao, '%Y-%m') = '2025-01'
+AND DATE_FORMAT(os.created_at, '%Y-%m') = '2024-12';
 ```
 
-### Detalhes Importantes
-- Utilizei `os` para garantir que a OS é paga e ativa durante o último trimestre.
-- `caixas` é utilizada para somar o valor recebido efetivamente.
-- Agrupei por serviço e concessionária para identificar vendas e comparativos.
-- A query considera as vendas pagas durante o período. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
-2025-02-23 21:57:06,915 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'os.concessionaria_id' in 'field list' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
-2025-02-23 21:58:27,028 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:58:27,028 INFO: queries extraídas: ["SELECT\n    s.nome AS servico_nome,\n    c.nome AS concessionaria_nome,\n    COUNT(osv.servico_id) AS quantidade_vendida,\n    SUM(osv.valor_venda_real) AS valor_total_vendido,\n    SUM(IF(os.paga = 1, osv.valor_venda_real, 0)) AS valor_total_recebido\nFROM os\nJOIN os_servicos osv ON os.id = osv.os_id\nJOIN servicos s ON osv.servico_id = s.id\nJOIN concessionarias c ON os.concessionaria_id = c.id\nWHERE os.data_pagamento BETWEEN '2023-07-01' AND '2023-09-30'\nGROUP BY servico_nome, concessionaria_nome\nORDER BY quantidade_vendida DESC, valor_total_vendido DESC;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
-2025-02-23 21:58:27,028 INFO: do texto: Para atender a sua solicitação, precisamos gerar um relatório detalhado de vendas referente ao último trimestre. Esse relatório deve incluir os serviços mais vendidos, destacar quais concessionárias tiveram maior volume de vendas, além de mostrar o total vendido por concessionária. Além disso, devemos incluir um comparativo entre o valor vendido e o valor efetivamente recebido.
+Aqui, estamos: 
+1. Verificando que as notas fiscais são do tipo cortesia e não foram canceladas.
+2. Certificando que a cortesia está ativa.
+3. Conferindo que a data de emissão das notas fiscais é de janeiro de 2025.
+4. As 'os' relacionadas a essas cortesias foram criadas em dezembro de 2024.
 
-### Entendimento Inicial
-1. **Contexto**: Análise das vendas do último trimestre.
-2. **Propósito**: Identificar serviços mais vendidos, concessionárias com maior volume de vendas e comparar valores vendidos e recebidos.
+Esses filtros garantem que obtemos o total de cortesias emitidas em janeiro de 2025, referindo-se ao mês de atuação das ordens de serviço em dezembro de 2024. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 15:43:27,563 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 15:43:27,563 INFO: queries extraídas: ["SELECT COUNT(DISTINCT nf.id) AS total_cortesias_emitidas\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os o ON co.os_id = o.id\nWHERE o.created_at BETWEEN '2024-12-01' AND '2024-12-31'\n  AND nf.cancelada = 0\n  AND c.cancelada = 0\n  AND c.ativo = 1;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 15:43:27,563 INFO: do texto: A pergunta está solicitando o total de cortesias emitidas em janeiro de 2025. É importante entender que a questão se refere à emissão de notas fiscais de cortesias, e, conforme as regras definidas, as notas fiscais de cortesias emitidas em um mês geralmente estão relacionadas às ordens de serviço (OS) do mês anterior.
 
-### Análise e Solução
-1. **Período**: Consideraremos o último trimestre para análise. Supondo que hoje seja outubro de 2023, o último trimestre compreende julho, agosto e setembro de 2023.
-2. **Partes Principais**:
-   - Serviços mais vendidos.
-   - Concessionárias que mais venderam.
-   - Total vendido por concessionária.
-   - Comparativo entre valor vendido e valor recebido.
+Para obter as informações corretas, precisamos olhar para as ordens de serviço associadas a cortesias no mês de janeiro de 2025. A tabela `cortesia_os` faz a ligação entre as OS e cortesias. A tabela `cortesias` deverá ser consultada para garantir que a cortesia não está cancelada. Logo, a data correta que precisamos considerar é dezembro de 2024, já que as notas fiscais emitidas em janeiro de 2025 são referentes a essas OS do mês anterior.
 
-### Geração da Query
-Veja a query SQL que atenderei à solicitação com base no schema das tabelas:
+Com isso em mente, vamos formular a SQL adequada para obter o total de cortesias emitidas no mês de janeiro de 2025.
 
 ```sql
-SELECT
-    s.nome AS servico_nome,
-    c.nome AS concessionaria_nome,
-    COUNT(osv.servico_id) AS quantidade_vendida,
-    SUM(osv.valor_venda_real) AS valor_total_vendido,
-    SUM(IF(os.paga = 1, osv.valor_venda_real, 0)) AS valor_total_recebido
-FROM os
-JOIN os_servicos osv ON os.id = osv.os_id
-JOIN servicos s ON osv.servico_id = s.id
-JOIN concessionarias c ON os.concessionaria_id = c.id
-WHERE os.data_pagamento BETWEEN '2023-07-01' AND '2023-09-30'
-GROUP BY servico_nome, concessionaria_nome
-ORDER BY quantidade_vendida DESC, valor_total_vendido DESC;
+SELECT COUNT(DISTINCT nf.id) AS total_cortesias_emitidas
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os o ON co.os_id = o.id
+WHERE o.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+  AND nf.cancelada = 0
+  AND c.cancelada = 0
+  AND c.ativo = 1;
 ```
 
-### Estrutura da Query
-- **`SELECT`**: Selecionamos o nome do serviço, o nome da concessionária, a quantidade de serviços vendidos, o valor total vendido e o total recebido para o período.
-- **`WHERE`**: Filtramos pelo período do último trimestre (julho a setembro de 2023).
-- **`GROUP BY`**: Agrupamos os resultados por serviço e concessionária para obter as vendas e receitas por cada combinação.
-- **`ORDER BY`**: Ordenamos primeiro pela quantidade vendida e depois pelo valor total vendido de forma decrescente.
+Essa consulta irá contar o total de notas fiscais relacionadas a cortesias que foram emitidas em janeiro de 2025, mas que se referem às OS criadas em dezembro de 2024. Utilizei `DISTINCT` para garantir que não haja duplicações na contagem das notas fiscais. As condições de cancelamento e atividade são aplicadas para obter resultados precisos. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 15:45:20,100 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 15:45:20,100 INFO: queries extraídas: ["SELECT SUM(nf.valor_liquido) AS valor_total_cortesias\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.cortesia_id IS NOT NULL\nAND nf.cancelada = 0\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 15:45:20,100 INFO: do texto: Quando consideramos a pergunta sobre o valor total de cortesias emitidas em janeiro de 2025, precisamos lembrar que as notas fiscais de cortesias emitidas refletem as ordens de serviço do mês anterior. Assim, teremos que buscar as ordens de serviço (os) referentes a dezembro de 2024, que possuam uma relação com as notas fiscais (notas_fiscais) do mês de janeiro de 2025. Essa relação é estabelecida através da tabela de cortesias (cortesias) que está associada à tabela de notas fiscais e a tabela cortesia_os, que nos ajuda a identificar as ordens de serviço relacionadas às cortesias.
 
-Esta consulta irá fornecer uma visão clara dos serviços mais vendidos, além de destacar o desempenho de cada concessionária nesse período específico, incluindo uma análise do montante efetivo recebido comparado ao vendido. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
-2025-02-23 21:58:47,426 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 21:58:47,427 INFO: queries extraídas: ['SELECT \n    s.nome AS servico_nome,\n    c.nome AS concessionaria_nome,\n    COUNT(osv.servico_id) AS quantidade_vendida,\n    SUM(osv.valor_venda) AS total_vendido,\n    SUM(CASE WHEN o.paga = 1 THEN osv.valor_venda ELSE 0 END) AS valor_recebido\nFROM os o\nJOIN os_servicos osv ON o.id = osv.os_id\nJOIN servicos s ON osv.servico_id = s.id\nJOIN concessionarias c ON o.concessionaria_id = c.id\nWHERE o.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 MONTH) AND NOW()\nGROUP BY servico_nome, concessionaria_nome\nORDER BY quantidade_vendida DESC, total_vendido DESC;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
-2025-02-23 21:58:47,427 INFO: do texto: ### Entendimento Inicial
-Você gostaria de obter um relatório de vendas do último trimestre, incluindo as seguintes informações:
-1. Serviços mais vendidos.
-2. Concessionárias que mais venderam.
-3. O total vendido por cada concessionária.
-4. Um comparativo entre o valor vendido e o valor efetivamente recebido por cada concessionária.
+Precisamos juntar as tabelas de modo a:
+1. Isole as notas fiscais que foram emitidas em janeiro de 2025.
+2. Certifique-se de que elas não foram canceladas e estão ativas.
+3. Use filtros para trazer cortesias que estejam relacionadas a estas notas fiscais.
 
-### Análise e Solução
-Para resolver a questão, precisamos realizar as seguintes etapas:
-1. Utilizar as tabelas `os`, `os_servicos`, `servicos` e `concessionarias` para identificar os serviços e as concessionárias.
-2. Agrupar as vendas por serviço e concessionária.
-3. Comparar o valor total de vendas com o valor efetivamente recebido, utilizando as colunas relevantes such as `valor_venda` e informações de pagamento (coluna `paga` na tabela `os`).
-4. Considerar apenas as vendas do último trimestre.
+Parece importante observar que cortesia_id das notas fiscais não deve ser nulo e que a cortesia (tabela cortesias) ligada a um os (tabela os) precisa não ter `deleted_at`. 
 
-### Geração da Query
-Vou gerar uma query que captura todas essas informações e exibe um relatório agrupado pelos critérios mencionados.
+Dessa forma, podemos montar uma query que traga o valor total, somando o valor liquido das notas fiscais que correspondem a esse critério:
 
 ```sql
-SELECT 
-    s.nome AS servico_nome,
-    c.nome AS concessionaria_nome,
-    COUNT(osv.servico_id) AS quantidade_vendida,
-    SUM(osv.valor_venda) AS total_vendido,
-    SUM(CASE WHEN o.paga = 1 THEN osv.valor_venda ELSE 0 END) AS valor_recebido
-FROM os o
-JOIN os_servicos osv ON o.id = osv.os_id
-JOIN servicos s ON osv.servico_id = s.id
-JOIN concessionarias c ON o.concessionaria_id = c.id
-WHERE o.created_at BETWEEN DATE_SUB(NOW(), INTERVAL 3 MONTH) AND NOW()
-GROUP BY servico_nome, concessionaria_nome
-ORDER BY quantidade_vendida DESC, total_vendido DESC;
+SELECT SUM(nf.valor_liquido) AS valor_total_cortesias
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.cortesia_id IS NOT NULL
+AND nf.cancelada = 0
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND co.deleted_at IS NULL;
 ```
 
-### Explicação da Query
-- **JOINs**: As tabelas `os`, `os_servicos`, `servicos`, e `concessionarias` são unidas para obter as informações de vendas por serviço e concessionária.
-- **WHERE**: Restringimos os resultados para o último trimestre com base na coluna `created_at` da tabela `os`.
-- **GROUP BY**: Agrupa os resultados pelo nome do serviço e da concessionária.
-- **SELECT e Aggregações**: Calcula a quantidade vendida, o total vendido e o valor efetivamente recebido.
-- **ORDER BY**: Ordena os resultados pela quantidade de serviços vendidos em ordem decrescente e, em seguida, pelo total vendido. 
+Com esta consulta, conseguimos calcular o valor total das cortesias emitidas em janeiro de 2025. As condições adicionais garantem a integridade dos dados, confirmando que as informações canceladas ou inativas não são consideradas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 15:47:58,515 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 15:47:58,516 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_cortesias\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON co.cortesia_id = c.id\nJOIN os ON os.id = co.os_id\nWHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n  AND c.ativo = 1\n  AND c.cancelada = 0\n  AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 15:47:58,516 INFO: do texto: A questão é sobre o valor total das cortesias emitidas em janeiro de 2025. As cortesias são uma forma de concessão ou "brinde" oferecido. Na base de dados em questão, as "cortesias" são registradas na tabela de 'cortesias', porém a emissão de notas fiscais é registrada na tabela de 'notas_fiscais'. 
 
-Este relatório fornecerá uma visão clara das vendas do último trimestre, destacando os serviços e concessionárias mais vendidas, bem como um comparativo entre vendas e recebimento. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
-2025-02-23 22:02:54,800 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
-2025-02-23 22:02:54,801 INFO: queries extraídas: ['WITH ultimo_trimestre AS (\n    SELECT DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AS inicio, CURDATE() AS fim\n),\nvendas AS (\n    SELECT \n        os.id AS os_id,\n        os.concessionaria_id,\n        os.concessionaria_id AS concessionaria_exec_id,\n        s.id AS servico_id,\n        osv.valor_venda,\n        IFNULL(SUM(caix.valor), 0) AS valor_recebido,\n        c.nome AS concessionaria_nome,\n        s.nome AS servico_nome\n    FROM os\n    JOIN os_servicos osv ON os.id = osv.os_id\n    JOIN servicos s ON osv.servico_id = s.id\n    JOIN concessionarias c ON os.concessionaria_id = c.id\n    LEFT JOIN caixas caix ON caix.os_id = os.id AND caix.cancelado = 0\n    WHERE os.paga = 1 \n    AND os.created_at BETWEEN (SELECT inicio FROM ultimo_trimestre) AND (SELECT fim FROM ultimo_trimestre)\n    GROUP BY os.id, osv.servico_id\n)\nSELECT \n    v.servico_nome,\n    v.concessionaria_nome,\n    COUNT(DISTINCT v.os_id) AS quantidade_vendida,\n    SUM(v.valor_venda) AS total_vendido,\n    SUM(v.valor_recebido) AS total_recebido,\n    SUM(v.valor_venda) - SUM(v.valor_recebido) AS diferenca\nFROM vendas v\nGROUP BY v.servico_id, v.concessionaria_id\nORDER BY quantidade_vendida DESC, total_vendido DESC;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
-2025-02-23 22:02:54,801 INFO: do texto: Para atender à solicitação, precisamos elaborar um relatório que inclua informações sobre os serviços mais vendidos, as concessionárias que mais venderam, o total de vendas por concessionária e uma comparação entre o total vendido e o valor efetivamente recebido. O foco é no último trimestre.
+Portanto, precisamos buscar o valor bruto das notas fiscais de cortesias emitidas em janeiro de 2025. Aqui, o fator crítico é que essas notas fiscais de cortesias referem-se às ordens de serviço do mês anterior.
 
-1. **Entendimento Inicial**:
-   - A pergunta solicita um relatório de vendas do último trimestre, com detalhes sobre serviços e concessionárias.
-   - Precisamos calcular o total vendido e o total recebido por concessionária, além de identificar quais serviços foram mais vendidos.
-   
-2. **Análise e Solução**:
-   - Precisamos buscar informações de ordens de serviço (tabela `os`) e seus serviços (tabela `os_servicos`).
-   - As concessionárias estão relacionadas através da tabela `os` e podemos obter seus nomes na tabela `concessionarias`.
-   - O valor de venda está em `os_servicos.valor_venda` e o valor recebido é coletado da tabela `caixas` associado à tabela `os`.
-   - Filtraremos os dados do último trimestre.
+Primeiro, identificamos que as notas fiscais de cortesias são associadas por meio da coluna 'cortesia_id' na tabela de 'notas_fiscais'. Além disso, a tabela 'cortesia_os' faz a ligação entre 'os' e 'cortesias', garantindo que as ordens de serviço de dezembro de 2024 sejam corretamente associadas às cortesias.
 
-3. **Geração da Query**:
+Precisamos focar na data de emissão da nota fiscal para janeiro de 2025 e garantir que a cortesia associada seja ativa e não cancelada. Isso requer usar relações entre tabelas para definir essas condições.
+
+Vamos construir a query considerando todas essas definições:
 
 ```sql
-WITH ultimo_trimestre AS (
-    SELECT DATE_SUB(CURDATE(), INTERVAL 3 MONTH) AS inicio, CURDATE() AS fim
-),
-vendas AS (
-    SELECT 
-        os.id AS os_id,
-        os.concessionaria_id,
-        os.concessionaria_id AS concessionaria_exec_id,
-        s.id AS servico_id,
-        osv.valor_venda,
-        IFNULL(SUM(caix.valor), 0) AS valor_recebido,
-        c.nome AS concessionaria_nome,
-        s.nome AS servico_nome
-    FROM os
-    JOIN os_servicos osv ON os.id = osv.os_id
-    JOIN servicos s ON osv.servico_id = s.id
-    JOIN concessionarias c ON os.concessionaria_id = c.id
-    LEFT JOIN caixas caix ON caix.os_id = os.id AND caix.cancelado = 0
-    WHERE os.paga = 1 
-    AND os.created_at BETWEEN (SELECT inicio FROM ultimo_trimestre) AND (SELECT fim FROM ultimo_trimestre)
-    GROUP BY os.id, osv.servico_id
-)
-SELECT 
-    v.servico_nome,
-    v.concessionaria_nome,
-    COUNT(DISTINCT v.os_id) AS quantidade_vendida,
-    SUM(v.valor_venda) AS total_vendido,
-    SUM(v.valor_recebido) AS total_recebido,
-    SUM(v.valor_venda) - SUM(v.valor_recebido) AS diferenca
-FROM vendas v
-GROUP BY v.servico_id, v.concessionaria_id
-ORDER BY quantidade_vendida DESC, total_vendido DESC;
+SELECT SUM(nf.valor_bruto) AS total_valor_cortesias
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON co.cortesia_id = c.id
+JOIN os ON os.id = co.os_id
+WHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+  AND c.ativo = 1
+  AND c.cancelada = 0
+  AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
 ```
 
-Essa consulta gera um relatório do último trimestre com as seguintes informações:
-- Nome do serviço.
-- Nome da concessionária.
-- Quantidade de ordens de serviço (OS) vendidas.
-- Total vendido.
-- Total recebido.
-- Diferença entre o total vendido e o total recebido.
+Essa consulta soma o valor bruto das notas fiscais de cortesias emitidas durante janeiro de 2025, enquanto verifica as ordens de serviço do mês de dezembro de 2024. A lógica é garantir que as cortesias estejam ativas e não canceladas, e que compreendam ordens do mês anterior à emissão da nota. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 16:38:27,387 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 16:38:27,387 INFO: queries extraídas: ["SELECT SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias cor ON cor.id = co.cortesia_id\nJOIN concessionarias con ON cor.concessionaria_id = con.id\nJOIN os ON co.os_id = os.id\nWHERE nf.cortesia_id IS NOT NULL \nAND nf.cancelada = 0 \nAND cor.ativo \nAND cor.cancelada = 0 \nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31' \nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31' \nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 16:38:27,388 INFO: do texto: Ao considerar a pergunta "quero o VALOR total de cortesias emitidas em janeiro de 2025", é importante entender que estamos interessados em obter o valor total das notas fiscais associadas a cortesias e que foram emitidas em janeiro de 2025. Para isso, devemos garantir que:
 
-Dessa forma, conseguimos extrair um panorama dos serviços mais vendidos, com base nas concessionárias, além do comparativo entre valores vendidos e recebidos por concessionária. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+1. As notas fiscais sejam realmente de cortesias, o que é indicado pela presença de um `cortesia_id` na tabela `notas_fiscais`.
+2. As notas fiscais não tenham sido canceladas, então `cancelada` deve ser igual a zero.
+3. A data de emissão das notas fiscais deve estar entre 1º de janeiro de 2025 e 31 de janeiro de 2025.
+4. A relação entre as notas fiscais e as ordens de serviço (`os`) deve ser considerada, para que só sejam consideradas as `os` do mês de dezembro de 2024, já que as cortesias emitidas em janeiro de 2025 referem-se a `os` feitas no mês anterior.
+5. Cortesias devem estar ativas e não canceladas na tabela `cortesias`.
+
+Com base nisso, a consulta precisa lidar com a potencial duplicidade ao agregar valores, ou seja, precisamos garantir que cada cortesia seja contada apenas uma vez.
+
+Vamos montar a consulta SQL para obter esses dados:
+
+```sql
+SELECT SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias cor ON cor.id = co.cortesia_id
+JOIN concessionarias con ON cor.concessionaria_id = con.id
+JOIN os ON co.os_id = os.id
+WHERE nf.cortesia_id IS NOT NULL 
+AND nf.cancelada = 0 
+AND cor.ativo 
+AND cor.cancelada = 0 
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31' 
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31' 
+AND co.deleted_at IS NULL;
+```
+
+Na consulta acima:
+- Utilizamos `SUM(DISTINCT nf.valor_bruto)` para evitar duplicação de valores ao sumarizar o total de cortesias.
+- Filtramos as notas fiscais que pertencem a cortesias não canceladas e emitidas durante janeiro de 2025.
+- Consideramos apenas as ordens de serviço do mês anterior, em dezembro de 2024, associadas às cortesias.
+- Incluímos o filtro para garantir que a cortesia esteja ativa e não cancelada. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 16:39:09,781 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-26 16:39:09,782 INFO: queries extraídas: ["SELECT SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias cor ON cor.id = co.cortesia_id\nJOIN concessionarias con ON cor.concessionaria_id = con.id\nJOIN os ON co.os_id = os.id\nWHERE nf.cortesia_id IS NOT NULL \nAND nf.cancelada = 0 \nAND cor.ativo = 1 \nAND cor.cancelada = 0 \nAND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31' \nAND os.created_at BETWEEN '2024-11-01' AND '2024-11-30' \nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-26 16:39:09,782 INFO: do texto: Para entender a questão adequadamente, vou reformular a pergunta para ter certeza de que estamos na mesma página: você deseja saber o valor total das cortesias emitidas em dezembro de 2024. Aqui, "cortesias" refere-se às notas fiscais associadas a cortesias. Lembrando que as notas fiscais de cortesias se referem às OS's do mês anterior, portanto, precisamos considerar as OS's de novembro de 2024.
+
+Agora, vou criar a consulta SQL. Precisamos garantir que as notas fiscais não foram canceladas e que o campo `cortesia_id` não é nulo, além de considerar apenas cortesias ativas e não canceladas.
+
+Aqui está a consulta:
+
+```sql
+SELECT SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias cor ON cor.id = co.cortesia_id
+JOIN concessionarias con ON cor.concessionaria_id = con.id
+JOIN os ON co.os_id = os.id
+WHERE nf.cortesia_id IS NOT NULL 
+AND nf.cancelada = 0 
+AND cor.ativo = 1 
+AND cor.cancelada = 0 
+AND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31' 
+AND os.created_at BETWEEN '2024-11-01' AND '2024-11-30' 
+AND co.deleted_at IS NULL;
+```
+
+Certifique-se de que todos os registros considerados não foram cancelados ou deletados e que as entidades estão ativas. Isso deve fornecer o valor total das cortesias em dezembro de 2024, referentes às OS's de novembro de 2024. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-26 16:40:05,027 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-26 16:40:56,026 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]

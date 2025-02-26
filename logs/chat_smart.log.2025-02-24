@@ -1,0 +1,1507 @@
+2025-02-24 11:49:15,671 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 11:49:16,286 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 11:51:28,353 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 11:51:28,353 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_liquido) AS total_valor_recebido\nFROM notas_fiscais nf\nJOIN os ON nf.os_id = os.id\nJOIN concessionarias c ON os.concessionaria_id = c.id\nWHERE nf.data_emissao BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND CURDATE()\nAND nf.cancelada = 0\nAND nf.tipo_nota = 'P';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 11:51:28,353 INFO: do texto: Para responder à pergunta, precisamos identificar o que está sendo solicitado:
+
+1. **Compreensão da Pergunta**:
+   - A questão solicita o valor recebido de notas fiscais relacionadas às concessionárias no último mês.
+
+2. **Análise e Solução**:
+   - Precisamos buscar dados referentes às notas fiscais emitidas no último mês e que estão vinculadas a concessionárias.
+   - A tabela relevante para isso é a `notas_fiscais`, onde podemos verificar as notas fiscais emitidas.
+   - Precisamos agregar o valor das notas fiscais emitidas, considerando que elas não estejam canceladas.
+
+3. **Query SQL**:
+   - Emita uma query que some o valor das notas fiscais que foram emitidas no mês anterior e que estão relacionadas às concessionárias.
+   - Devemos considerar que o término do mês passado é o limite superior do intervalo de datas.
+
+```sql
+SELECT 
+    SUM(nf.valor_liquido) AS total_valor_recebido
+FROM notas_fiscais nf
+JOIN os ON nf.os_id = os.id
+JOIN concessionarias c ON os.concessionaria_id = c.id
+WHERE nf.data_emissao BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND CURDATE()
+AND nf.cancelada = 0
+AND nf.tipo_nota = 'P';
+```
+
+Esta query soma o valor líquido das notas fiscais não canceladas emitidas no mês passado associadas a ordens de serviço vinculadas a concessionárias. O intervalo de data utiliza funções de data do MySQL para determinar o último mês. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 11:52:46,481 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 11:52:46,481 INFO: queries extraídas: ["SELECT SUM(nf.valor_liquido) AS valor_total_cortesia_janeiro_2025\nFROM notas_fiscais nf\nJOIN os ON os.id = nf.os_id\nJOIN os_tipos ost ON os.os_tipo_id = ost.id\nWHERE ost.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 11:52:46,481 INFO: do texto: Para responder a essa pergunta, precisamos entender que estamos procurando pelas notas fiscais relacionadas às cortesias emitidas no mês de janeiro de 2025. Precisaremos consultar a tabela de `notas_fiscais` e filtrar as notas que são de cortesia, o que na sua descrição aponta para os `os_tipos` de 'Cortesia Concessionária' e 'Cortesia Funcionário'. Além disso, vamos filtrar pelo mês de emissão específico, janeiro de 2025.
+
+Com base no schema das tabelas, formamos a query SQL da seguinte maneira:
+
+1. A tabela `notas_fiscais` possui a coluna `os_id` que podemos usar para referenciar a tabela `os` para determinar se ela é uma cortesia.
+2. A coluna `data_emissao` na tabela `notas_fiscais` nos permitirá filtrar pelas notas emitidas em janeiro de 2025.
+3. Precisamos somar o valor líquido das notas fiscais de cortesia.
+
+Vamos à construção da query:
+
+```sql
+SELECT SUM(nf.valor_liquido) AS valor_total_cortesia_janeiro_2025
+FROM notas_fiscais nf
+JOIN os ON os.id = nf.os_id
+JOIN os_tipos ost ON os.os_tipo_id = ost.id
+WHERE ost.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND nf.cancelada = 0;
+```
+
+Essa consulta soma o valor líquido (`valor_liquido`) das notas fiscais que correspondem a cortesias, emitidas em janeiro de 2025 e que não foram canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 11:55:15,123 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 11:55:15,123 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_notas_fiscais_cortesia_janeiro\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nWHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n  AND nf.cancelada IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 11:55:15,123 INFO: do texto: Para responder a esta pergunta, precisamos entender que queremos saber o valor total das notas fiscais emitidas especificamente para cortesias no mês de janeiro de 2025. Para isso, utilizaremos as tabelas `notas_fiscais` e `cortesias`. Precisamos procurar notas fiscais relacionadas a cortesias no período especificado, isto é, janeiro de 2025.
+
+Vamos estruturar a consulta da seguinte forma:
+
+1. Filtrar as notas fiscais que se referem a cortesias, o que significa que têm uma associação válida na coluna `cortesia_id` da tabela `notas_fiscais`.
+2. Considerar o intervalo de datas correspondente a janeiro de 2025.
+3. Somar o valor das notas fiscais dentro desse intervalo de tempo.
+
+A consulta SQL será:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_notas_fiscais_cortesia_janeiro
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+WHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+  AND nf.cancelada IS NULL;
+```
+
+Explicação da Query:
+- **`SUM(nf.valor_bruto)`**: Calcula o valor total bruto das notas fiscais.
+- **`nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'`**: Filtra as notas fiscais emitidas dentro do mês de janeiro de 2025.
+- **`JOIN cortesias c ON nf.cortesia_id = c.id`**: Garante que estamos selecionando apenas notas fiscais que estão associadas a cortesias.
+- **`AND nf.cancelada IS NULL`**: Considera apenas notas que não foram canceladas, garantindo que o valor considerado seja de notas válidas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:07:55,988 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:07:55,988 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM \n    notas_fiscais nf\nJOIN \n    os ON nf.os_id = os.id\nJOIN \n    os_tipos ot ON os.os_tipo_id = ot.id\nWHERE \n    nf.tipo_nota = 'S' -- considerando que 'S' refere-se a NFSE\n    AND ot.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND nf.cancelada = 0\n    AND nf.devolvida = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:07:55,988 INFO: do texto: Para responder a sua pergunta, precisamos identificar todas as notas fiscais de cortesia emitidas no mês de janeiro de 2025 e calcular o valor total dessas notas. Com base no schema disponível, devemos considerar as tabelas `notas_fiscais` e `os` relacionadas a `cortesias`.
+
+Aqui está a decomposição do que precisamos fazer:
+
+1. **Filtrar por Notas Fiscais de Cortesia**:
+   - Procurar notas fiscais onde o `os_tipo` é referente a 'Cortesia Concessionária' ou 'Cortesia Funcionário'.
+   
+2. **Filtrar por Data de Emissão**:
+   - Selecionar apenas as notas fiscais emitidas em janeiro de 2025 (`data_emissao`).
+
+3. **Calcular o Valor Total**:
+   - Somar o valor bruto das notas fiscais dentro desses critérios.
+
+Agora, vamos construir a query SQL para atender a esses requisitos:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM 
+    notas_fiscais nf
+JOIN 
+    os ON nf.os_id = os.id
+JOIN 
+    os_tipos ot ON os.os_tipo_id = ot.id
+WHERE 
+    nf.tipo_nota = 'S' -- considerando que 'S' refere-se a NFSE
+    AND ot.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND nf.cancelada = 0
+    AND nf.devolvida = 0;
+```
+
+Essa consulta irá fornecer o valor total das notas fiscais de cortesia emitidas para o mês especificado, filtrando corretamente pelas condições fornecidas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:08:53,486 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:08:53,486 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nWHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n  AND nf.cancelada = 0\n  AND nf.devolvida = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:08:53,486 INFO: do texto: ### Entendimento Inicial
+
+A pergunta quer saber o valor total emitido em notas fiscais de cortesia no mês de janeiro de 2025. Vamos considerar as notas fiscais associadas a cortesias e analisar seus valores no período especificado.
+
+### Análise e Solução
+
+1. **Identificação das Tabelas Relevantes:**
+   - `notas_fiscais`: Contém informações sobre as notas fiscais emitidas.
+   - `cortesias`: Relaciona-se a notas fiscais de cortesia por meio do campo `cortesia_id` em `notas_fiscais`.
+
+2. **Condições Relevantes:**
+   - Apenas notas fiscais de cortesia (vinculação através da coluna `cortesia_id`).
+   - Filtro de período: Mes de janeiro de 2025 (`data_emissao`).
+
+3. **Agrupamento de Dados:**
+   - Não há necessidade de agrupamento complexo. Apenas somar os valores brutos das notas fiscais dentro do período.
+
+### Geração da Query
+
+Baseando-se na análise, a query SQL será montada para somar os valores de notas fiscais de cortesia emitidas em janeiro de 2025.
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+WHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+  AND nf.cancelada = 0
+  AND nf.devolvida = 0;
+```
+
+### Estrutura da Resposta
+Esta consulta realiza a soma dos valores brutos das notas fiscais de cortesia emitidas no mês de janeiro de 2025, garantindo que apenas as notas fiscais não canceladas ou devolvidas sejam consideradas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:22:40,212 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:22:40,212 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais nf\nJOIN os ON nf.os_id = os.id\nJOIN os_tipos ost ON os.os_tipo_id = ost.id\nWHERE ost.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:22:40,212 INFO: do texto: ### Entendimento Inicial
+A pergunta quer saber o valor total das notas fiscais de cortesia emitidas em janeiro de 2025. Notas fiscais de cortesia são identificadas por tipos específicos na tabela `notas_fiscais` relacionados a `cortesia_concessionaria` ou `cortesia_funcionario`.
+
+### Análise e Solução
+1. Precisamos filtrar as notas fiscais emitidas no mês de janeiro de 2025.
+2. Precisamos garantir que são notas fiscais de cortesia.
+3. Precisamos somar os valores brutos das notas fiscais.
+
+### Geração da Query
+Vou gerar uma query para obter o valor total das notas fiscais de cortesia emitidas em janeiro de 2025.
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais nf
+JOIN os ON nf.os_id = os.id
+JOIN os_tipos ost ON os.os_tipo_id = ost.id
+WHERE ost.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND nf.cancelada = 0;
+```
+
+### Explicação
+- **Filtro de Data:** A query seleciona notas fiscais emitidas entre 1º de janeiro e 31 de janeiro de 2025.
+- **Identificação de Cortesia:** Verifico que `os_tipo` relacionado é de 'Cortesia Concessionária' ou 'Cortesia Funcionário'.
+- **Cancelamento:** A nota fiscal não pode estar cancelada.
+- **Agregação:** Somo o campo `valor_bruto` para obter o total emitido. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:22:53,738 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:22:53,738 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais nf\nJOIN os o ON nf.os_id = o.id\nJOIN os_tipos ot ON o.os_tipo_id = ot.id\nWHERE ot.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')\nAND nf.tipo_nota = 'P'\nAND nf.cancelada = 0\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:22:53,738 INFO: do texto: Para responder a pergunta "qual o valor que emitimos de nota fiscal de cortesia no mes de janeiro de 2025", precisamos considerar:
+
+1. **Contexto e Propósito**: Queremos saber o valor total das notas fiscais emitidas referentes a cortesias no mês de janeiro de 2025. "Cortesia" refere-se a serviços que foram serviços da "Concessionária" ou "Funcionário", identificados no banco de dados nos tipos de OS relacionados.
+
+2. **Análise e Solução**:
+   - Precisamos considerar apenas notas fiscais que correspondem a ordens de serviço classificadas como cortesias.
+   - A tabela envolvida para as notas fiscais é `notas_fiscais`.
+   - Vamos focar no mês de janeiro de 2025.
+   - Precisamos somar o valor das notas fiscais.
+
+3. **Geração da Query**:
+   - Vamos filtrar por notas fiscais que são do tipo NFE (consideram o campo `tipo_nota` como 'P'), associadas a cortesias.
+   - Filtrar pelo mês de janeiro de 2025.
+   - Somar o valor bruto das notas fiscais (`valor_bruto`).
+
+Com  base nessas considerações, a query SQL seria:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais nf
+JOIN os o ON nf.os_id = o.id
+JOIN os_tipos ot ON o.os_tipo_id = ot.id
+WHERE ot.nome IN ('Cortesia Concessionária', 'Cortesia Funcionário')
+AND nf.tipo_nota = 'P'
+AND nf.cancelada = 0
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+Esta consulta soma o valor bruto das notas fiscais emitidas para cortesias no mês de janeiro de 2025, desde que estas notas não tenham sido canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:52:40,726 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:52:40,726 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS total_valor_cortesia\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nWHERE \n    nf.tipo_nota = 'S'  -- supondo que as notas de cortesia são do tipo 'S'\n    AND nf.cancelada = 0\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:52:40,726 INFO: do texto: Para responder a essa pergunta, precisamos determinar o valor total das notas fiscais emitidas no mês de janeiro de 2025 que estão associadas a cortesias. As notas fiscais de cortesia estão relacionadas com a tabela `notas_fiscais` e têm o tipo de nota relacionado a cortesias.
+
+Vamos utilizar as tabelas `notas_fiscais` e `cortesias` e verificar pela data de emissão. Também precisamos garantir que as notas fiscais não estão canceladas e estão ativas.
+
+Aqui está a query SQL que pode ser utilizada para obter essa informação:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS total_valor_cortesia
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+WHERE 
+    nf.tipo_nota = 'S'  -- supondo que as notas de cortesia são do tipo 'S'
+    AND nf.cancelada = 0
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+Isso faz um somatório do `valor_bruto` das notas fiscais de cortesia emitidas no mês de janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:55:29,731 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:55:29,731 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_cortesia\nFROM notas_fiscais nf\nWHERE nf.tipo_nota = 'S'\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:55:29,731 INFO: do texto: 1. **Entendimento Inicial**:
+   - A pergunta solicita o valor total das notas fiscais de cortesia emitidas no mês de janeiro de 2025.
+   - "Notas fiscais de cortesia" referem-se às notas fiscais com `tipo_nota = 'S'`, e estas estão associadas à tabela `notas_fiscais` vinculadas a 'cortesias'.
+
+2. **Análise e Solução**:
+   - Precisamos filtrar as notas fiscais pelo mês de emissão (janeiro de 2025) e pelo tipo de nota (cortesia).
+   - A query deve somar o valor das notas fiscais (coluna `valor_bruto`) que atendem a esses critérios.
+
+3. **Geração da Query**:
+   - Vamos construir uma consulta que filtra as notas fiscais pelo `tipo_nota = 'S'`, e pela data de emissão em janeiro de 2025.
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_cortesia
+FROM notas_fiscais nf
+WHERE nf.tipo_nota = 'S'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND nf.cancelada = 0;
+```
+
+- Esta query soma o valor bruto das notas fiscais de cortesia emitidas em janeiro de 2025 que não foram canceladas para fornecer o valor total requerido. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:55:42,889 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:55:42,889 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_cortesia_janeiro_2025\nFROM \n    notas_fiscais nf\nWHERE \n    nf.tipo_nota = 'S' AND\n    nf.cancelada = 0 AND\n    nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:55:42,889 INFO: do texto: Para responder a pergunta sobre o valor emitido de nota fiscal de cortesia no mês de janeiro de 2025, precisamos focar nas notas fiscais relacionadas a cortesias. No schema das tabelas, a relação com cortesias está identificada na tabela `notas_fiscais`, e estamos interessados em notas fiscais emitidas, não canceladas, no tipo de nota 'S' para cortesia.
+
+A abordagem será:
+
+1. **Identificar** as notas fiscais emitidas no mês de janeiro de 2025.
+2. **Filtro Tipo**: Considerar apenas as que são de tipo 'S' (cortesias).
+3. **Cálculo**: Somar o valor das notas fiscais (utilizaremos `valor_bruto`).
+4. **Filtrar por Data**: Verificar se `data_emissao` está dentro do mês de janeiro de 2025.
+
+Aqui está a consulta SQL para extrair essas informações:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_cortesia_janeiro_2025
+FROM 
+    notas_fiscais nf
+WHERE 
+    nf.tipo_nota = 'S' AND
+    nf.cancelada = 0 AND
+    nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+```
+
+Essa query retornará o valor total das notas fiscais de cortesia emitidas em janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:55:58,365 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:55:58,365 INFO: queries extraídas: ["SELECT SUM(valor_bruto) AS total_cortesia_janeiro_2025\nFROM notas_fiscais\nWHERE tipo_nota = 'S' \nAND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:55:58,365 INFO: do texto: Entendimento Inicial:
+
+A pergunta deseja saber o valor total das notas fiscais emitidas como cortesia no mês de janeiro de 2025. Sabemos que notas fiscais de cortesia são identificadas pelo `tipo_nota = 'S'` na tabela `notas_fiscais`.
+
+Análise e Solução:
+
+1. Identificar todas as notas fiscais na tabela `notas_fiscais` onde `tipo_nota = 'S'`.
+2. Filtrar essas notas que foram emitidas em janeiro de 2025.
+3. Somar os valores dessas notas para obter o total emitido.
+
+Geração da Query:
+
+Considerando o esquema das tabelas e as regras dadas:
+
+```sql
+SELECT SUM(valor_bruto) AS total_cortesia_janeiro_2025
+FROM notas_fiscais
+WHERE tipo_nota = 'S' 
+AND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND cancelada = 0;
+```
+
+Explicação da Query:
+
+- `SUM(valor_bruto)`: Calcula o total do valor bruto de todas as notas fiscais de cortesia.
+- `WHERE tipo_nota = 'S'`: Filtra apenas as notas fiscais do tipo cortesia.
+- `AND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'`: Restringe as notas fiscais para aquelas emitidas no mês de janeiro de 2025.
+- `AND cancelada = 0`: Garante que apenas as notas fiscais não canceladas sejam consideradas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 12:57:34,306 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 12:57:34,306 INFO: queries extraídas: ["SELECT SUM(valor_bruto) AS total_valor_cortesia\nFROM notas_fiscais\nWHERE tipo_nota = 'S'\nAND cortesia_id IS NOT NULL\nAND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 12:57:34,306 INFO: do texto: Para responder a essa pergunta, precisamos identificar:
+
+1. **Contexto e Propósito**:
+   - A pergunta busca saber o valor total das notas fiscais de cortesia que foram emitidas no mês de janeiro de 2025.
+
+2. **Tabelas Relevantes**:
+   - Tabela `notas_fiscais`: Para obter informações de notas fiscais, incluindo valores e data de emissão.
+   - Vamos filtrar todas as notas fiscais que são de cortesia, portanto, exigiremos que `cortesia_id` não seja nulo.
+  
+3. **Condições a ser aplicadas**:
+   - `tipo_nota` deve ser `'S'`, representando NFSE.
+   - `data_emissao` entre `'2025-01-01'` e `'2025-01-31'`.
+   - `cancelada` deve ser 0.
+
+Com base nesses critérios e detalhes do schema, a consulta SQL será:
+
+```sql
+SELECT SUM(valor_bruto) AS total_valor_cortesia
+FROM notas_fiscais
+WHERE tipo_nota = 'S'
+AND cortesia_id IS NOT NULL
+AND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND cancelada = 0;
+```
+
+Esta consulta irá retornar o valor total das notas fiscais de cortesia emitidas no mês especificado. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:23:11,785 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:23:11,786 INFO: queries extraídas: ["SELECT SUM(valor_bruto) AS valor_total_cortesias\nFROM notas_fiscais\nWHERE tipo_nota = 'S' \n  AND cortesia_id IS NOT NULL\n  AND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n  AND cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:23:11,786 INFO: do texto: Para responder à pergunta sobre o valor emitido de nota fiscal de cortesia no mês de janeiro de 2025, precisamos focar na tabela `notas_fiscais`. Estamos interessados em notas fiscais que estejam associadas a cortesias, portanto, as que possuem o campo `cortesia_id` preenchido. Além disso, sabemos que o termo "cortesia" refere-se a `tipo_nota` = 'S'. Também precisamos filtrar pela data de emissão que ocorre no mês de janeiro de 2025.
+
+Aqui estão os passos que tomarei para construir a consulta SQL:
+
+1. Selecionar a soma dos valores brutos das notas fiscais (`valor_bruto`) correspondentes às cortesias.
+2. Filtrar notas fiscais que são do tipo prestação de serviço (cortesia), ou seja, `tipo_nota` = 'S' e `cortesia_id` não é nulo.
+3. Considerar apenas as notas fiscais emitidas entre 1º de janeiro e 31 de janeiro de 2025 (`data_emissao`).
+
+Vamos construir a query SQL:
+
+```sql
+SELECT SUM(valor_bruto) AS valor_total_cortesias
+FROM notas_fiscais
+WHERE tipo_nota = 'S' 
+  AND cortesia_id IS NOT NULL
+  AND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+  AND cancelada = 0;
+```
+
+Esta query irá retornar o valor total das notas fiscais de cortesia emitidas no mês de janeiro de 2025. Verifiquei que consideramos o estado em que as notas fiscais não foram canceladas para garantir a precisão dos dados emitidos. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:30:51,854 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:30:51,854 INFO: queries extraídas: ["SELECT SUM(valor_bruto) AS valor_total_notas_fiscais_cortesia\nFROM notas_fiscais\nWHERE cortesia_id IS NOT NULL\nAND tipo_nota = 'S'\nAND MONTH(data_emissao) = 1\nAND YEAR(data_emissao) = 2025\nAND cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:30:51,854 INFO: do texto: ### Entendimento Inicial
+
+Reformulando a pergunta: Você deseja saber o valor total das notas fiscais de cortesia emitidas no mês de janeiro de 2025.
+
+### Análise e Solução
+
+Para responder a essa pergunta:
+- Precisamos considerar as notas fiscais que têm a coluna `cortesia_id` não nula, já que são cortesia.
+- Filtrar pelo `tipo_nota` que é igual a 'S', que representa NFSE.
+- Verificar a data de emissão nos registros que correspondem a janeiro de 2025.
+
+### Geração da Query
+
+Baseando-se no schema das tabelas, vamos focar na tabela `notas_fiscais`.
+
+```sql
+SELECT SUM(valor_bruto) AS valor_total_notas_fiscais_cortesia
+FROM notas_fiscais
+WHERE cortesia_id IS NOT NULL
+AND tipo_nota = 'S'
+AND MONTH(data_emissao) = 1
+AND YEAR(data_emissao) = 2025
+AND cancelada = 0;
+```
+
+### Estrutura da Query
+
+- **Tabela Principal**: `notas_fiscais`
+- **Condições**:
+  - `cortesia_id` não nulo para filtrar notas de cortesia.
+  - `tipo_nota` igual a 'S' para diferenciar como nota fiscal de serviço.
+  - `data_emissao` dentro de janeiro de 2025.
+  - `cancelada` igual a 0 para garantir que não estamos incluindo notas canceladas.
+- **Agrupamento e Filtragem**: A soma do `valor_bruto` das notas fiscais encontradas é retornada. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:31:06,657 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:31:06,657 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais nf\nWHERE nf.tipo_nota = 'S'\nAND nf.cortesia_id IS NOT NULL\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:31:06,657 INFO: do texto: Para responder a essa pergunta, precisamos localizar nas tabelas a soma dos valores brutos das notas fiscais de cortesia que foram emitidas em janeiro de 2025.
+
+### Processo de Conversão:
+
+1. **Entendimento Inicial**:
+   - A pergunta está pedindo para calcular o valor total das notas fiscais de cortesia emitidas em janeiro de 2025.
+
+2. **Análise e Solução**:
+   - Precisamos considerar somente as notas fiscais caracterizadas como de tipo "cortesia". São aquelas na tabela `notas_fiscais` com `tipo_nota = 'S'` e `cortesia_id` não nulo.
+   - A data de emissão destas notas deve estar dentro de janeiro de 2025.
+
+3. **Geração da Query**:
+
+Com base no schema das tabelas e nos requisitos acima, a query SQL seria:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais nf
+WHERE nf.tipo_nota = 'S'
+AND nf.cortesia_id IS NOT NULL
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND nf.cancelada = 0;
+```
+
+- Aqui, estamos filtrando por `tipo_nota = 'S'`, o que denota uma nota de cortesia.
+- As notas fiscais que foram prosseguindo o parecer "cancelada" estão excluídas, usando `nf.cancelada = 0`.
+- O intervalo de tempo é configurado para englobar todo o mês de janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:31:10,851 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 13:31:11,271 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 13:31:29,293 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:31:29,293 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_cortesias\nFROM notas_fiscais nf\nWHERE nf.tipo_nota = 'S'\nAND nf.cortesia_id IS NOT NULL\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND nf.cancelada = 0\nAND nf.finalizada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:31:29,293 INFO: do texto: Para responder à sua pergunta sobre o valor emitido em notas fiscais de cortesia no mês de janeiro de 2025, precisamos:
+
+1. **Entendimento Inicial**: 
+   - Reformulei a pergunta: Você deseja saber o valor total das notas fiscais de cortesia emitidas em janeiro de 2025.
+   - Contexto: Procuramos notas fiscais referentes a cortesias.
+   - Precisamos extrair o valor e garantir que as notas sejam do tipo específico relacionada a cortesias.
+
+2. **Análise e Solução**:
+   - Verificar na tabela `notas_fiscais` com o `tipo_nota` igual a `'S'` (NFSE) e `cortesia_id` não nulo, já que isso indica que está vinculada a uma cortesia.
+   - Filtrar com base na data de emissão (`data_emissao`) para obter apenas as notas do mês de janeiro de 2025.
+   - Agregar os valores de notas fiscais para obter o valor total.
+
+3. **Geração da Query**:
+   - Vamos compor a query conforme o entendimento acima.
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesias
+FROM notas_fiscais nf
+WHERE nf.tipo_nota = 'S'
+AND nf.cortesia_id IS NOT NULL
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND nf.cancelada = 0
+AND nf.finalizada = 0;
+```
+
+Essa query soma o valor bruto das notas fiscais de cortesia emitidas em janeiro de 2025, excluindo qualquer nota que tenha sido cancelada ou não finalizada. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:31:29,315 ERROR: Erro ao executar a query: 1054 (42S22): Unknown column 'nf.finalizada' in 'where clause' [in /home/lenovo/code/chat_smart/app/services/db_service.py:45]
+2025-02-24 13:31:46,844 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:31:46,844 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_cortesia_janeiro_2025\nFROM notas_fiscais nf\nWHERE nf.cortesia_id IS NOT NULL \n    AND nf.tipo_nota = 'S'\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:31:46,844 INFO: do texto: Para entender melhor a sua pergunta, você gostaria de saber qual foi o valor total emitido em notas fiscais de cortesia no mês de janeiro de 2025. 
+
+Vamos decompor esta solicitação:
+
+1. **Notas Fiscais de Cortesia**: Precisamos buscar notas fiscais que têm relação com cortesias. No nosso esquema de dados, isso pode ser identificado pela coluna `cortesia_id` nas notas fiscais. Também sabemos que notas fiscais de cortesia têm `tipo_nota` = 'S'.
+
+2. **Filtrar por Data de Emissão**: Queremos restringir as notas fiscais ao mês de janeiro de 2025. Teremos de filtrar por `data_emissao` dentro do intervalo de '2025-01-01' a '2025-01-31'.
+
+3. **Somar os Valores Brutos das Notas Fiscais**: Vamos somar o `valor_bruto` de todas as notas fiscais filtradas para obter o valor total emitido no mês especificado.
+
+Com isso em mente, aqui está a query SQL que atende à sua pergunta:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_cortesia_janeiro_2025
+FROM notas_fiscais nf
+WHERE nf.cortesia_id IS NOT NULL 
+    AND nf.tipo_nota = 'S'
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND nf.cancelada = 0;
+```
+
+Esta query calcula a soma do valor bruto das notas fiscais de cortesia emitidas no mês de janeiro de 2025 que não foram canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:32:39,023 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 13:32:39,435 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 13:32:48,952 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:32:48,953 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM \n    notas_fiscais nf\nWHERE \n    nf.tipo_nota = 'S'\n    AND nf.cortesia_id IS NOT NULL\n    AND nf.cancelada = 0\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:32:48,953 INFO: do texto: Entendido. A pergunta quer saber o valor total das notas fiscais de cortesia que foram emitidas no mês de janeiro de 2025. 
+
+Para responder a essa pergunta, precisamos considerar as notas fiscais emitidas como 'tipo_nota' = 'S', que são as notas fiscais de serviço e que têm uma relação de cortesia definida ('cortesia_id' não está nulo). Nós também precisamos filtrar pelo 'data_emissao' no mês de janeiro de 2025.
+
+Agora irei criar a query SQL que realiza essa requisição.
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM 
+    notas_fiscais nf
+WHERE 
+    nf.tipo_nota = 'S'
+    AND nf.cortesia_id IS NOT NULL
+    AND nf.cancelada = 0
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+Esta consulta irá somar o valor bruto de todas as notas fiscais de cortesia emitidas em janeiro de 2025, desde que a nota fiscal não tenha sido cancelada. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:33:12,099 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:33:12,099 INFO: queries extraídas: ["SELECT SUM(valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais\nWHERE tipo_nota = 'S'\nAND cancelada = 0\nAND cortesia_id IS NOT NULL\nAND YEAR(data_emissao) = 2025\nAND MONTH(data_emissao) = 1;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:33:12,099 INFO: do texto: Para responder a essa pergunta, precisamos consultar a tabela de notas fiscais (`notas_fiscais`) e focar nas notas fiscais de cortesia, que são identificadas pelo `tipo_nota = 'S'` e têm um `cortesia_id` preenchido. Precisamos também considerar somente as notas emitidas no mês de janeiro de 2025.
+
+### Análise dos Componentes da Query:
+
+1. **Filtro por Tipo de Nota**:
+   - Somente notas fiscais de cortesia, ou seja, `tipo_nota = 'S'` e `cortesia_id IS NOT NULL`.
+
+2. **Filtro por Período**:
+   - Considerar apenas o mês de janeiro de 2025. Isso pode ser feito usando a função `YEAR()` e `MONTH()` para especificar o intervalo de datas no `WHERE` clausule.
+
+3. **Agrupamento**:
+   - Não precisamos de agrupamento, mas precisamos somar o `valor_bruto` de todas as notas que se encaixam nos critérios acima para obter o total.
+
+4. **Condicionais de Cancelamento**:
+   - Considerar notas que não foram canceladas, ou seja, `cancelada = 0`.
+
+Vamos construir a consulta SQL agora.
+
+```sql
+SELECT SUM(valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais
+WHERE tipo_nota = 'S'
+AND cancelada = 0
+AND cortesia_id IS NOT NULL
+AND YEAR(data_emissao) = 2025
+AND MONTH(data_emissao) = 1;
+```
+
+Esta consulta irá retornar o valor total bruto das notas fiscais de cortesia emitidas em janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:34:26,522 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:34:26,522 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais nf\nWHERE nf.tipo_nota = 'S'\nAND nf.cortesia_id IS NOT NULL\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND nf.cancelada = 0"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:34:26,522 INFO: do texto: Para responder a esta pergunta, precisamos identificar o valor das notas fiscais de cortesia emitidas no mês de janeiro de 2025. Notas fiscais de cortesia são identificadas como tipo_nota = 'S' e com cortesia_id não nulo. Agora, vamos construir a consulta SQL para recuperar esta informação.
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais nf
+WHERE nf.tipo_nota = 'S'
+AND nf.cortesia_id IS NOT NULL
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND nf.cancelada = 0
+```
+
+Esta consulta soma o valor_bruto das notas fiscais que são do tipo cortesia emitidas durante o mês de janeiro de 2025, garantindo que as notas não estejam canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:43:39,173 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:43:39,173 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_emitido_cortesia\nFROM notas_fiscais nf\nWHERE nf.tipo_nota = 'S'\n  AND nf.cortesia_id IS NOT NULL\n  AND nf.cancelada = 0\n  AND MONTH(nf.data_emissao) = 1\n  AND YEAR(nf.data_emissao) = 2025;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:43:39,173 INFO: do texto: Para responder à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos buscar na tabela de notas fiscais os registros com tipo de nota de cortesia (onde `tipo_nota = 'S'` e `cortesia_id` não é nulo) e filtrar pelo mês de janeiro de 2025. 
+
+Vamos assegurar que as notas fiscais não estejam canceladas para obter o valor correto das notas emitidas. Com isso, somaremos os valores brutos ou líquidos, conforme necessário, dessas notas.
+
+Aqui está a query em SQL que responde à pergunta:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_emitido_cortesia
+FROM notas_fiscais nf
+WHERE nf.tipo_nota = 'S'
+  AND nf.cortesia_id IS NOT NULL
+  AND nf.cancelada = 0
+  AND MONTH(nf.data_emissao) = 1
+  AND YEAR(nf.data_emissao) = 2025;
+```
+
+Essa query irá somar o valor bruto de todas as notas fiscais de cortesia válidas emitidas em janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:56:53,579 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:56:53,579 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_cortesia\nFROM notas_fiscais nf\nWHERE nf.tipo_nota = 'S'\nAND nf.cortesia_id IS NOT NULL\nAND nf.cancelada = 0\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:56:53,579 INFO: do texto: Para interpretar a pergunta, precisamos de uma consulta SQL que nos retorne o valor total de notas fiscais de cortesia emitidas no mês de janeiro de 2025. Detalhes importantes da pergunta são:
+
+1. Estamos interessados em "notas fiscais de cortesia". Isso nos indica que precisamos filtrar as notas fiscais onde o `tipo_nota` é 'S' e onde `cortesia_id` não é nulo.
+2. O período de interesse é "janeiro de 2025", logo, precisamos verificar que `data_emissao` esteja dentro de janeiro de 2025.
+3. Precisamos do valor total, então vamos somar os valores referentes a essas notas fiscais.
+
+Com isso em mente, formulamos a seguinte consulta SQL:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_cortesia
+FROM notas_fiscais nf
+WHERE nf.tipo_nota = 'S'
+AND nf.cortesia_id IS NOT NULL
+AND nf.cancelada = 0
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+Este código soma o valor bruto das notas fiscais que atendem a todas as condições especificadas acima. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 13:57:46,282 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 13:57:46,282 INFO: queries extraídas: ["SELECT SUM(valor_bruto) AS total_valor_cortesia\nFROM notas_fiscais\nWHERE tipo_nota = 'S' \nAND cortesia_id IS NOT NULL\nAND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 13:57:46,282 INFO: do texto: Para entender a pergunta, precisamos buscar o valor total de notas fiscais de cortesia emitidas no mês de janeiro de 2025. 
+
+Pontos importantes:
+- A tabela relevante é `notas_fiscais`, já que ela armazena as informações de notas fiscais.
+- Notas fiscais de cortesia são aquelas que têm `tipo_nota = 'S'` e `cortesia_id` não nulo.
+- Precisamos verificar o campo `data_emissao` para encontrar aquelas emitidas em janeiro de 2025.
+- A soma dos valores pode ser feita utilizando o campo `valor_bruto`.
+
+Vamos criar uma consulta SQL para obter o valor total:
+
+```sql
+SELECT SUM(valor_bruto) AS total_valor_cortesia
+FROM notas_fiscais
+WHERE tipo_nota = 'S' 
+AND cortesia_id IS NOT NULL
+AND data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND cancelada = 0;
+``` [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 15:33:51,632 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 15:33:52,045 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 15:36:59,878 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 15:36:59,878 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_emitido\nFROM notas_fiscais nf\nWHERE nf.tipo_nota = 'S'\n  AND nf.cortesia_id IS NOT NULL\n  AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n  AND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 15:36:59,878 INFO: do texto: ### Entendimento Inicial
+
+A pergunta busca descobrir o total do valor emitido em notas fiscais que são classificadas como "cortesia" durante o mês de janeiro de 2025.
+
+### Análise
+
+1. **Notas Fiscais de Cortesia**:
+   - São identificadas na tabela `notas_fiscais` através da coluna `tipo_nota = 'S'` e tem `cortesia_id` não nulo.
+
+2. **Filtro de Tempo**:
+   - Precisamos restringir os resultados às notas fiscais emitidas em janeiro de 2025, usando a coluna `data_emissao`.
+
+3. **Dados Necessários**:
+   - O valor total emitido, que pode ser obtido somando `valor_bruto` das notas fiscais.
+
+### Desenvolvimento da Query
+
+Usando o schema das tabelas e as condições acima mencionadas, a query para obter o valor total emitido para notas fiscais de cortesia em janeiro de 2025 é:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_emitido
+FROM notas_fiscais nf
+WHERE nf.tipo_nota = 'S'
+  AND nf.cortesia_id IS NOT NULL
+  AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+  AND nf.cancelada = 0;
+```
+
+### Explicação da Query
+
+- **SUM(nf.valor_bruto)**: Calcula o total do valor bruto das notas fiscais de cortesia.
+- **nf.tipo_nota = 'S'** e **nf.cortesia_id IS NOT NULL**: Filtra as notas classificadas como cortesia.
+- **nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'**: Limita o período de emissão ao mês de janeiro de 2025.
+- **nf.cancelada = 0**: Garante que apenas notas fiscais ativas (não canceladas) sejam consideradas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 15:37:50,716 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 15:37:50,716 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_bruto_cortesia\nFROM \n    notas_fiscais nf\nWHERE \n    nf.cortesia_id IS NOT NULL\n    AND nf.cancelada = 0\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 15:37:50,716 INFO: do texto: ### Processo de Conversão
+
+1. **Entendimento Inicial**: 
+   - Reformulação da pergunta: Queremos saber o valor total das notas fiscais emitidas como cortesia no mês de janeiro de 2025.
+   - Contexto e Propósito: Obter o valor total das notas fiscais de cortesia emitidas num período específico.
+   - O que sabemos: Procuramos notas fiscais de cortesia.
+   - O que precisamos descobrir: Filtrar pelas notas fiscais de cortesia emitidas em janeiro de 2025.
+
+2. **Análise e Solução**:
+   - Decomposição: 
+     - Precisamos somar os valores brutos (ou líquidos, dependendo do interesse), das notas fiscais de cortesia.
+     - Precisamos filtrar essas notas pelo mês e ano de 2025, especificamente em janeiro.
+   - Requisitos e Restrições: Considerar apenas notas fiscais que não são canceladas, e que possuem uma referência a 'cortesia_id'.
+   - Abordagem: Usar a tabela de `notas_fiscais` com filtro de data e cortesia.
+
+3. **Geração da Query**:
+   - Vamos buscar o valor bruto das notas fiscais de cortesia, emitidas em janeiro de 2025 e que não estão canceladas.
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_bruto_cortesia
+FROM 
+    notas_fiscais nf
+WHERE 
+    nf.cortesia_id IS NOT NULL
+    AND nf.cancelada = 0
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+### Revisão:
+- A consulta SQL está correta e deve fornecer o valor total bruto das notas fiscais de cortesia emitidas no mês de janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 15:41:21,754 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 15:41:21,754 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_bruto_cortesia\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nWHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND nf.cancelada = 0 AND c.cancelada = 0 AND c.ativo = 1;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 15:41:21,754 INFO: do texto: Para responder a essa pergunta, precisamos encontrar o valor total das notas fiscais de cortesia emitidas no mês de janeiro de 2025. Conforme o schema das tabelas, devemos considerar as notas fiscais que têm o campo `cortesia_id` não nulo e que são referenciadas a uma cortesia com `cancelada` igual a 0 e `ativo` igual a 1.
+
+Vamos considerar o campo `data_emissao` para filtrar as notas emitidas em janeiro de 2025.
+
+Agora, vamos montar a query SQL com base nessas informações:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_bruto_cortesia
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+WHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND nf.cancelada = 0 AND c.cancelada = 0 AND c.ativo = 1;
+```
+
+Essa consulta somará o valor bruto das notas fiscais de cortesia emitidas durante o mês de janeiro de 2025, garantindo que as notas e as cortesias não estejam canceladas e estão ativas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 16:16:12,360 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 16:16:12,360 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_cortesia_janeiro_2025\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nWHERE \n    nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND nf.cortesia_id IS NOT NULL\n    AND nf.cancelada = 0\n    AND c.ativo = 1\n    AND c.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 16:16:12,360 INFO: do texto: Para responder adequadamente à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos entender a estrutura do banco de dados, especialmente no que tange as notas fiscais e cortesias.
+
+Na base de dados, uma cortesia está vinculada a registros na tabela `notas_fiscais` onde a coluna `cortesia_id` não é nula. Além disso, a tabela `cortesias` deve ter o campo `ativo` igual a 1 e `cancelada` igual a 0. Quando falamos de notas de cortesia emitidas no mês, devemos considerar que essas notas são para serviços realizados no mês anterior. Portanto, iremos filtrar pelas OS do mês de dezembro de 2024.
+
+Agora, vamos desenvolver a query SQL considerando esses detalhes:
+
+1. Buscar notas fiscais com cortesia (`cortesia_id` não nulo) emitidas em janeiro de 2025.
+2. Unir com a tabela `cortesias` para confirmar que não estão canceladas e estão ativas.
+3. Somar o valor das notas fiscais `valor_bruto`.
+
+Aqui está a query SQL resultante:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_cortesia_janeiro_2025
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+WHERE 
+    nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND nf.cortesia_id IS NOT NULL
+    AND nf.cancelada = 0
+    AND c.ativo = 1
+    AND c.cancelada = 0;
+```
+
+Essa query irá fornecer o valor total emitido de notas fiscais de cortesia em janeiro de 2025, considerando as regras de negócio estabelecidas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 16:16:32,953 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 16:16:32,953 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM \n    notas_fiscais nf\nJOIN \n    os ON nf.os_id = os.id\nJOIN \n    cortesia_os co ON co.os_id = os.id\nJOIN \n    cortesias c ON co.cortesia_id = c.id\nWHERE \n    nf.cortesia_id IS NOT NULL \n    AND nf.cancelada = 0\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND c.mes_referencia = 12\n    AND c.ativo = 1\n    AND c.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 16:16:32,953 INFO: do texto: Para responder à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos entender o seguinte:
+
+1. **Notas Fiscais de Cortesia**: Estamos buscando notas fiscais que estão associadas a cortesias. Isso significa que na tabela `notas_fiscais`, a coluna `cortesia_id` não deve ser nula.
+
+2. **Mês de Emissão**: Queremos as notas emitidas no mês de janeiro de 2025. Portanto, precisamos filtrar pelo campo `data_emissao` na tabela `notas_fiscais` para esse período.
+
+3. **Não Canceladas**: Consideraremos apenas as notas que não foram canceladas.
+
+4. **Meses Anteriores na Cortesia**: Como as notas fiscais de cortesias referentes a um mês são vinculadas através das ordens de serviço (`os`) do mês anterior, precisamos verificar também a tabela `os`, mas para o mês de dezembro de 2024.
+
+Com essas informações em mente, vamos construir a query SQL.
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM 
+    notas_fiscais nf
+JOIN 
+    os ON nf.os_id = os.id
+JOIN 
+    cortesia_os co ON co.os_id = os.id
+JOIN 
+    cortesias c ON co.cortesia_id = c.id
+WHERE 
+    nf.cortesia_id IS NOT NULL 
+    AND nf.cancelada = 0
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND c.mes_referencia = 12
+    AND c.ativo = 1
+    AND c.cancelada = 0;
+```
+
+Esta consulta faz a suma do `valor_bruto` das notas fiscais de cortesia para janeiro de 2025. Certificamos também que todas as associações às notas fiscais de cortesia e os detalhes da cortesia estão ativos e não cancelados. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 16:17:22,807 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 16:17:22,807 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS total_valor_emitido\nFROM \n    notas_fiscais nf\nJOIN\n    cortesias c ON nf.cortesia_id = c.id\nWHERE \n    nf.cortesia_id IS NOT NULL\n    AND nf.cancelada = 0\n    AND nf.ativo = 1\n    AND nf.data_emissao >= '2025-01-01' \n    AND nf.data_emissao < '2025-02-01'\n    AND c.mes_referencia = DATE_SUB('2025-01-01', INTERVAL 1 MONTH)\n    AND c.cancelada = 0\n    AND c.ativo = 1;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 16:17:22,807 INFO: do texto: ### Processo de Conversão
+
+1. **Entendimento Inicial**:
+   - A pergunta pede o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025.
+   - Isso sugere que estamos interessados nas notas fiscais que possuem cortesias associadas, e foram emitidas especificamente no mês de janeiro de 2025.
+
+2. **Análise e Solução**:
+   - Precisamos acessar a tabela `notas_fiscais` para obter as notas fiscais emitidas no mês de janeiro de 2025 (`data_emissao`).
+   - As notas fiscais de cortesia são aquelas em que a coluna `cortesia_id` não está nula.
+   - Precisamos garantir que estamos lidando apenas com notas fiscais que não foram canceladas e que estão ativas.
+   - As `cortesias` são referentes a `os` do mês anterior (neste caso, dezembro de 2024, conforme a regra explicitada).
+
+3. **Geração da Query**:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS total_valor_emitido
+FROM 
+    notas_fiscais nf
+JOIN
+    cortesias c ON nf.cortesia_id = c.id
+WHERE 
+    nf.cortesia_id IS NOT NULL
+    AND nf.cancelada = 0
+    AND nf.ativo = 1
+    AND nf.data_emissao >= '2025-01-01' 
+    AND nf.data_emissao < '2025-02-01'
+    AND c.mes_referencia = DATE_SUB('2025-01-01', INTERVAL 1 MONTH)
+    AND c.cancelada = 0
+    AND c.ativo = 1;
+```
+
+### Explicação da Query:
+- A query está somando o `valor_bruto` de todas as notas fiscais emitidas para cortesias no mês de janeiro de 2025.
+- Somente as notas que estão ativas e não canceladas são consideradas.
+- A relação entre `notas_fiscais` e `cortesias` é estabelecida através do `cortesia_id`.
+- A verificação para `mes_referencia` das `cortesias` garante que estamos computando cortesias que referem-se ao mês anterior, ou seja, em conformidade com a necessidade de ajustar para notas de cortesias emitidas no mês subsequente. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 16:18:33,417 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 16:18:33,417 INFO: queries extraídas: ["SELECT s.nome AS servico_nome\nFROM os\nJOIN os_servicos osv ON os.id = osv.os_id\nJOIN servicos s ON osv.servico_id = s.id\nJOIN funcionarios f ON os.vendedor_id = f.id\nWHERE f.nome LIKE '%Christian Junio%'\nGROUP BY s.nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 16:18:33,417 INFO: do texto: Para atender o pedido de listar todos os serviços executados por "Christian Junio", precisamos seguir o processo de conversão, começando com a decomposição da pergunta.
+
+### Entendimento Inicial
+1. **Reformulação da Pergunta**: Queremos identificar todos os serviços (provavelmente listados na tabela `servicos`) associados a ordens de serviço (`os`) executadas por um funcionário específico cujo nome é "Christian Junio".
+2. **Contexto e Propósito**: O objetivo é recuperar todos os serviços prestados por esse funcionário em particular. Precisamos vincular as tabelas relevantes para obter os serviços executados pelo funcionário.
+
+### Análise e Solução
+3. **Decomposição da Pergunta**:
+   - Precisamos identificar o ID do funcionário que corresponde ao nome "Christian Junio" na tabela `funcionarios`.
+   - Buscar pela ligação entre a tabela `os`, onde os serviços e os funcionários estão associados.
+   - Verificar a tabela `os_servicos` para vincular os serviços com as ordens de serviço (`os`).
+
+### Geração da Query SQL
+Agora, com base nesse entendimento, vamos formular a query SQL:
+
+```sql
+SELECT s.nome AS servico_nome
+FROM os
+JOIN os_servicos osv ON os.id = osv.os_id
+JOIN servicos s ON osv.servico_id = s.id
+JOIN funcionarios f ON os.vendedor_id = f.id
+WHERE f.nome LIKE '%Christian Junio%'
+GROUP BY s.nome;
+```
+
+### Explicação da Query
+- **JOIN Operações**: A query conecta as tabelas `os`, `os_servicos`, `servicos` e `funcionarios` para acessar o nome do serviço que foi executado por "Christian Junio".
+- **WHERE Condição**: Usamos o `LIKE` para garantir que estamos capturando o `Christian Junio` corretamente, mesmo com eventuais variações no nome.
+- **GROUP BY**: Agrupamos pelo nome do serviço para evitar duplicatas, caso o mesmo serviço tenha sido executado mais de uma vez.
+
+Esta consulta deve fornecer uma lista de todos os serviços únicos associados ao trabalho do funcionário "Christian Junio". [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 19:58:31,160 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 19:58:31,776 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 20:00:40,347 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 20:00:40,347 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_liquido) AS total_valor_liquido\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE \n    nf.cancelada = 0 \n    AND nf.cortesia_id IS NOT NULL \n    AND c.ativo = 1 \n    AND c.cancelada = 0 \n    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 20:00:40,347 INFO: do texto: Para entender a pergunta, você deseja saber o valor total das notas fiscais de cortesia emitidas no mês de janeiro de 2025. No entanto, as notas fiscais de cortesia emitidas em janeiro de 2025 devem corresponder às OSs (ordens de serviço) que ocorreram no mês anterior, ou seja, em dezembro de 2024, de acordo com as regras. Portanto, precisamos buscar as OSs relacionadas às cortesias do mês de dezembro de 2024 e, em seguida, verificar as notas fiscais emitidas sobre essas cortesias em janeiro de 2025.
+
+Vamos construir uma consulta SQL considerando os detalhes das tabelas do schema fornecido:
+
+```sql
+SELECT 
+    SUM(nf.valor_liquido) AS total_valor_liquido
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE 
+    nf.cancelada = 0 
+    AND nf.cortesia_id IS NOT NULL 
+    AND c.ativo = 1 
+    AND c.cancelada = 0 
+    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+### Explanação da Query:
+- **notas_fiscais**: Estamos interessados em notas que têm a coluna `cortesia_id` preenchida, o que indica que são notas de cortesia.
+- **cortesias**: O vinculamento entre uma OS e uma cortesia. Notamos se essa cortesia continua ativa e não cancelada.
+- **cortesia_os e os**: Identificamos `os` referentes a esse período para segregar corretamente as cortesia.
+- Utilizamos `SUM(nf.valor_liquido)` para encontrar a soma dos valores líquidos das notas fiscais que se encaixam nesses critérios.
+- A consulta considera apenas os registros onde `cancelada = 0` para garantir que apenas notas válidas e não canceladas sejam incluídas na soma.
+
+Esta consulta retornará o valor total emitido em notas fiscais de cortesia durante janeiro de 2025, atendendo às premissas e regras estabelecidas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 20:48:06,662 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 20:48:06,662 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_liquido) AS total_valor_liquido\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON c.id = co.cortesia_id\nJOIN \n    os ON co.os_id = os.id\nWHERE \n    nf.cancelada = 0 \n    AND nf.cortesia_id IS NOT NULL \n    AND c.ativo = 1 \n    AND c.cancelada = 0 \n    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 20:48:06,662 INFO: do texto: Para responder a pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos entender que as notas fiscais de cortesia estão vinculadas a cortesias e estas estão relacionadas às ordens de serviço (OS) do mês anterior. Portanto, as OSs relacionadas devem ter sido criadas em dezembro de 2024.
+
+Vamos verificar as notas fiscais onde a coluna `cortesia_id` não está nula, o que indica que são notas fiscais de cortesias, e filtramos para o mês de janeiro de 2025. Além disso, garantimos que essas notas não estejam canceladas e que as cortesias estejam ativas e não canceladas.
+
+Aqui está a query SQL para obter o valor emitido dessas notas fiscais:
+
+```sql
+SELECT 
+    SUM(nf.valor_liquido) AS total_valor_liquido
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON c.id = co.cortesia_id
+JOIN 
+    os ON co.os_id = os.id
+WHERE 
+    nf.cancelada = 0 
+    AND nf.cortesia_id IS NOT NULL 
+    AND c.ativo = 1 
+    AND c.cancelada = 0 
+    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+``` [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 20:59:24,232 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 20:59:24,232 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_liquido) AS total_valor_liquido\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON c.id = co.cortesia_id\nJOIN \n    os ON co.os_id = os.id\nWHERE \n    nf.cancelada = 0 \n    AND nf.cortesia_id IS NOT NULL \n    AND c.ativo = 1 \n    AND c.cancelada = 0 \n    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31' \n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31' \n    AND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 20:59:24,232 INFO: do texto: Para responder a esta pergunta, precisamos encontrar o valor líquido das notas fiscais que foram emitidas para cortesias no mês de janeiro de 2025. De acordo com o contexto fornecido, as notas fiscais de cortesias emitidas em um determinado mês estão relacionadas a ordens de serviço do mês anterior. Portanto, devemos buscar as notas fiscais emitidas em janeiro de 2025 e que estão relacionadas a cortesias cujas ordens de serviço foram criadas em dezembro de 2024.
+
+Vamos elaborar a query levando em consideração todos esses detalhes:
+
+```sql
+SELECT 
+    SUM(nf.valor_liquido) AS total_valor_liquido
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON c.id = co.cortesia_id
+JOIN 
+    os ON co.os_id = os.id
+WHERE 
+    nf.cancelada = 0 
+    AND nf.cortesia_id IS NOT NULL 
+    AND c.ativo = 1 
+    AND c.cancelada = 0 
+    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31' 
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31' 
+    AND co.deleted_at IS NULL;
+```
+
+**Notas sobre a query:**
+- Utilizamos o `SUM(nf.valor_liquido)` para calcular o valor total das notas fiscais.
+- Apenas consideramos as notas fiscais não canceladas e ativas (`nf.cancelada = 0`).
+- Somente notas fiscais de cortesia são consideradas (`nf.cortesia_id IS NOT NULL`).
+- As cortesias também precisam estar ativas e não canceladas (`c.ativo = 1` e `c.cancelada = 0`).
+- Filtramos as ordens de serviço criadas em dezembro de 2024 (`os.created_at BETWEEN '2024-12-01' AND '2024-12-31'`).
+- As notas fiscais devem ter sido emitidas em janeiro de 2025 (`nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'`).
+- Certificamos que registros de ligação na tabela pivot 'cortesia_os' não estão marcados como deletados (`co.deleted_at IS NULL`). [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:02:37,254 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:02:37,254 INFO: queries extraídas: ["SELECT SUM(nf.valor_liquido) AS total_valor_liquido \nFROM notas_fiscais nf \nJOIN cortesias c ON nf.cortesia_id = c.id \nJOIN cortesia_os co ON c.id = co.cortesia_id \nJOIN os ON co.os_id = os.id \nWHERE nf.cancelada = 0 \nAND nf.cortesia_id IS NOT NULL \nAND c.ativo = 1 \nAND c.cancelada = 0 \nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31' \nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:02:37,254 INFO: do texto: Para converter a pergunta em uma consulta SQL, vamos primeiro entender detalhadamente o que isso implica:
+
+### Entendimento Inicial
+- A pergunta pergunta sobre o "valor emitido de notas fiscais de cortesia" em um período específico, janeiro de 2025.
+- As notas fiscais de cortesia são vinculadas a 'os' através das tabelas 'cortesias' e 'cortesia_os'.
+- As 'os' relacionados à cortesia de janeiro de 2025 têm seus valores calculados nas 'os' do mês anterior (dezembro de 2024).
+- Precisamos somar o valor líquido das notas fiscais emitidas em janeiro de 2025 para cortesias que não foram canceladas e estão ativas, considerando as 'os' criadas em dezembro de 2024.
+
+### Análise e Solução
+- Começaremos juntando as tabelas necessárias: `notas_fiscais`, `cortesias`, `cortesia_os`, `os`.
+- Filtraremos pelas notas fiscais que foram emitidas em janeiro de 2025 (`nf.data_emissao` entre '2025-01-01' e '2025-01-31').
+- Certificaremos que as 'os' em questão foram criadas no mês anterior (dezembro de 2024).
+- Verificaremos que a cortesia está ativa e não cancelada.
+
+### Geração da Query SQL
+Aqui está a query que atende a esses requisitos:
+
+```sql
+SELECT SUM(nf.valor_liquido) AS total_valor_liquido 
+FROM notas_fiscais nf 
+JOIN cortesias c ON nf.cortesia_id = c.id 
+JOIN cortesia_os co ON c.id = co.cortesia_id 
+JOIN os ON co.os_id = os.id 
+WHERE nf.cancelada = 0 
+AND nf.cortesia_id IS NOT NULL 
+AND c.ativo = 1 
+AND c.cancelada = 0 
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31' 
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+- **Filtragem por Intervalo de Datas**: A query filtra `os.created_at` para o mês de dezembro de 2024 e `nf.data_emissao` para janeiro de 2025, garantindo que as notas fiscais de cortesia sejam contabilizadas corretamente.
+- **Condições de Atividade e Cancelamento**: Ela também garante que as cortesia não sejam canceladas e que estejam ativas, conforme exigido pelas condições da pergunta. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:07:40,661 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:07:40,661 INFO: queries extraídas: ["SELECT SUM(nf.valor_liquido) AS total_valor_liquido\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.cancelada = 0\nAND nf.cortesia_id IS NOT NULL\nAND c.ativo = 1\nAND c.cancelada = 0\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:07:40,661 INFO: do texto: Entendi que você gostaria de saber o valor total emitido das notas fiscais de cortesia no mês de janeiro de 2025. As notas fiscais de cortesia são associadas a várias 'os' agrupadas em uma 'cortesia'. As notas fiscais são emitidas no mês seguinte ao mês de referência das 'os'. Portanto, para calcular o valor emitido em janeiro de 2025, devemos considerar 'os' com data de criação no mês de dezembro de 2024. 
+
+### Análise:
+
+- Devemos somar o campo `valor_liquido` das notas fiscais que:
+  - Não estejam canceladas (`cancelada = 0`).
+  - Estejam associadas a uma cortesia (`cortesia_id IS NOT NULL`).
+  - Tenham data de emissão entre '2025-01-01' e '2025-01-31'.
+- A cortesia em questão:
+  - Não deve estar cancelada (`cancelada = 0`).
+  - Deve estar ativa (`ativo = 1`).
+- As 'os' associadas à referida cortesia:
+  - Devem ter sido criadas entre '2024-12-01' e '2024-12-31'.
+
+Segue a consulta SQL construída com base nessas condições:
+
+```sql
+SELECT SUM(nf.valor_liquido) AS total_valor_liquido
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.cancelada = 0
+AND nf.cortesia_id IS NOT NULL
+AND c.ativo = 1
+AND c.cancelada = 0
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+Esta query calcula o valor total das notas fiscais de cortesia emitidas em janeiro de 2025, levando em consideração que as respectivas 'os' foram criadas em dezembro de 2024. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:22:48,320 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:22:48,320 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_emitido\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.cancelada = 0 \nAND c.cancelada = 0 \nAND c.ativo = 1\nAND nf.tipo_nota = 'S'\nAND nf.tipo_nota IS NOT NULL\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:22:48,320 INFO: do texto: Para responder à sua pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos verificar as notas fiscais de cortesia que estão vinculadas a ordens de serviço (OS) do mês anterior, ou seja, dezembro de 2024. Assim, vamos calcular o valor total emitido de notas fiscais de cortesia nesse intervalo de tempo.
+
+A consulta SQL deve incluir junções entre as tabelas `notas_fiscais`, `cortesias`, `cortesia_os` e `os` para garantir que só consideramos notas fiscais associadas a cortesias ativas e que não foram canceladas.
+
+Aqui está a consulta SQL construída para obter o valor emitido de notas fiscais de cortesia:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_emitido
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.cancelada = 0 
+AND c.cancelada = 0 
+AND c.ativo = 1
+AND nf.tipo_nota = 'S'
+AND nf.tipo_nota IS NOT NULL
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+Esta consulta:
+- Soma o valor bruto das notas fiscais (`nf.valor_bruto`) emitidas no mês de janeiro de 2025.
+- Considera apenas as notas fiscais associadas a cortesias que não foram canceladas e estão ativas.
+- Filtra as OSs criadas entre 1º e 31 de dezembro de 2024.
+- Considera apenas notas fiscais de serviço (`nf.tipo_nota = 'S'`), já que estamos lidando com notas fiscais de cortesia.
+- Certifica-se de que as notas fiscais foram emitidas entre 1º e 31 de janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:23:10,950 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:23:10,950 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_emitido\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os o ON co.os_id = o.id\nWHERE nf.cancelada = 0\nAND c.cancelada = 0 \nAND c.ativo = 1\nAND o.created_at BETWEEN '2024-12-01' AND '2024-12-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:23:10,950 INFO: do texto: Para responder à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos considerar que essas notas fiscais são emitidas com base nas ordens de serviço ("os") do mês anterior. Isso significa que teremos que buscar pelo mês de dezembro de 2024 para as "os" relacionadas a essas notas fiscais de cortesia.
+
+1. Vamos identificar as notas fiscais que estão vinculadas a cortesias.
+2. Em seguida, certificaremos de que as "os" relacionadas a essas notas foram criadas no mês de dezembro de 2024.
+3. Calcularemos o valor total emitido dessas notas fiscais não canceladas.
+
+A query abaixo deve capturar essas informações:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_emitido
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os o ON co.os_id = o.id
+WHERE nf.cancelada = 0
+AND c.cancelada = 0 
+AND c.ativo = 1
+AND o.created_at BETWEEN '2024-12-01' AND '2024-12-31';
+```
+
+Este SQL calcula o valor bruto total das notas fiscais de cortesia emitidas com base nas ordens de serviço criadas no mês de dezembro de 2024 e considerando apenas as notas não canceladas e as cortesias ativas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:24:52,959 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:24:52,959 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_cortesia\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os ON os.id = co.os_id\nWHERE nf.cortesia_id IS NOT NULL\nAND nf.cancelada = 0\nAND c.cancelada = 0\nAND c.ativo = 1\nAND os.created_at >= '2024-12-01' AND os.created_at < '2025-01-01';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:24:52,959 INFO: do texto: Para responder à pergunta sobre o valor total emitido de notas fiscais de cortesia no mês de janeiro de 2025, devemos considerar alguns aspectos do schema das tabelas:
+
+1. **Contexto**: Queremos encontrar o valor de todas as notas fiscais emitidas como cortesia em janeiro de 2025. Notas de cortesia são vinculadas a registros específicos na tabela `notas_fiscais` onde a coluna `cortesia_id` não é nula.
+
+2. **Relacionamento entre tabelas**:
+   - Os registros de notas fiscais relacionados a empresas e cortesias estão na tabela `notas_fiscais`.
+   - Considerar apenas os registros onde `notas_fiscais.cortesia_id` não é nulo.
+   - Além disso, precisamos garantir que a cortesia associada está ativa e não cancelada, usando a tabela `cortesias`.
+
+3. **Data de Referência**:
+   - As notas fiscais de cortesias em janeiro de 2025 estão relacionadas a `os` do mês anterior, ou seja, de dezembro de 2024.
+
+Vamos estruturar a consulta para extrair o valor das notas fiscais com base nesses critérios:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_cortesia
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os ON os.id = co.os_id
+WHERE nf.cortesia_id IS NOT NULL
+AND nf.cancelada = 0
+AND c.cancelada = 0
+AND c.ativo = 1
+AND os.created_at >= '2024-12-01' AND os.created_at < '2025-01-01';
+```
+
+Esta consulta soma o valor bruto das notas fiscais de cortesia que estão relacionadas a `os` criadas em dezembro de 2024, garantindo que as cortesia e notas não foram canceladas e estão ativas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:25:58,723 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:25:58,723 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_liquido) AS valor_total_cortesia\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON c.id = co.cortesia_id\nJOIN \n    os o ON co.os_id = o.id\nWHERE \n    nf.cortesia_id IS NOT NULL \n    AND nf.cancelada = 0 \n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND c.cancelada = 0 \n    AND c.ativo = 1\n    AND o.created_at BETWEEN '2024-12-01' AND '2024-12-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:25:58,723 INFO: do texto: Para determinar o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos considerar que as notas fiscais de cortesia emitidas sempre se referem a ordens de serviço ("os") do mês anterior. Portanto, devemos buscar as ordens de serviço criadas em dezembro de 2024 que estão associadas a cortesias e cujas notas fiscais foram emitidas em janeiro de 2025.
+
+Vamos construir a consulta SQL com base nessas premissas:
+
+1. Verificar se a nota fiscal está associada a uma cortesia válida.
+2. Considerar as notas fiscais marcadas como não canceladas.
+3. Somar os valores das notas fiscais de cortesia emitidas em janeiro de 2025.
+
+Aqui está a query SQL:
+
+```sql
+SELECT 
+    SUM(nf.valor_liquido) AS valor_total_cortesia
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON c.id = co.cortesia_id
+JOIN 
+    os o ON co.os_id = o.id
+WHERE 
+    nf.cortesia_id IS NOT NULL 
+    AND nf.cancelada = 0 
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND c.cancelada = 0 
+    AND c.ativo = 1
+    AND o.created_at BETWEEN '2024-12-01' AND '2024-12-31';
+```
+
+Essa consulta busca o valor total das notas fiscais de cortesia emitidas em janeiro de 2025, filtrando pelas ordens de serviço do mês anterior, garantindo a integridade do relacionamento entre as tabelas relevantes. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:26:21,638 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:26:21,638 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_emitido\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON c.id = co.cortesia_id\nJOIN \n    os ON co.os_id = os.id\nWHERE \n    nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND nf.cancelada = 0\n    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\n    AND c.cancelada = 0\n    AND c.ativo = 1\n    AND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:26:21,638 INFO: do texto: Para responder a pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos considerar as notas fiscais associadas a cortesias que foram emitidas nesse período. 
+
+As notas fiscais de cortesia estão associadas a ordens de serviço aprovadas no mês anterior à emissão, então precisamos selecionar as ordens de serviço de dezembro de 2024 e verificar quais dessas ordens estão associadas a uma cortesia e têm notas fiscais emitidas em janeiro de 2025. A coluna `cortesia_id` na tabela `notas_fiscais` deve estar preenchida e as notas fiscais não devem estar canceladas.
+
+Vamos construir a query considerando essas condições:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_emitido
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON c.id = co.cortesia_id
+JOIN 
+    os ON co.os_id = os.id
+WHERE 
+    nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND nf.cancelada = 0
+    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+    AND c.cancelada = 0
+    AND c.ativo = 1
+    AND co.deleted_at IS NULL;
+``` 
+
+Esta query soma o valor bruto das notas fiscais emitidas no mês de janeiro de 2025 relacionadas a cortesias. Apenas notas fiscais não canceladas e cortesias ativas e não canceladas são consideradas. Além disso, a associação correta entre ordens de serviço, cortesias e notas fiscais é estabelecida por meio dos joins adequados. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:30:53,336 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 21:30:53,741 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 21:31:15,310 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:31:15,311 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_notas_fiscais_cortesia\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os o ON co.os_id = o.id\nWHERE nf.cancelada = 0\nAND c.ativo = 1\nAND co.deleted_at IS NULL\nAND o.created_at BETWEEN '2024-12-01' AND '2024-12-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:31:15,311 INFO: do texto: Para responder à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos entender que as notas fiscais de cortesia emitidas em um determinado mês se referem às ordens de serviço (OS) do mês anterior. Sendo assim, estamos interessados em ordens de serviço de dezembro de 2024. Vamos buscar os valores brutos das notas fiscais que não foram canceladas, associados a cortesias ativadas em dezembro de 2024.
+
+O schema tem as tabelas `notas_fiscais`, `cortesias`, e `cortesia_os`. Vamos unir essas tabelas considerando as condições necessárias.
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_notas_fiscais_cortesia
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os o ON co.os_id = o.id
+WHERE nf.cancelada = 0
+AND c.ativo = 1
+AND co.deleted_at IS NULL
+AND o.created_at BETWEEN '2024-12-01' AND '2024-12-31';
+```
+
+1. **Quantidade de Valores Totais:** A query busca a soma dos valores brutos das notas fiscais.
+2. **Relacionamentos e Condições:** 
+   - `JOIN` entre `notas_fiscais` e `cortesias` baseia-se em `cortesia_id`.
+   - `JOIN` entre `cortesias` e `cortesia_os` baseia-se em `cortesia_id`.
+   - `JOIN` entre `cortesia_os` e `os` baseia-se em `os_id`.
+   - Filtra apenas notas não canceladas `nf.cancelada = 0`, cortesias com `ativo = 1` e registros válidos `co.deleted_at IS NULL`.
+3. **Período de Interesse:** Apenas OSs de dezembro de 2024 são consideradas.
+
+Esta query deve te fornecer o valor total emitido de notas fiscais de cortesia para janeiro de 2025 com base nas condições fornecidas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:32:23,208 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:32:23,208 INFO: queries extraídas: ['SELECT SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.cortesia_id IS NOT NULL \nAND nf.cancelada = 0 \nAND c.cancelada = 0 \nAND c.ativo = 1\nAND MONTH(nf.data_emissao) = 1 \nAND YEAR(nf.data_emissao) = 2025 \nAND MONTH(os.created_at) = 12\nAND YEAR(os.created_at) = 2024;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:32:23,208 INFO: do texto: Para entender a pergunta: você deseja saber o valor total das notas fiscais emitidas como cortesia durante o mês de janeiro de 2025. No contexto das notas fiscais de cortesia, a emissão de notas fiscais está atrelada às ordens de serviço (OS) associadas a cortesias realizadas no mês anterior, dezembro de 2024. Então, na consulta SQL, precisamos filtrar as notas fiscais de cortesias pelo mês de emissão, comparando com o mês de referência das cortesias para janeiro de 2025.
+
+Aqui está a consulta SQL para obter a informação solicitada:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.cortesia_id IS NOT NULL 
+AND nf.cancelada = 0 
+AND c.cancelada = 0 
+AND c.ativo = 1
+AND MONTH(nf.data_emissao) = 1 
+AND YEAR(nf.data_emissao) = 2025 
+AND MONTH(os.created_at) = 12
+AND YEAR(os.created_at) = 2024;
+```
+
+Esta consulta:
+
+- Agrega o `valor_bruto` das notas fiscais relacionadas a cortesias.
+- Verifica que as notas fiscais e cortesias não foram canceladas e que estão ativas.
+- Filtra as notas fiscais emitidas em janeiro de 2025.
+- Verifica que as ordens de serviço associadas foram criadas em dezembro de 2024. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:32:36,009 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:32:36,009 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_emitido\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os o ON co.os_id = o.id\nWHERE nf.cortesia_id IS NOT NULL\nAND nf.cancelada = 0\nAND c.cancelada = 0\nAND c.ativo = 1\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND o.created_at < '2025-01-01'\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:32:36,009 INFO: do texto: Para responder à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos considerar várias tabelas no schema. As notas fiscais de cortesia são relacionadas às OSs (ordens de serviço) que foram agrupadas como cortesia. Dessa forma, precisamos estabelecer a relação entre as tabelas `notas_fiscais`, `cortesias`, `cortesia_os` e `os`.
+
+As notas fiscais de cortesia têm a coluna `cortesia_id` preenchida, e a coluna `cancelada` das notas deve ser zero. Além disso, as cortesias devem estar ativas, com a coluna `cancelada` igual a zero.
+
+O valor emitido, que buscamos, será a soma do `valor_bruto` das notas fiscais filtradas por esses critérios. 
+
+Vamos considerar as OSs que foram criadas até dezembro de 2024 para obter as notas fiscais emitidas em janeiro de 2025. 
+
+A consulta SQL será formulada da seguinte forma:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_emitido
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os o ON co.os_id = o.id
+WHERE nf.cortesia_id IS NOT NULL
+AND nf.cancelada = 0
+AND c.cancelada = 0
+AND c.ativo = 1
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND o.created_at < '2025-01-01'
+AND co.deleted_at IS NULL;
+```
+
+Esta consulta calculará o valor total emitido de notas fiscais de cortesia em janeiro de 2025, considerando as OSs criadas antes de janeiro de 2025. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:32:46,966 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:32:46,966 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_cortesias_janeiro_2025\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os ON os.id = co.os_id\nWHERE nf.cortesia_id IS NOT NULL\nAND nf.cancelada = 0\nAND c.ativo = 1\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:32:46,966 INFO: do texto: Entendido. Você deseja saber o valor total emitido em notas fiscais referentes a cortesias no mês de janeiro de 2025. As notas fiscais de cortesia referem-se a ordens de serviço do mês anterior, que é dezembro de 2024. Precisamos buscar por notas fiscais vinculadas a cortesias que não foram canceladas e somar o valor bruto dessas notas fiscais emitidas em janeiro de 2025. Vamos usar as tabelas relacionadas à cortesia e às notas fiscais.
+
+Aqui está a consulta SQL para obter essa informação:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesias_janeiro_2025
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os ON os.id = co.os_id
+WHERE nf.cortesia_id IS NOT NULL
+AND nf.cancelada = 0
+AND c.ativo = 1
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+Essa consulta junta as tabelas `notas_fiscais`, `cortesias`, `cortesia_os` e `os` para assegurar que estamos considerando apenas notas fiscais não canceladas de cortesias, emitidas para ordens de serviço do mês anterior. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:32:52,906 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:32:52,906 INFO: queries extraídas: ['SELECT SUM(nf.valor_bruto) AS valor_total_cortesia\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os cos ON c.id = cos.cortesia_id\nJOIN os ON cos.os_id = os.id\nWHERE MONTH(nf.data_emissao) = 1\n  AND YEAR(nf.data_emissao) = 2025\n  AND MONTH(os.created_at) = 12\n  AND YEAR(os.created_at) = 2024\n  AND nf.cancelada = 0\n  AND cos.deleted_at IS NULL\n  AND c.cancelada = 0\n  AND c.ativo = 1;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:32:52,906 INFO: do texto: **Entendimento Inicial**:
+- Você deseja saber qual foi o valor total emitido em notas fiscais para cortesias no mês de janeiro de 2025.
+- Importante considerar as notas fiscais ligadas às cortesias que estão ativas, não canceladas, e que dentro da tabela `os`, a data de criação deve ser do mês anterior (dezembro de 2024), já que as cortesias são agrupamentos de OSs do mês anterior.
+
+**Análise e Solução**:
+- Precisaremos acessar as tabelas `notas_fiscais`, `cortesias`, `cortesia_os`, e `os` para compor nossa resposta.
+- Devemos certificar que a nota fiscal e suas cortesias relacionadas não estejam canceladas.
+- Fazer o vínculo das cortesias com suas OSs relacionadas para considerar apenas OSs com data de criação em dezembro de 2024.
+
+**Geração da Query**:
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_cortesia
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os cos ON c.id = cos.cortesia_id
+JOIN os ON cos.os_id = os.id
+WHERE MONTH(nf.data_emissao) = 1
+  AND YEAR(nf.data_emissao) = 2025
+  AND MONTH(os.created_at) = 12
+  AND YEAR(os.created_at) = 2024
+  AND nf.cancelada = 0
+  AND cos.deleted_at IS NULL
+  AND c.cancelada = 0
+  AND c.ativo = 1;
+```
+
+Esta consulta calcula a soma do valor bruto de todas as notas fiscais de cortesias emitidas no mês de janeiro de 2025, considerando as OSs criadas no mês de dezembro de 2024 relacionadas a cada cortesia. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:33:01,509 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:33:01,509 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_emitido\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.cancelada = 0\nAND nf.cortesia_id IS NOT NULL\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:33:01,509 INFO: do texto: Para responder a esta pergunta, precisamos identificar o valor das notas fiscais de cortesia emitidas em janeiro de 2025. De acordo com o entendimento do processo, notas fiscais de cortesia são associadas a 'os' através da tabela de 'cortesia_os', e as notas fiscais têm o campo 'cortesia_id' preenchido. Além disso, temos que considerar que as notas de cortesia emitidas em janeiro de 2025 se referem a 'os' do mês anterior, que é dezembro de 2024.
+
+Precisamos encontrar todas as notas fiscais que:
+1. Têm o campo 'cortesia_id' não nulo.
+2. Não estão canceladas ('notas_fiscais.cancelada = 0').
+3. São referentes a 'os' criadas em dezembro de 2024.
+
+Aqui está a SQL que realiza isso:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_emitido
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.cancelada = 0
+AND nf.cortesia_id IS NOT NULL
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND co.deleted_at IS NULL;
+```
+
+Esta consulta faz um `JOIN` entre as tabelas 'notas_fiscais', 'cortesia_os' e 'os', garantindo que as notas fiscais relacionadas à cortesia foram emitidas para 'os' criadas em dezembro de 2024 e que não estão canceladas. Repare que a coluna `cortesia_id` nas notas fiscais deve estar definida. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:33:18,816 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:33:18,816 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_emitido_cortesia_janeiro_2025\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nWHERE \n    nf.cortesia_id IS NOT NULL \n    AND c.mes_referencia = '2024-12-01'\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND c.cancelada = 0 \n    AND c.ativo = 1\n    AND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:33:18,816 INFO: do texto: Para responder a essa pergunta, precisamos buscar o valor emitido de notas fiscais que estão associadas a cortesias no mês de janeiro de 2025. As notas fiscais de cortesia estão associadas à tabela de `notas_fiscais` onde `cortesia_id` não é `NULL`, e a tabela `cortesias` onde `cancelada` é 0 e `ativo` é 1. 
+
+Essas notas fiscais são geralmente emitidas no mês seguinte ao mês de referência das cortesias. Portanto, precisamos procurar cortesias com o `mes_referencia` sendo dezembro de 2024, já que as notas fiscais de cortesia referentes a este mês serão emitidas em janeiro de 2025.
+
+A consulta a seguir deve capturar o valor emitido de tais notas fiscais:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_emitido_cortesia_janeiro_2025
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+WHERE 
+    nf.cortesia_id IS NOT NULL 
+    AND c.mes_referencia = '2024-12-01'
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND c.cancelada = 0 
+    AND c.ativo = 1
+    AND nf.cancelada = 0;
+```
+
+Esta query soma o valor bruto das notas fiscais emitidas para cortesias no mês de janeiro de 2025 e retorna esse valor. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:33:38,785 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:33:38,786 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total_notas_fiscais_cortesia\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.cancelada = 0\nAND nf.cortesia_id IS NOT NULL\nAND nf.tipo_nota = 'S'\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND co.deleted_at IS NULL\nAND os.finalizada = 0"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:33:38,788 INFO: do texto: Para responder a pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos considerar que as notas fiscais de cortesia são emitidas para ordens de serviço (OSs) do mês anterior. Assim, devemos buscar as OSs referentes ao mês de dezembro de 2024.
+
+Então, a estratégia é buscar na tabela `notas_fiscais` os registros que tenham uma `cortesia_id` não nula e estejam ativas (cancelada = 0), e correlacionar com as OSs do mês de dezembro de 2024 para calcular o valor total emitido.
+
+Vamos à query:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total_notas_fiscais_cortesia
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.cancelada = 0
+AND nf.cortesia_id IS NOT NULL
+AND nf.tipo_nota = 'S'
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND co.deleted_at IS NULL
+AND os.finalizada = 0
+```
+
+A query acima soma o `valor_bruto` das notas fiscais referentes a cortesias, garantindo que as OSs foram criadas no mês de dezembro de 2024. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:34:44,696 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 21:34:45,103 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-24 21:34:59,486 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:34:59,486 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_cortesias\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nWHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n  AND nf.cancelada = 0\n  AND c.cancelada = 0\n  AND c.ativo = 1;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:34:59,486 INFO: do texto: Para responder à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos identificar as notas fiscais associadas a cortesias e somar os valores das que foram emitidas no mês de janeiro de 2025. Lembre-se de que as notas fiscais de cortesia se referem a ordens de serviço do mês anterior.
+
+Vamos considerar as seguintes condições para construir a query:
+
+1. **Filtro por cortesias**: Precisamos considerar as notas fiscais onde a coluna `cortesia_id` não é nula e a coluna `cancelada` na tabela `notas_fiscais` é zero.
+2. **Período**: Queremos notas emitidas no mês de janeiro de 2025 (`data_emissao BETWEEN '2025-01-01' AND '2025-01-31'`).
+3. **Cortesias não canceladas e ativas**: A coluna `cancelada` na tabela `cortesias` deve ser zero e `ativo` igual a um.
+4. **Relacionamento correto entre tabelas**: Precisamos fazer um join entre `notas_fiscais` e `cortesias`.
+
+Com isso em mente, a query SQL será:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_cortesias
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+WHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+  AND nf.cancelada = 0
+  AND c.cancelada = 0
+  AND c.ativo = 1;
+```
+
+Essa consulta irá somar o valor bruto das notas fiscais de cortesia emitidas em janeiro de 2025, considerando as condições específicas de cortesias ativas e não canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:35:24,062 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:35:24,062 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS valor_total\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nJOIN cortesias c ON nf.cortesia_id = c.id\nWHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND c.cancelada = 0 AND c.ativo = 1\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:35:24,062 INFO: do texto: Para responder à pergunta sobre o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, precisamos interpretar que você está interessado em cortesias do mês de dezembro de 2024, já que as "notas fiscais de cortesia" são para OSs do mês anterior.
+
+Passos a serem seguidos:
+
+1. Entender que "notas fiscais de cortesia" estão relacionadas aos registros na tabela de notas_fiscais onde 'cortesia_id' não é nulo.
+2. Garantir que estas notas são pertinentes às cortesias que estão ativas e não canceladas.
+3. Considere que a emissão de notas se respalda em dados do mês anterior, ou seja, precisamos olhar para as OSs do mês de dezembro de 2024, como referência.
+4. Focar no campo 'data_emissao' da tabela 'notas_fiscais' dentro do mês de janeiro de 2025.
+
+Com base nestes pontos, a query SQL seria:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS valor_total
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+JOIN cortesias c ON nf.cortesia_id = c.id
+WHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND c.cancelada = 0 AND c.ativo = 1
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31';
+```
+
+Esta consulta soma o valor bruto das notas fiscais de cortesia emitidas em janeiro de 2025 para OSs criadas em dezembro de 2024, considerando que essas notas estão ativas e não canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:36:01,953 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:36:01,953 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS total_valor_nota_fiscal\nFROM \n    notas_fiscais nf\nJOIN \n    cortesia_os cos ON nf.cortesia_id = cos.cortesia_id\nJOIN \n    os ON cos.os_id = os.id\nWHERE \n    nf.cortesia_id IS NOT NULL \n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND nf.cancelada = 0\n    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\n    AND cos.deleted_at IS NULL\n    AND EXISTS (SELECT 1 FROM cortesias c WHERE c.id = nf.cortesia_id AND c.cancelada = 0 AND c.ativo = 1);"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:36:01,953 INFO: do texto: ### Entendimento Inicial
+
+A pergunta busca determinar o valor total emitido de notas fiscais de cortesia no mês de janeiro de 2025. Notas fiscais de cortesia estão relacionadas à tabela `cortesias` e são vinculadas por meio da tabela `notas_fiscais`. Além disso, as notas fiscais emitidas em janeiro de 2025 referem-se às OSs do mês anterior, isto é, dezembro de 2024.
+
+### Análise e Solução
+
+1. **Identificar as Tabelas Relevantes**:
+   - `notas_fiscais`: contém informação sobre o valor das notas fiscais e o campo `cortesia_id` indica o vínculo com cortesias.
+   - `cortesias`: armazena a relação de cortesias, cujas OSs foram agregadas para a emissão das notas fiscais pertinentes.
+
+2. **Filtrar as Notas Fiscais Relevantes**:
+   - Filtrar notas fiscais emitidas no mês de janeiro de 2025.
+   - Garantir que essas notas fiscais estão vinculadas às cortesias, e esses registros sejam válidos (`cancelada = 0`).
+   - Considerar apenas cortesias ativas (`ativo = 1`) e não canceladas, vinculadas a OSs criadas no mês de dezembro de 2024.
+
+### Geração da Query SQL
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS total_valor_nota_fiscal
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesia_os cos ON nf.cortesia_id = cos.cortesia_id
+JOIN 
+    os ON cos.os_id = os.id
+WHERE 
+    nf.cortesia_id IS NOT NULL 
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND nf.cancelada = 0
+    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+    AND cos.deleted_at IS NULL
+    AND EXISTS (SELECT 1 FROM cortesias c WHERE c.id = nf.cortesia_id AND c.cancelada = 0 AND c.ativo = 1);
+```
+
+### Explicação:
+
+- **Filtros de Data**: A query filtra as notas fiscais emitidas no mês de janeiro de 2025 e considera OSs criadas em dezembro de 2024.
+- **Condições de Integração**: Estabelece a ligação entre a tabela `notas_fiscais` e `cortesias` através da tabela `cortesia_os`.
+- **Condições de Validade**: Impõe que tanto a nota fiscal quanto as cortesias associadas devem estar ativas e não canceladas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:38:00,147 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:38:00,147 INFO: queries extraídas: ["SELECT SUM(nf.valor_liquido) AS valor_total_cortesias_janeiro_2025\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\nAND c.cancelada = 0\nAND c.ativo = 1\nAND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\nAND nf.cancelada = 0;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:38:00,147 INFO: do texto: Para responder a esta pergunta, precisamos identificar o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025. As notas fiscais de cortesia são aquelas relacionadas com as 'os' (ordens de serviço) que estão associadas a cortesias. Na tabela `notas_fiscais`, a referência de cortesia pode ser verificada pela coluna `cortesia_id` (que não será nula) e a cortesia deve ter a coluna `cancelada` igual a 0 e `ativo` igual a 1, conforme suas instruções.
+
+Além disso, é importante lembrar que as notas fiscais de cortesia emitidas em janeiro de 2025 podem estar relacionadas a ordens de serviço criadas no mês anterior, em dezembro de 2024.
+
+Segue a query que resolve essa tarefa:
+
+```sql
+SELECT SUM(nf.valor_liquido) AS valor_total_cortesias_janeiro_2025
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+AND c.cancelada = 0
+AND c.ativo = 1
+AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+AND nf.cancelada = 0;
+```
+
+Esta consulta soma o valor líquido das notas fiscais emitidas em janeiro de 2025 que estão associadas a cortesias, considerando que a respectiva criação das ordens de serviço ocorreu em dezembro de 2024, e certificando-se de que nem as notas fiscais, nem as cortesias estão canceladas ou inativas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:42:32,530 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:42:32,530 INFO: queries extraídas: ["SELECT \n    SUM(nf.valor_bruto) AS valor_total_emitido\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON c.id = co.cortesia_id\nJOIN \n    os ON co.os_id = os.id\nWHERE \n    nf.cortesia_id IS NOT NULL\n    AND nf.cancelada = 0\n    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'\n    AND c.cancelada = 0\n    AND c.ativo = 1\n    AND co.deleted_at IS NULL\n    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:42:32,530 INFO: do texto: Para responder a esta pergunta, precisamos buscar o valor das notas fiscais de cortesia emitidas no mês de janeiro de 2025. De acordo com o contexto fornecido, as notas fiscais de cortesia são relacionadas a ordens de serviço (os) que foram do mês anterior. Portanto, precisamos considerar as 'os' do mês de dezembro de 2024.
+
+Aqui está a query SQL que atende a essa demanda:
+
+```sql
+SELECT 
+    SUM(nf.valor_bruto) AS valor_total_emitido
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON c.id = co.cortesia_id
+JOIN 
+    os ON co.os_id = os.id
+WHERE 
+    nf.cortesia_id IS NOT NULL
+    AND nf.cancelada = 0
+    AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'
+    AND c.cancelada = 0
+    AND c.ativo = 1
+    AND co.deleted_at IS NULL
+    AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31';
+```
+
+Esta consulta soma o valor bruto das notas fiscais de cortesia que foram emitidas em janeiro de 2025, garantindo que as cortesia e ordens de serviço relacionadas não estejam canceladas ou marcadas como inativas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-24 21:55:24,129 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-24 21:55:24,129 INFO: queries extraídas: ["SELECT SUM(nf.valor_bruto) AS total_valor_emitido\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN cortesia_os co ON co.cortesia_id = c.id\nJOIN os ON os.id = co.os_id\nWHERE nf.cortesia_id IS NOT NULL \n  AND nf.cancelada = 0\n  AND nf.tipo_nota = 'P'\n  AND c.cancelada = 0 \n  AND c.ativo = 1 \n  AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'\n  AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-24 21:55:24,129 INFO: do texto: Para determinar o valor emitido de notas fiscais de cortesia no mês de janeiro de 2025, devemos considerar as notas fiscais relacionadas às cortesias cujas ordens de serviço (OS) foram criadas no mês de dezembro de 2024. Isso ocorre porque as "notas fiscais de cortesias" são emitidas no mês seguinte ao da execução das OS.
+
+A seguir está a consulta SQL que calcula o valor das notas fiscais de cortesia emitidas em janeiro de 2025:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_emitido
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN cortesia_os co ON co.cortesia_id = c.id
+JOIN os ON os.id = co.os_id
+WHERE nf.cortesia_id IS NOT NULL 
+  AND nf.cancelada = 0
+  AND nf.tipo_nota = 'P'
+  AND c.cancelada = 0 
+  AND c.ativo = 1 
+  AND os.created_at BETWEEN '2024-12-01' AND '2024-12-31'
+  AND nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31';
+```
+
+### Explicação:
+- **Filtragem por Mês de Referência**: Estamos selecionando as OS que foram criadas em dezembro de 2024 (`os.created_at BETWEEN '2024-12-01' AND '2024-12-31'`).
+- **Emissão em Janeiro de 2025**: As notas fiscais de cortesia são efetivamente emitidas em janeiro de 2025 (`nf.data_emissao BETWEEN '2025-01-01' AND '2025-01-31'`).
+- **Validação de Estado**: Certificamos que apenas notas e cortesias não canceladas são consideradas (`nf.cancelada = 0`, `c.cancelada = 0` e `c.ativo = 1`).
+- **Tipo de Nota**: Consideramos apenas notas fiscais eletrônicas de produto (`nf.tipo_nota = 'P'`).
+- **Relacionamento de Cortesia**: Utilizado para vincular corretamente as OS e notas às cortesias através das tabelas `cortesias` e `cortesia_os`. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]

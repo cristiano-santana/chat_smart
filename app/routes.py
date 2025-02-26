@@ -353,7 +353,7 @@ SCHEMA = {
         "relacionamentos": {}
     },
     "cortesia_os": {
-        "descricao": "Tabela de cortesia_os, tabela pivot entre 'os' e 'cortesias'" ,
+        "descricao": "Tabela cortesia_os, tabela pivot entre 'os' e 'cortesias', lembre que uma 'cortesia' relaciona muitas 'o.s`s'mas, um cortesia possui uma ou mais notas fiscais!" ,
         "colunas": ["id","os_id","cortesia_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "cortesias": "cortesias.id = cortesia_os.cortesia_id",
