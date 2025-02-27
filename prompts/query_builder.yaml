@@ -21,6 +21,7 @@ query_builder: >
 
         ## GERAÇÃO DA QUERY CONSIDERE AS SEGUINTES CONDIÇÕES
             - PARA faturamento USE APENAS AS COLUNA 'paga' = 1 AND 'cancelada' = 0 DA TABELA 'os' para calculos!
+            - EXISTE notas fiscais relacionada a cortesisas! Quer dizer, que uma nota fiscal nem sempre estará vinculada a uma 'os'!
             - Os 'tipo_nota' na tabela: 'notas_fiscais', validos para o faturamento são: 'S', 'P' e 'C'!
             - As 'os_tipo_id' na tabela 'os', validos para o faturamento são: 1,2,3,4,5!
             - Os 'status_nota' na tabela 'notas_fiscais', validos para o faturamentos são: 3, 4!
