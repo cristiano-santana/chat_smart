@@ -88,8 +88,8 @@ SCHEMA = {
         }
     },
     "concessionarias": {
-        "descricao": "Tabela de concessionarias (concessionárias de veículos, onde nós vendemos serviços como terceiro!).",
-        "colunas": ["id","nome","aceita_indicador1","aceita_indicador2","produtivo_base_id","concessionaria_execucao_id","cluster_id","business_unit_id","empresa_faturamento_id","ativo","created_at","deleted_at"],
+        "descricao": "Tabela de concessionarias (concessionárias de veículos, onde nossa empresa presta serviços como terceiro!).",
+        "colunas": ["id","nome","aceita_indicador1","aceita_indicador2","produtivo_base_id","concessionaria_execucao_id","cluster_id","business_unit_id","ativo","created_at","deleted_at"],
         "relacionamentos": {
             "business_units": "business_units.id = concessionarias.business_unit_id",
             "concessionarias": "concessionarias.id = concessionarias.concessionaria_execucao_id",
