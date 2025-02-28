@@ -26,6 +26,7 @@ query_builder: >
                 - Gaste um tempo pensando na sua resposta, porque você erra ao gerar uma consulta! Você erra por muito ao criar um query!
 
         ## GERAÇÃO DA QUERY CONSIDERE AS SEGUINTES CONDIÇÕES
+            - Para cortesias o mês de referencia significa a coluna 'created_at' na tabela 'os'!
             - EM QUASE TODAS AS TABELAS DO SCHEMA DE TABELAS EXISTEM COLUNAS QUE INDICAM REGISTROS VALIDOS! EXEMPLOS: 'deleted_at' IS NULL, 'ativo' = 1
             - PARA faturamento SEMPRE USE AS COLUNA 'paga' = 1 AND 'cancelada' = 0 DA TABELA 'os' para BUSCAR 'caixas' ou 'notas_fiscais'!
             - NÃO USE A COLUNA 'tipo_nota' SE NÃO FOR MENCIONANDO MESMO QUE IMPLICITAMENTE NA QUESTÃO DO USUÁRIO!
