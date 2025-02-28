@@ -28,54 +28,54 @@ def upload_file_yaml(file_path, file_name, schema):
 
     return config[file_name]
 
-def extract_query_from_text(texto):
+def extract_query_from_text(resposta, pergunta):
     """
     Extrai o bloco de código SQL de um texto com explicações.
 
     Args:
-        texto (str): Texto que contém a query SQL dentro de blocos de código.
+        resposta (str): Resposta do modelo que contém as queries SQL dentro de blocos de código.
+        pergunta (str): Pergunta do usuario.
 
     Returns:
         str: A primeira query SQL extraída do bloco de código.
              Retorna `None` se nenhuma query for encontrada.
     """
     pattern = r"```sql\s*\n?(.*?)```"
-    matches = re.findall(pattern, texto, flags=re.DOTALL | re.IGNORECASE)
+    matches = re.findall(pattern, resposta, flags=re.DOTALL | re.IGNORECASE)
     
     if matches:
         consulta_sql = matches[0].strip()
-        if consulta_sql.upper().startswith("SELECT"):
-            current_app.logger.info(f"query: {consulta_sql} extraída do texto.")
-            return consulta_sql
-        else:
-            current_app.logger.error("A query extraída não é uma SELECT.")
-            return None
+        current_app.logger.info(f"PERGUNTA: {pergunta}")
+        current_app.logger.info(f"RESPOSTA: {resposta}")
+        current_app.logger.info(f"QUERY: {consulta_sql}.")
+        return consulta_sql
     else:
-        current_app.logger.error("Nenhuma query SQL encontrada no texto.")
+        current_app.logger.error(f"Nenhuma query SQL encontrada na resposta do modelo: {resposta}.")
         return None
 
-def extract_all_queries_from_the_text(texto):
+def extract_all_queries_from_the_text(resposta, pergunta):
     """
     Extrai todos os blocos de código SQL de um texto com explicações.
 
     Args:
-        texto (str): Texto que contém as queries SQL dentro de blocos de código.
+        resposta (str): Resposta do modelo que contém as queries SQL dentro de blocos de código.
+        pergunta (str): Pergunta do usuario.
 
     Returns:
         list: Lista de queries SQL extraídas dos blocos de código.
               Retorna lista vazia se nenhuma query for encontrada.
     """
     pattern = r"```sql\s*\n?(.*?)```"
-    matches = re.findall(pattern, texto, flags=re.DOTALL | re.IGNORECASE)
+    matches = re.findall(pattern, resposta, flags=re.DOTALL | re.IGNORECASE)
     
     if matches:
         consultas_sql = [match.strip() for match in matches]
-        current_app.logger.info(f"{len(consultas_sql)} queries extraídas do texto.")
-        current_app.logger.info(f"queries extraídas: {consultas_sql}.")
-        current_app.logger.info(f"do texto: {texto}")
+        current_app.logger.info(f"PERGUNTA: {pergunta}")
+        current_app.logger.info(f"RESPOSTA: {resposta}")
+        current_app.logger.info(f"QUERIES: {consultas_sql}.")
         return consultas_sql
     else:
-        current_app.logger.error("Nenhuma query SQL encontrada no texto: {texto}.")
+        current_app.logger.error(f"Nenhuma query SQL encontrada na resposta do modelo: {resposta}.")
         return []
 
 def translate_texts_queries(schema, pergunta):
@@ -112,7 +112,7 @@ def translate_texts_queries(schema, pergunta):
         content = response.choices[0].message.content
 
         # Extrai o bloco de código SQL de um texto com explicações.
-        queries = extract_all_queries_from_the_text(content)
+        queries = extract_all_queries_from_the_text(content, pergunta)
         if queries: 
             return queries
         else: 

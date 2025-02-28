@@ -8,7 +8,7 @@ bp = Blueprint('main', __name__)
 # Definição do schema do banco de dados
 SCHEMA = {
     "os": {
-        "descricao": "Tabela de 'os' (ordens de serviço).",
+        "descricao": "Tabela de 'os' (ordens de serviço). As 'os_tipo_id' na tabela 'os', validos para o faturamento são: 1,2,3,4,5!",
         "colunas": ["id","os_concessionaria","tipo_atendimento","retencao_iss","paga","data_pagamento","fechada","data_fechamento","finalizada","data_finalizacao","cancelada","data_cancelamento","solicitado_cancelamento","os_retorno","cortesia_migrada","nivel_indicador1","nivel_indicador2","indicador1_id","indicador2_id","departamento_id","vendedor_id","concessionaria_id","cliente_carro_id","cliente_id","os_tipo_id","proposta_id","os_retorno_id","os_migracao_cortesia_id","ativo","created_at","deleted_at","id_antigo"],
         "relacionamentos": {
             "cliente_carros": "cliente_carros.id = os.cliente_carro_id",
@@ -125,7 +125,7 @@ SCHEMA = {
         "relacionamentos": {}
     },
     "notas_fiscais": {
-        "descricao": "Tabela de notas fiscais",
+        "descricao": "Tabela de notas fiscais: Os valores da coluna 'tipo_nota' validos para o faturamento são: 'S', 'P' e 'C'! Os valores da coluna 'status_nota' validos para o faturamentos são: 3, 4! Os valores da coluna 'tipo_nota' faz referência a: 'S' = NFSE, 'P' = NFE, 'C' = NFCE, 'D' = 'DEVOLUCAO'! Notas fiscais de cortesias: o valor da coluna 'cortesia_id' deve ser igual ao valor da coluna 'id' da tabela 'cortesias', o valor da coluna 'cancelada' = 0, o valor da coluna 'ativo' = 1 na tabela 'cortesias'! EXISTE notas fiscais relacionada a cortesisa! Quer dizer, que uma nota fiscal nem sempre estará vinculada a uma 'os' uma nota fiscal pode está vinculada a uma cortesia! UMA cortesia NÃO QUER DIZER UM 'tipo_nota' = 'C'! O 'tipo_nota' = 'C', SIGNIFICA NOTA DE CONSUMIDOR FINAL! UMA 'cortesia' PODE TER VÁRIAS 'o.s', POR ISSO CUIDADO COM A DUPLICIDADE AO BUSCAR 'notas_fiscais' DE 'cortesias', JÁ QUE UMA cortesia tem uma ou duas notas fiscais na tabela 'notas_fiscais'! Notas fiscais relacionadas a tabela 'cortesias' tem o valor da coluna 'data_emissao' é igual ao mês / ano mencionado na pergunta e o valor da coluna 'created_at' da tabela 'os' no mês anterior ao mencionado na pergunta!",
         "colunas": ["id","valor_bruto","valor_liquido","retencao_iss","data_emissao","tipo_nota","serie","bancotoyota","numero_nota","chave_nota","numero_registro","status_nota","danfe_emitida","email_enviado","url_danfe","resposta_erro","cancelada","data_cancelamento","solicitado_cancelamento","motivo_cancelamento","devolvida","data_devolucao","solicitado_devolucao","cancelamento_extemporaneo","data_cancelamento_extemporaneo","solicitado_cancelamento_extemporaneo","observacao_devolucao","devolucao_pelo_cliente","chave_nfe_referencia","chave_cte_referencia","observacao","info_adicional","natureza_operacao","boleto_emitido","url_boleto","data_emissao_boleto","data_vencimento_boleto","boleto_registrado","data_registro_boleto","lancado_moneycare","data_lancamento_moneycare","os_id","cortesia_id","fornecedor_id","parent_id","boleto_remessa_id","empresa_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "boleto_remessas": "boleto_remessas.id = notas_fiscais.boleto_remessa_id",
@@ -353,7 +353,7 @@ SCHEMA = {
         "relacionamentos": {}
     },
     "cortesia_os": {
-        "descricao": "Tabela cortesia_os, tabela pivot entre 'os' e 'cortesias', lembre que uma 'cortesia' relaciona muitas 'o.s`s'mas, um cortesia possui uma ou mais notas fiscais!" ,
+        "descricao": "Esta é uma tabela pivot que pode causar registros duplicados na tabela 'notas_fiscais'. Certifique-se de que a agregação leve isso em conta. esta tabela contém uma coluna 'deleted_at'. Apenas registros onde 'deleted_at' IS NULL devem ser considerados. As 'os`s' relacionadas a uma cortesia estão nessa tabela e não na tabela 'notas_fiscais'! Utilize DISTINCT ou uma subquery apropriada para evitar duplicação de valores ao somar 'valor_bruto' ou 'valor_liquido' na tabela 'notas_fiscais'!",
         "colunas": ["id","os_id","cortesia_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "cortesias": "cortesias.id = cortesia_os.cortesia_id",
@@ -361,7 +361,7 @@ SCHEMA = {
         }
     },
     "cortesias": {
-        "descricao": "Tabela de cortesias, uma cortesia agrupa varias os`s",
+        "descricao": "Esta tabela agrupa varias os`s. Uma consulta que envolve cortesias, deve incluir JOINs necessários entre as tabelas notas_fiscais, cortesias, 'cortesia_os' e os. CUIDADO COM DUPLICIDADE! Utilize DISTINCT ou uma subquery apropriada para evitar duplicação de valores ao somar os totais",
         "colunas": ["id","mes_referencia","valor_bruto","valor_liquido","retensao_iss","paga","data_pagamento","valor_pago","fechada","data_fechamento","finalizada","data_finalizacao","cancelada","data_cancelamento","solicitado_cancelamento","motivo_cancelamento","observacao","email_enviado","data_envio_email","pagamento_deposito","concessionaria_id","departamento_id","empresa_id","funcionario_cancelamento_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "concessionarias": "concessionarias.id = cortesias.concessionaria_id",
