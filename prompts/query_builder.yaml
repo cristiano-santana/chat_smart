@@ -26,12 +26,12 @@ query_builder: >
                 - Gaste um tempo pensando na sua resposta, porque você erra ao gerar uma consulta! Você erra por muito ao criar um query!
 
         ## GERAÇÃO DA QUERY CONSIDERE AS SEGUINTES CONDIÇÕES
+            - EM QUASE TODAS AS CONSULTAS GERADAS POR VOCÊ, SÃO ERRADAS! POR QUE VOCÊ NÃO ESTÁ TRATANDO REGISTROS DUPLICADOS! POR FAVOR TENHA EM MENTE QUE REGISTROS DUPLICADOS ALTERAM MUITO O RESULTADO FINAL!
             - Para cortesias o mês de referencia significa a coluna 'created_at' na tabela 'os'!
-            - EM QUASE TODAS AS TABELAS DO SCHEMA DE TABELAS EXISTEM COLUNAS QUE INDICAM REGISTROS VALIDOS! EXEMPLOS: 'deleted_at' IS NULL, 'ativo' = 1
-            - PARA faturamento SEMPRE USE AS COLUNA 'paga' = 1 AND 'cancelada' = 0 DA TABELA 'os' para BUSCAR 'caixas' ou 'notas_fiscais'!
+            - PARA faturamento SEMPRE USE AS COLUNA 'paga' = 1 AND 'cancelada' = 0 DA TABELA 'os' para BUSCAS NAS TABELAS 'caixas', 'notas_fiscais'!
             - NÃO USE A COLUNA 'tipo_nota' SE NÃO FOR MENCIONANDO MESMO QUE IMPLICITAMENTE NA QUESTÃO DO USUÁRIO!
             - Sempre que você incluir as colunas 'cancelado', 'cancelada', 'pago', 'paga', 'fechado', 'fechada', 'finalizado', 'finalizada' numa query use finalizado = 0, cancelado = 0! Nunca use finalizado IS NULL ou cancelada IS NULL!
-            - A coluna 'concessionaria_id' na tabela 'os' se refere a uma concessionaria onde prestamos serviços de estetica automotiva!
+            - 
             - Com base no Schema das Tabelas, desenvolva query SQL válida.
             - Enquadre a query no bloco ```sql * ```, ISSO É MUITO IMPORTANTE!
             - É muito importante que na sua resposta tenha consulta sql válida! Baseada no schema das tabelas.
@@ -49,7 +49,7 @@ query_builder: >
             - Na tabela 'funcionarios' a coluna 'nome' refere-se ao nome completo do funcionario.
             - O termo 'plotter' referece a 'estoques': 'PLOTTER', que representa os filmes produzidos dentro da empresa, quando falo produzidos, quero dizer que temos bobinas de filmes que cortamos para instalar no carro do cliente que vendemos o serviço!
             - O termo 'cluster' quer dizer grupo de concessionarias próximas! Existe a tabela 'clusters' que tem a relação 1:N com a tabela 'concessionarias'.
-            - O pagamento de uma 'os' significa que uma 'os' tem um ou mais registros na tabela 'caixas', esta tem uma relação N:1 com a tabela 'os'.
+            - 
             - O faturamento de empresa é caracterizada por notas fiscais emitidas por esta empresa!
             - Use um GROUP BY ou subquery com DISTINCT para garantir que cada nota fiscal seja contada apenas uma vez.
             - AS 'notas fiscais' de 'cortesias' emitidas num mês faz referecia as 'os`s' do mês anterior! Por isso você deve considerar a tabela 'os' coluna 'created_at' mês anterior!

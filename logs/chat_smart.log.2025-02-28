@@ -1,0 +1,1225 @@
+2025-02-28 06:54:39,902 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 06:54:40,493 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 06:55:38,244 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 06:55:38,244 INFO: queries extraídas: ["SELECT SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias cor ON cor.id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nWHERE nf.cortesia_id IS NOT NULL \nAND nf.cancelada = 0 \nAND cor.ativo = 1 \nAND cor.cancelada = 0 \nAND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') \nAND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)\nAND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') \nAND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 06:55:38,244 INFO: do texto: Pensando na pergunta, ela se refere ao faturamento de cortesias do mês anterior. No contexto do banco de dados, "faturamento" implica em notas fiscais emitidas e, para cortesias, devemos considerar a relação entre as tabelas `notas_fiscais`, `cortesias`, `cortesia_os` e `os`. Além disso, é importante lembrar que as notas fiscais de cortesias são aquelas onde o `cortesia_id` não é nulo e a cortesia está ativa (conforme a coluna `ativo` na tabela `cortesias`) e não cancelada.
+
+A pergunta busca o faturamento de cortesias referentes ao mês anterior, então devemos filtrar as `os` criadas no mês anterior e as notas fiscais emitidas em relação a esse contexto de tempo. Vou gerar uma consulta SQL que atende a esse requerimento.
+
+```sql
+SELECT SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias cor ON cor.id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+WHERE nf.cortesia_id IS NOT NULL 
+AND nf.cancelada = 0 
+AND cor.ativo = 1 
+AND cor.cancelada = 0 
+AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') 
+AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)
+AND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') 
+AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)
+AND co.deleted_at IS NULL;
+```
+
+Esta query buscará o valor total das notas fiscais de cortesias emitidas no mês passado, verificando se as cortesias são ativas e não canceladas e garantindo que as ordens de serviço relacionadas foram criadas no mês anterior ao mês passado. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:04:00,097 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:04:00,097 INFO: queries extraídas: ['SELECT \n    SUM(DISTINCT nf.valor_bruto) AS faturamento_cortesias\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON c.id = co.cortesia_id\nJOIN \n    os ON co.os_id = os.id\nWHERE \n    nf.cortesia_id IS NOT NULL \n    AND nf.cancelada = 0 \n    AND c.ativo = 1 \n    AND c.cancelada = 0\n    AND nf.data_emissao BETWEEN LAST_DAY(CURRENT_DATE) + INTERVAL 1 DAY - INTERVAL 2 MONTH AND LAST_DAY(CURRENT_DATE) - INTERVAL 1 MONTH\n    AND co.deleted_at IS NULL;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:04:00,097 INFO: do texto: Para determinar o faturamento de cortesias no mês passado, preciso entender como o schema das tabelas está organizado. O faturamento é frequentemente impulsionado pelas notas fiscais que são emitidas. Com base no esquema fornecido, a tabela 'notas_fiscais' é um componente chave, pois armazena informações sobre as notas fiscais emitidas.
+
+As cortesias estão relacionadas com a tabela 'cortesias', que por sua vez, também se vinculam a 'notas_fiscais' através da coluna 'cortesia_id'. É importante garantir que as consultas à tabela 'cortesia_os' sejam devidamente tratadas para evitar duplicação, usando 'DISTINCT' ou 'GROUP BY'.
+
+Além disso, ao buscar registros de cortesias, levamos em conta as 'os's dos serviços prestados no mês anterior ao mês de emissão das notas fiscais. Neste caso, é vital garantir que as cortesias estejam ativas e não canceladas na tabela de 'cortesias', e que as notas fiscais correspondentes não estejam canceladas na tabela 'notas_fiscais'.
+
+Para conseguir o faturamento de cortesias no mês passado, precisamos:
+- Considerar que 'notas_fiscais.cancelada' é igual a 0.
+- Olhar o mês de emissão das notas fiscais (data_emissao) para determinar quais foram emitidas no mês passado.
+- Um join com 'cortesias' para assegurar que os dados são válidos e a cortesia está ativa.
+- Garantir que estamos apenas incluindo valores não duplicados devido à natureza da tabela de relacionamento entre cortesias e ordens de serviço.
+
+Com todas essas informações em mente, aqui está a query em SQL que coleta as informações necessárias:
+
+```sql
+SELECT 
+    SUM(DISTINCT nf.valor_bruto) AS faturamento_cortesias
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON c.id = co.cortesia_id
+JOIN 
+    os ON co.os_id = os.id
+WHERE 
+    nf.cortesia_id IS NOT NULL 
+    AND nf.cancelada = 0 
+    AND c.ativo = 1 
+    AND c.cancelada = 0
+    AND nf.data_emissao BETWEEN LAST_DAY(CURRENT_DATE) + INTERVAL 1 DAY - INTERVAL 2 MONTH AND LAST_DAY(CURRENT_DATE) - INTERVAL 1 MONTH
+    AND co.deleted_at IS NULL;
+```
+
+Esta consulta:
+- Usa `SUM(DISTINCT nf.valor_bruto)` para garantir que cada nota fiscal seja contada apenas uma vez.
+- Limita os resultados ao período do mês passado usando a função `LAST_DAY()` para calcular o intervalo.
+- Filtra por notas fiscais que não foram canceladas e estão ativas, além de cortesias válidas.
+- Evita duplicatas da tabela 'cortesia_os' verificando se `deleted_at` é NULL. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:05:46,664 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:05:48,172 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:05:50,697 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:06:07,113 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:06:07,113 INFO: queries extraídas: ["SELECT SUM(DISTINCT nf.valor_liquido) AS faturamento_cortesias_mes_passado\nFROM notas_fiscais nf\nJOIN cortesias cor ON nf.cortesia_id = cor.id\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nWHERE nf.cancelada = 0 \nAND cor.ativo = 1 \nAND cor.cancelada = 0\nAND nf.data_emissao BETWEEN DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH) \nAND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:06:07,113 INFO: do texto: Pensando sobre a questão, é necessário considerar quais tabelas e colunas são relevantes para determinar o faturamento de cortesias no mês passado. As tabelas importantes aqui são "notas_fiscais", que contém informações sobre as notas fiscais geradas, e "cortesias", que está ligada às "notas_fiscais" via "cortesia_id". Precisamos garantir que apenas notas fiscais de cortesias que são válidas sejam consideradas, ou seja, aquelas que não foram canceladas na tabela "notas_fiscais" e estão ativas na tabela "cortesias".
+
+A consulta deve considerar as datas do mês anterior à data atual para buscar os registros corretos. Vou utilizar funções de manipulação de datas do MySQL para determinar o início e o final do mês passado.
+
+Agora, é importante calcular o faturamento, utilizando a soma dos valores líquidos das notas fiscais, garantindo que cada nota fiscal de cortesia seja contada apenas uma vez. A tabela "cortesia_os" pode gerar duplicidade, por isso é vital usar ou uma subquery com DISTINCT ou um GROUP BY adequado.
+
+Aqui está a query correta para obter o faturamento das cortesias do mês passado:
+
+```sql
+SELECT SUM(DISTINCT nf.valor_liquido) AS faturamento_cortesias_mes_passado
+FROM notas_fiscais nf
+JOIN cortesias cor ON nf.cortesia_id = cor.id
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+WHERE nf.cancelada = 0 
+AND cor.ativo = 1 
+AND cor.cancelada = 0
+AND nf.data_emissao BETWEEN DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH) 
+AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+AND co.deleted_at IS NULL;
+```
+
+Essa consulta deve retornar o valor total de faturamento das cortesias, considerando as notas fiscais emitidas no mês passado e filtrando corretamente para evitar duplicidades. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:08:46,916 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:12:38,334 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:13:21,012 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:13:27,538 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:16:31,806 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:17:04,488 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:17:22,606 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:17:22,606 INFO: queries extraídas: ["SELECT \n    SUM(DISTINCT nf.valor_liquido) AS valor_total_cortesias\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias cor ON cor.id = co.cortesia_id\nJOIN os ON co.os_id = os.id \nWHERE nf.cortesia_id IS NOT NULL \n  AND nf.cancelada = 0 \n  AND nf.data_emissao BETWEEN '2023-09-01' AND '2023-09-30' \n  AND os.created_at BETWEEN '2023-08-01' AND '2023-08-31'\n  AND cor.ativo \n  AND cor.cancelada = 0 \n  AND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:17:22,606 INFO: do texto: Pensando na pergunta formulada: "Quero saber qual foi o faturamento de cortesias no mês passado?", é importante entender que se trata de calcular o valor total das cortesias emitidas como faturamento no período solicitado. É necessário também considerar que o mês passado se refere ao mês anterior à data atual e que as cortesias de um mês são associadas às notas fiscais emitidas de ordens de serviço criadas no mês anterior.
+
+Para calcular esse faturamento, deve-se acessar as tabelas relacionadas a notas fiscais e identificar as relacionadas a cortesias. É essencial garantir que se evite a duplicidade resultante de múltiplas ordens de serviço para cada cortesia ao agregar valores.
+
+Agora, vamos estruturar a consulta SQL.
+
+Primeiro, precisamos obter o intervalo de datas do mês passado. Como estamos em outubro de 2023 (considerando o limite de conhecimento), consideraremos setembro de 2023. Precisaremos de uma junção entre a tabela de notas fiscais, a tabela de cortesias e as ordens de serviço. Vamos garantir que só consideramos registros válidos e ativos (sem cancelamentos ou deleções).
+
+Partindo para o SQL:
+
+- Vamos buscar a soma dos valores líquidos das notas fiscais relacionadas a cortesias para as ordens de serviço criadas no mês anterior a setembro de 2023 (ou seja, agosto de 2023).
+
+```sql
+SELECT 
+    SUM(DISTINCT nf.valor_liquido) AS valor_total_cortesias
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias cor ON cor.id = co.cortesia_id
+JOIN os ON co.os_id = os.id 
+WHERE nf.cortesia_id IS NOT NULL 
+  AND nf.cancelada = 0 
+  AND nf.data_emissao BETWEEN '2023-09-01' AND '2023-09-30' 
+  AND os.created_at BETWEEN '2023-08-01' AND '2023-08-31'
+  AND cor.ativo 
+  AND cor.cancelada = 0 
+  AND co.deleted_at IS NULL;
+```
+
+Essa consulta considera todas as condições necessárias para garantir que o valor total das cortesias não seja duplicado e inclui apenas as notas fiscais ativas não canceladas de cortesias. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:19:49,140 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:19:49,140 INFO: queries extraídas: ["SELECT SUM(DISTINCT nf.valor_liquido) AS total_faturamento_cortesias\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias c ON c.id = co.cortesia_id\nJOIN os o ON co.os_id = o.id\nWHERE nf.cancelada = 0\nAND c.ativo = 1\nAND c.cancelada = 0\nAND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)\nAND o.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:19:49,140 INFO: do texto: Para responder à pergunta sobre o faturamento de cortesias no mês passado, é importante entender a estrutura das tabelas e como elas se relacionam. Quando falamos de cortesias, referenciamos principalmente a tabela 'cortesias' e sua relação com 'notas_fiscais'. 
+
+Cortesias estão associadas a ordens de serviço (OS) do mês anterior, então precisamos juntar as informações entre as tabelas 'cortesias', 'cortesia_os', 'os', e 'notas_fiscais'. Devemos garantir que não haja duplicidade no cálculo do valor total de cortesias e que a consulta direcione adequadamente o mês passado.
+
+1. Primeiramente, precisamos identificar as cortesias do mês anterior, buscando na tabela 'os' onde 'created_at' se refere ao mês anterior ao atual.
+2. Em seguida, agregamos os dados juntando as tabelas mencionadas, garantindo que as 'notas_fiscais' não sejam canceladas, nem as cortesias.
+3. Usaremos a função SUM para calcular o total de faturamento em valor total para as cortesias considerando notas fiscais válidas.
+
+Aqui está a consulta SQL para obter essa informação:
+
+```sql
+SELECT SUM(DISTINCT nf.valor_liquido) AS total_faturamento_cortesias
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias c ON c.id = co.cortesia_id
+JOIN os o ON co.os_id = o.id
+WHERE nf.cancelada = 0
+AND c.ativo = 1
+AND c.cancelada = 0
+AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)
+AND o.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)
+AND co.deleted_at IS NULL;
+```
+
+Esse SQL calcula o total do faturamento de cortesias emitidas no mês passado, garantindo que todas as condições sejam satisfeitas para evitar duplicidades e registros inválidos. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:20:15,559 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:20:15,559 INFO: queries extraídas: ["SELECT \n    e.nome AS empresa_nome,\n    SUM(DISTINCT nf.valor_bruto) AS faturamento_total\nFROM \n    notas_fiscais nf\nJOIN \n    empresas e ON nf.empresa_id = e.id\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nWHERE \n    nf.cancelada = 0\n    AND c.ativo = 1\n    AND c.cancelada = 0\n    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') \n    AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)\nGROUP BY \n    e.nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:20:15,560 INFO: do texto: Para responder à pergunta sobre o faturamento de cortesias no mês passado agrupado por empresas, primeiro precisamos esclarecer o que exatamente envolve esse faturamento. A chave é entender que estamos lidando com notas fiscais emitidas para cortesias. As cortesias são específicas e se relacionam a registros na tabela `cortesias`, onde há uma ligação com as notas fiscais através de `notas_fiscais.cortesia_id`. Importante lembrar que uma nota fiscal pode estar vinculada a um ou mais registros de OS devido à natureza das cortesias, o que significa que devemos evitar duplicidades.
+
+Para obter os dados do mês passado, calcularemos a data atual subtraindo um mês e filtrando por esse mês em particular. Iremos também garantir que as notas fiscais não estão canceladas (`cancelada = 0`) e estão ativas (`ativo = 1`). Além disso, como queremos agrupar por empresas, usaremos o atributo `empresa_id` da tabela `notas_fiscais`.
+
+Nos bastidores, consideraremos as colunas `valor_bruto` das notas fiscais e garantiremos evitar duplicidades usando `DISTINCT`, já que uma cortesia pode ter mais de uma nota fiscal emitida. Vamos agrupar os resultados por `empresa_id` (ou o nome da empresa caso disponível através de um JOIN apropriado com a tabela de empresas).
+
+Aqui está a consulta SQL que atende a todos esses requisitos:
+
+```sql
+SELECT 
+    e.nome AS empresa_nome,
+    SUM(DISTINCT nf.valor_bruto) AS faturamento_total
+FROM 
+    notas_fiscais nf
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+WHERE 
+    nf.cancelada = 0
+    AND c.ativo = 1
+    AND c.cancelada = 0
+    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') 
+    AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)
+GROUP BY 
+    e.nome;
+```
+
+Neste código SQL, vamos:
+
+1. Agrupar as notas fiscais por `empresa_nome`.
+2. Calcular a soma dos valores brutos das notas fiscais usando `DISTINCT` para evitar duplicidades nos valores de cortesias.
+3. Focar apenas no mês passado usando `DATE_FORMAT` e `LAST_DAY` para delimitar precisamente as datas.
+
+Esse código deve fornecer uma visão clara do faturamento relacionado às cortesias para o mês passado, agrupado por empresas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:20:40,647 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:20:40,647 INFO: queries extraídas: ["SELECT \n    e.nome AS empresa_nome, \n    SUM(DISTINCT nf.valor_bruto) AS faturamento_total\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id  \nJOIN \n    concessionarias con ON c.concessionaria_id = con.id\nJOIN \n    empresas e ON nf.empresa_id = e.id\nWHERE \n    nf.cancelada = 0 \n    AND c.ativo = 1 \n    AND c.cancelada = 0\n    AND nf.data_emissao BETWEEN DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') \n                            AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))\nGROUP BY \n    e.nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:20:40,647 INFO: do texto: Ah, a questão aqui está relacionada a entender o faturamento advindo de cortesias, mas agrupado por empresas. A cereja do bolo aqui é que o faturamento de cortesias de um determinado mês está relacionado às "ordens de serviço" (OS) do mês anterior. Eu preciso, então, encontrar as notas fiscais de cortesias emitidas no mês passado e agrupar isso pelas empresas responsáveis pela emissão dessas notas, garantindo que estou considerando apenas dados válidos, sem duplicidades.
+
+Esse processo mental me leva a entender que precisarei de uma query que corresponda notas fiscais associadas a cortesias. Vou fazer isso unindo as tabelas 'notas_fiscais', 'cortesias', e 'concessionarias', garantindo que estou ligando corretamente através de 'cortesia_id'. No entanto, como uma cortesia pode ter várias ordens de serviço e essa relação é feita via a tabela 'cortesia_os', preciso garantir que estou utilizando DISTINCT ou uma subquery apropriada para não contar o mesmo valor mais de uma vez devido à possíveis duplicidades.
+
+Outro aspecto é o filtro de data: vou me certificar de que o mês de emissão das notas fiscais é o mês passado. 
+
+Então, como estruturar isso?
+
+```sql
+SELECT 
+    e.nome AS empresa_nome, 
+    SUM(DISTINCT nf.valor_bruto) AS faturamento_total
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id  
+JOIN 
+    concessionarias con ON c.concessionaria_id = con.id
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+WHERE 
+    nf.cancelada = 0 
+    AND c.ativo = 1 
+    AND c.cancelada = 0
+    AND nf.data_emissao BETWEEN DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') 
+                            AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+GROUP BY 
+    e.nome;
+```
+
+Agora, a resposta está clara. Estou garantindo que cada "cortesia" seja sem duplicadas e realmente válida, somando seus valores de forma correta e agrupando por empresa, tudo dentro do contexto das notas fiscais do mês passado. Isso deve fornecer o faturamento do jeito que foi solicitado. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:21:00,615 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:21:00,615 INFO: queries extraídas: ["SELECT \n    e.nome AS empresa_nome,\n    SUM(DISTINCT nf.valor_liquido) AS total_faturamento_cortesias\nFROM \n    notas_fiscais nf\nJOIN \n    cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN \n    cortesias c ON co.cortesia_id = c.id\nJOIN \n    empresas e ON nf.empresa_id = e.id\nWHERE \n    nf.cancelada = 0 \n    AND nf.data_emissao BETWEEN DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH) \n    AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))\n    AND c.created_at BETWEEN DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 2 MONTH) \n    AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)) \n    AND co.deleted_at IS NULL\nGROUP BY \n    e.nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:21:00,615 INFO: do texto: Ao abordar essa questão, a primeira coisa que vem à mente é o entendimento de "faturamento de cortesias". Aqui, "cortesias" refere-se a uma situação específica no contexto da empresa, que está relacionada a certos tipos de ordens de serviço (OS), como "Cortesia Concessionária" e similares. Para calcular o faturamento, estou interessado nas notas fiscais emitidas para essas cortesias. 
+
+Agora, "no mês passado" é um indicativo de que a data de emissão das notas fiscais é relevante, e preciso considerar as OSs criadas no mês anterior ao mês atual na tabela de cortesias, já que é mencionado que para cortesias as 'os's' do mês referência devem ser consideradas. Em outras palavras, se estamos em outubro, preciso buscar informações de setembro.
+
+Além disso, eu preciso agrupar os resultados por empresas, o que implica que irei considerar a tabela 'empresas' para essa tarefa.
+
+Aqui está como eu estruturo isso na minha mente:
+- Iniciarei com as tabelas 'notas_fiscais', 'cortesia_os', 'cortesias', e 'empresas'.
+- Vou filtrar as notas fiscais pelas colunas que indicam se as notas são válidas e não canceladas.
+- Utilizarei uma subconsulta para garantir que apenas as OSs criadas no mês passado sejam consideradas, e farei a junção usando as relações definidas.
+- Finalmente, agruparei os resultados pelas empresas e farei a soma dos valores líquidos dessas notas fiscais.
+
+Refletindo todos esses passos na consulta SQL:
+
+```sql
+SELECT 
+    e.nome AS empresa_nome,
+    SUM(DISTINCT nf.valor_liquido) AS total_faturamento_cortesias
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN 
+    cortesias c ON co.cortesia_id = c.id
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+WHERE 
+    nf.cancelada = 0 
+    AND nf.data_emissao BETWEEN DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH) 
+    AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+    AND c.created_at BETWEEN DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 2 MONTH) 
+    AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)) 
+    AND co.deleted_at IS NULL
+GROUP BY 
+    e.nome;
+```
+
+Aqui, a consulta está filtrando notas fiscais que não são canceladas, ocorrendo no mês passado, e agrupando os resultados por empresa. Estou usando `DISTINCT` na soma para garantir que as duplicatas em cortesias não afetem a precisão dos valores calculados. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:29:38,123 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:29:44,666 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:30:11,227 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:30:11,227 INFO: queries extraídas: ["SELECT \n    e.nome AS empresa_nome,\n    SUM(DISTINCT nf.valor_bruto) AS valor_total_faturamento\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON c.id = co.cortesia_id\nJOIN \n    os ON co.os_id = os.id\nJOIN \n    empresas e ON nf.empresa_id = e.id\nWHERE \n    nf.cancelada = 0 \n    AND c.ativo = 1 \n    AND c.cancelada = 0 \n    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') \n                             AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)\n    AND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') \n                          AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)\nGROUP BY \n    e.nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:30:11,227 INFO: do texto: Ao considerar a pergunta, precisamos determinar como obter o faturamento de cortesias no mês passado e agrupá-lo por empresas. Para abordar isso, devemos primeiro entender quais tabelas e colunas precisamos consultar. 
+
+Cortesias envolvem a tabela `cortesias` para definir quais "os" (ordens de serviço) pertencem a cortesias, e a tabela `notas_fiscais` para obter informações de faturamento. Precisamos considerar apenas registros onde as notas fiscais não foram canceladas (`cancelada = 0`) e são ativas.
+
+O ponto chave aqui é determinar o mês passado. Vamos supor que estamos no mês de março de 2025. Isso significa que precisamos considerar notas fiscais de cortesias emitidas em fevereiro de 2025. Conforme a especificação das tabelas, as ordens de serviço (`os`) relevantes para cortesias emitidas em fevereiro foram criadas em janeiro de 2025.
+
+Os passos para construir a query SQL são:
+1. Vincular `notas_fiscais` a `cortesias` usando a coluna `cortesia_id`.
+2. Certificar-se de que a data de emissão das notas fiscais (`data_emissao`) está dentro do mês passado.
+3. Considerar `os` que têm seu `created_at` no mês anterior ao mês de emissão das notas.
+4. Agregar os resultados por empresa, agrupando-as pela coluna `empresa_id` ou o nome da empresa, dependendo de como as informações da empresa são registradas.
+
+Agora, vamos transformar isso em uma query SQL apropriada.
+
+```sql
+SELECT 
+    e.nome AS empresa_nome,
+    SUM(DISTINCT nf.valor_bruto) AS valor_total_faturamento
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON c.id = co.cortesia_id
+JOIN 
+    os ON co.os_id = os.id
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+WHERE 
+    nf.cancelada = 0 
+    AND c.ativo = 1 
+    AND c.cancelada = 0 
+    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') 
+                             AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)
+    AND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') 
+                          AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)
+GROUP BY 
+    e.nome;
+```
+
+Essa consulta deve fornecer o faturamento total de cortesias do mês passado (fevereiro de 2025), agrupado pelo nome da empresa. O uso de `DISTINCT` garante que cada nota é contada apenas uma vez, evitando possíveis duplicações devido à estrutura da tabela `cortesia_os`. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:31:00,377 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:31:00,378 INFO: queries extraídas: ["SELECT \n    e.nome AS empresa_nome,\n    SUM(DISTINCT nf.valor_bruto) AS faturamento_cortesias\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias cor ON nf.cortesia_id = cor.id\nJOIN \n    os o ON o.id = cor.id\nJOIN \n    empresas e ON nf.empresa_id = e.id\nWHERE \n    nf.cancelada = 0 \n    AND cor.cancelada = 0 \n    AND cor.ativo = 1\n    AND nf.data_emissao >= DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01')\n    AND nf.data_emissao < DATE_FORMAT(CURDATE(), '%Y-%m-01') \n    AND o.created_at >= DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01')\n    AND o.created_at < DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01')\nGROUP BY \n    empresa_nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:31:00,378 INFO: do texto: Para entender melhor o pedido, vamos dividir o problema. 
+
+Começando, a pergunta quer saber o faturamento oriundo de cortesias no último mês, agrupado por empresas. No contexto do nosso schema, cortesias referem-se ao 'caixa_tipos' com registros de concessão como 'Cortesia Concessionária', 'Cortesia Funcionário' e 'Financiamento', com base nos registros relacionados em tabelas como 'os', 'caixas' e 'notas_fiscais'. Claramente, a pergunta implica em calcular o faturamento, o que significa levar em conta as notas fiscais emitidas.
+
+Precisamos considerar cortesias que ocorreram no mês anterior, então precisamos filtrar as 'os's' cujo campo 'created_at' está no mês anterior. Também, temos que evitar duplicações, o que podemos manejar usando 'DISTINCT' na query. A obtenção de dados de faturamento demandará acessar as tabelas 'notas_fiscais' para conseguir os detalhes específicos de faturamento. Além disso, a coluna 'data_emissao' da tabela 'notas_fiscais' precisa estar no mês passado, abrangendo apenas notas fiscais válidas (não canceladas e ativas).
+
+Um detalhe importante ao fazer a ligação com empresas: precisamos fazer um join com a tabela 'empresas' para poder agrupar de acordo. Centralizando todas essas considerações, aqui está como a query SQL para alcançar o que foi solicitado deveria parecer:
+
+```sql
+SELECT 
+    e.nome AS empresa_nome,
+    SUM(DISTINCT nf.valor_bruto) AS faturamento_cortesias
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias cor ON nf.cortesia_id = cor.id
+JOIN 
+    os o ON o.id = cor.id
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+WHERE 
+    nf.cancelada = 0 
+    AND cor.cancelada = 0 
+    AND cor.ativo = 1
+    AND nf.data_emissao >= DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01')
+    AND nf.data_emissao < DATE_FORMAT(CURDATE(), '%Y-%m-01') 
+    AND o.created_at >= DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01')
+    AND o.created_at < DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01')
+GROUP BY 
+    empresa_nome;
+```
+
+Então, essa query deve exatamente responder o que está sendo perguntado: o faturamento, por empresa, que foi originado das cortesias emitidas no mês passado. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:31:26,183 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:31:26,183 INFO: queries extraídas: ["SELECT \n    e.nome AS empresa_nome,\n    SUM(DISTINCT nf.valor_liquido) AS total_faturado\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN empresas e ON c.empresa_id = e.id\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN os o ON co.os_id = o.id\nWHERE nf.cancelada = 0 \nAND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') \n                        AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)\nAND o.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01')\n                      AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)\nAND co.deleted_at IS NULL\nGROUP BY empresa_nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:31:26,183 INFO: do texto: Para resolver a questão sobre o faturamento de cortesias no mês passado, agrupado por empresas, é necessário entender como o faturamento é representado no schema das tabelas. Eu entendi a questão como a necessidade de calcular o total de valor faturado em cortesias, emitidas como notas fiscais para o mês passado. Notas fiscais de cortesias são aquelas onde temos um vínculo com a tabela `cortesias` na coluna `cortesia_id`. Além disso, devemos levar em consideração que o mês de criação das ordens de serviço relacionadas às notas fiscais de cortesias é o mês anterior ao da data de emissão das notas.
+
+Primeiro, precisamos entender que a tabela `cortesia_os` faz a relação entre `cortesias` e `os`. Em seguida, as `notas_fiscais` relacionadas a essas cortesia possuem a coluna `cortesia_id` preenchida e não nula. Devemos garantir que estamos recuperando todas as notas que não estão canceladas.
+
+- A tabela `notas_fiscais` contém os registros das notas fiscais emitidas, e o `valor_bruto` ou `valor_liquido` representa o valor faturado.
+- A tabela `empresas` é relacionada à tabela `cortesias` e nos fornece o nome da empresa para agrupamento.
+
+Agora, vamos desenvolver a consulta SQL para obter o faturamento de cortesias no mês passado agrupado por empresas:
+
+```sql
+SELECT 
+    e.nome AS empresa_nome,
+    SUM(DISTINCT nf.valor_liquido) AS total_faturado
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN empresas e ON c.empresa_id = e.id
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN os o ON co.os_id = o.id
+WHERE nf.cancelada = 0 
+AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') 
+                        AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)
+AND o.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01')
+                      AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)
+AND co.deleted_at IS NULL
+GROUP BY empresa_nome;
+```
+
+Este SQL seleciona o nome das empresas e o total do valor faturado (valor líquido) das notas fiscais de cortesias, considerando as notas que não foram canceladas e emitidas no mês passado. Ele agrupa os resultados por empresa. Usamos `SUM(DISTINCT nf.valor_liquido)` para evitar a duplicação de valores ao juntar múltiplas tabelas que poderiam causar repetição de registros. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:31:54,242 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:31:54,242 INFO: queries extraídas: ["SELECT \n    e.nome AS nome_empresa, \n    SUM(DISTINCT nf.valor_bruto) AS faturamento_total \nFROM \n    notas_fiscais nf\n    JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\n    JOIN cortesias cor ON cor.id = co.cortesia_id\n    JOIN empresas e ON nf.empresa_id = e.id\n    JOIN os ON co.os_id = os.id\nWHERE \n    nf.cortesia_id = cor.id \n    AND nf.cancelada = 0 \n    AND cor.ativo = 1 \n    AND cor.cancelada = 0\n    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') \n    AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)\n    AND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') \n    AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)\n    AND co.deleted_at IS NULL\nGROUP BY \n    e.id;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:31:54,242 INFO: do texto: Ao pensar sobre essa questão, estou considerando o que define o faturamento de cortesias. Faturamento geralmente se refere às notas fiscais emitidas, e quando falamos de cortesias, isso envolve condições específicas nas tabelas, como 'notas_fiscais', 'cortesias', e a relação entre 'cortesia_os'. 
+
+Tenho que associar as cortesias às suas respectivas ordens de serviço (OS) e à empresa responsável. Para evitar problemas de duplicidade, especialmente devido à natureza dessas tabelas, devo garantir que as notas fiscais consideradas sejam distintas. A tabela 'cortesias' possui a informação sobre quais cortesias estão ativas e canceladas, o que é essencial para a query. Também preciso ter certeza de restringir a seleção às datas corretas, já que a pergunta se refere ao mês passado. Isso significa que terei de lidar adequadamente com os períodos de tempo, verificando a coluna 'data_emissao' para as notas fiscais emitidas no mês passado.
+
+Vamos construir a query SQL para atender a todos esses requisitos, levando em consideração os joins necessários e os agrupamentos para obter as informações por empresas:
+
+```sql
+SELECT 
+    e.nome AS nome_empresa, 
+    SUM(DISTINCT nf.valor_bruto) AS faturamento_total 
+FROM 
+    notas_fiscais nf
+    JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+    JOIN cortesias cor ON cor.id = co.cortesia_id
+    JOIN empresas e ON nf.empresa_id = e.id
+    JOIN os ON co.os_id = os.id
+WHERE 
+    nf.cortesia_id = cor.id 
+    AND nf.cancelada = 0 
+    AND cor.ativo = 1 
+    AND cor.cancelada = 0
+    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') 
+    AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)
+    AND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') 
+    AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)
+    AND co.deleted_at IS NULL
+GROUP BY 
+    e.id;
+```
+
+Aqui, estamos buscando o faturamento total das cortesias emitidas no mês passado, agrupado por empresa, tomando cuidado para eliminar duplicidade nas notas fiscais de cortesias. Isso foi conseguido aplicando um `SUM(DISTINCT nf.valor_bruto)` na coluna de valor bruto das notas fiscais para garantir que o faturamento não seja contabilizado em dobro para a mesma cortesia. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:38:14,170 INFO: 1 queries extraídas do texto. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:38:14,171 INFO: queries extraídas: ["SELECT \n    e.nome AS empresa_nome,\n    SUM(DISTINCT nf.valor_bruto) AS faturamento_cortesias\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    empresas e ON nf.empresa_id = e.id\nJOIN \n    cortesia_os co ON co.cortesia_id = c.id\nJOIN \n    os ON co.os_id = os.id\nWHERE \n    nf.cancelada = 0\n    AND c.ativo = 1\n    AND c.cancelada = 0\n    AND nf.data_emissao >= DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01')\n    AND nf.data_emissao < DATE_FORMAT(CURRENT_DATE, '%Y-%m-01')\n    AND os.created_at >= DATE_FORMAT(CURRENT_DATE - INTERVAL 2 MONTH, '%Y-%m-01')\n    AND os.created_at < DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01')\n    AND co.deleted_at IS NULL\nGROUP BY \n    e.id;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:38:14,171 INFO: do texto: Bom, vamos começar entendendo a pergunta. Você está interessado no "faturamento de cortesias" do mês passado. As "cortesias" referem-se a casos onde serviços foram prestados, mas não cobrados diretamente do cliente, e estão relacionados aos tipos de caixa ou ordens de serviço específico. O faturamento, nesse contexto, geralmente se refere ao valor das notas fiscais emitidas.
+
+Para resolver essa consulta, precisamos considerar algumas tabelas:
+
+1. **Notas Fiscais (`notas_fiscais`)**: Esta tabela conterá as informações de valor das notas fiscais, que são essenciais para determinar o faturamento.
+
+2. **Cortesias (`cortesias`)**: É crucial para identificar registros identificados como "cortesias".
+
+3. **Empresas (`empresas`)**: Para agrupar os resultados por empresas.
+
+4. **Ordem de Serviço (`os`)**: Para determinar o mês de referência dos serviços realizados.
+
+Precisamos garantir que estamos lidando com registros válidos. Por exemplo, as `notas_fiscais` devem estar ativas e não canceladas, com o tipo de nota correto. Na tabela `cortesias`, as registros devem não só estar ativos, mas também não cancelados, e corresponder ao mês de faturamento anterior.
+
+O próximo passo é construir a query SQL, garantindo que ela apenas selecione dados válidos e utilize joins apropriados para conectar as tabelas mencionadas.
+
+De acordo com o schema:
+
+- As notas fiscais de cortesias podem existir sem ligação direta a uma "os", então devemos considerar a relação direta com a tabela `cortesias`.
+- Ao calcular o faturamento, devemos somar os `valor_bruto` ou `valor_liquido` dependendo do que seja mais apropriado na política fiscal.
+- Por fim, temos que considerar apenas os valores das notas fiscais emitidas no mês anterior e cujos registros de corteiras com data de criação no mês ainda anterior.
+
+Vamos então à construção da consulta.
+
+```sql
+SELECT 
+    e.nome AS empresa_nome,
+    SUM(DISTINCT nf.valor_bruto) AS faturamento_cortesias
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+JOIN 
+    cortesia_os co ON co.cortesia_id = c.id
+JOIN 
+    os ON co.os_id = os.id
+WHERE 
+    nf.cancelada = 0
+    AND c.ativo = 1
+    AND c.cancelada = 0
+    AND nf.data_emissao >= DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01')
+    AND nf.data_emissao < DATE_FORMAT(CURRENT_DATE, '%Y-%m-01')
+    AND os.created_at >= DATE_FORMAT(CURRENT_DATE - INTERVAL 2 MONTH, '%Y-%m-01')
+    AND os.created_at < DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01')
+    AND co.deleted_at IS NULL
+GROUP BY 
+    e.id;
+```
+
+Aqui, a consulta está configurada para buscar e agrupar os valores faturados por empresa no mês anterior. `DISTINCT` é utilizado para evitar contagens duplicadas nas notas fiscais devido à ligação com `os`, que poderia causar multiplicações indesejadas dos valores totais. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:40:50,883 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:41:26,549 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:41:28,094 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:41:35,663 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:41:37,192 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:42:00,779 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:42:21,363 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:42:22,886 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:42:27,414 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:42:36,961 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:43:26,663 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:43:28,230 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:43:45,813 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:44:00,401 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:44:04,944 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:44:31,576 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:44:38,111 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:44:39,633 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:44:53,241 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:45:03,802 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:45:11,347 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:45:53,025 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:45:58,553 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:46:00,090 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:46:14,672 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:46:17,223 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:47:05,917 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:47:14,451 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:48:56,364 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 07:49:14,222 INFO: PERGUNTA: quero saber qual foi o faturamento de cortesias no mês passado agrupado por empresas? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:49:14,222 INFO: RESPOSTA: Para entender melhor a pergunta, devemos primeiro considerar o que significa "faturamento de cortesias no mês passado agrupado por empresas". As cortesias referem-se a serviços prestados que são considerados gratuitos ou com custo reduzido para o cliente, mas ainda geram uma movimentação financeira interna para a empresa. Para determinar o faturamento dessas cortesias, precisamos buscar as informações relacionadas às notas fiscais emitidas por essas cortesias.
+
+O esquema que temos é crucial para essa tarefa. Aqui, sabemos que a tabela `cortesias` está relacionada com `notas_fiscais` através de `cortesia_id`, e também devemos considerar a tabela `cortesia_os`, para relacionar essas cortesias com as ordens de serviço (OS). As cortesias podem possuir notas fiscais emitidas, e essas notas fiscais vão nos fornecer o valor de faturamento associado às cortesias.
+
+Adicionalmente, devemos lembrar que o agrupamento por empresas implica que precisamos buscar as relações com a tabela `empresas` para obter nomes ou identificadores das empresas.
+
+Com esses pontos em mente, precisamos formar uma consulta SQL que:
+- Filtre as notas fiscais de cortesias com base no mês passado.
+- Considere apenas registros válidos e não cancelados.
+- Utilize `DISTINCT` ou `GROUP BY` para evitar duplicidade nas somas.
+- Agrupe os resultados finais por empresas.
+
+Vamos à construção da query:
+
+```sql
+SELECT 
+    e.nome AS empresa_nome, 
+    SUM(DISTINCT nf.valor_bruto) AS valor_total_faturado
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    empresas e ON c.empresa_id = e.id
+WHERE 
+    nf.cancelada = 0 AND nf.cortesia_id IS NOT NULL
+    AND nf.data_emissao BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+    AND c.ativo = 1 AND c.cancelada = 0
+GROUP BY 
+    e.nome;
+```
+
+Essa consulta irá retornar o nome das empresas e o valor total de faturamento de cortesias para cada uma delas no mês anterior, considerando apenas notas fiscais não canceladas e registros de cortesias válidas e ativas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:49:14,222 INFO: QUERIES: ['SELECT \n    e.nome AS empresa_nome, \n    SUM(DISTINCT nf.valor_bruto) AS valor_total_faturado\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    empresas e ON c.empresa_id = e.id\nWHERE \n    nf.cancelada = 0 AND nf.cortesia_id IS NOT NULL\n    AND nf.data_emissao BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))\n    AND c.ativo = 1 AND c.cancelada = 0\nGROUP BY \n    e.nome;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 07:50:49,909 INFO: PERGUNTA: quero saber qual foi o faturamento de cortesias no mês passado agrupado por empresas? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 07:50:49,909 INFO: RESPOSTA: Para começar a entender e criar uma consulta SQL para esta pergunta, estou analisando os detalhes da mesma. A consulta deseja saber o faturamento de cortesias no mês passado, agrupado por empresas. Isso significa que precisamos identificar todas as notas fiscais de cortesias emitidas no mês passado e então somar seus valores, agrupando o resultado por diferentes empresas.
+
+A chave aqui é "cortesias", que se refere a serviços cortesia para concessionárias, funcionários ou financiamentos. Essas cortesias são registradas na tabela "cortesias" e temos a tabela "cortesia_os" para associá-las às ordens de serviço (os). Agora, sabemos que uma cortesia pode ter várias ordens de serviço associadas, mas uma nota fiscal de cortesia pode ser associada diretamente à cortesia sem uma "os". As notas fiscais estão registradas na tabela "notas_fiscais" e devemos ter cuidado com a duplicidade neste contexto, uma vez que a tabela "cortesia_os" pode resultar em registros duplicados nas notas.
+
+Além disso, precisamos filtrar as notas fiscais do mês passado. Para isso, usaremos a data de emissão da nota para determinar o mês passado.
+
+Com todas essas considerações, vamos construir a consulta. Precisamos:
+- Associar tabelas "notas_fiscais", "cortesias", "cortesia_os".
+- Garantir que estamos somando o valor das notas fiscais de cortesias de forma não duplicada.
+- Filtrar por notas emissoas no mês passado.
+- Agrupar por empresas.
+
+Agora, este é o SQL que desenvolvemos para a pergunta original:
+
+```sql
+SELECT e.nome AS empresa_nome, 
+       SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias 
+FROM notas_fiscais nf 
+JOIN cortesias c ON nf.cortesia_id = c.id 
+JOIN empresas e ON nf.empresa_id = e.id 
+JOIN cortesia_os co ON c.id = co.cortesia_id 
+JOIN os ON co.os_id = os.id 
+WHERE nf.cortesia_id IS NOT NULL 
+  AND nf.cancelada = 0 
+  AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH) 
+  AND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)
+  AND co.deleted_at IS NULL
+GROUP BY empresa_nome;
+```
+
+Neste SQL:
+- Estamos selecionando o nome da empresa e somando o valor bruto das notas fiscais de cortesias.
+- A cláusula `WHERE` filtra por notas fiscais que não estão canceladas e cortesia_id não é nulo.
+- As datas são filtradas para o mês passado, e o mês de referência das "os" é dois meses atrás.
+
+Assim, temos o resultado esperado: o faturamento de cortesias no mês passado, agrupado por empresas, sem duplicações indesejadas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 07:50:49,909 INFO: QUERIES: ["SELECT e.nome AS empresa_nome, \n       SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias \nFROM notas_fiscais nf \nJOIN cortesias c ON nf.cortesia_id = c.id \nJOIN empresas e ON nf.empresa_id = e.id \nJOIN cortesia_os co ON c.id = co.cortesia_id \nJOIN os ON co.os_id = os.id \nWHERE nf.cortesia_id IS NOT NULL \n  AND nf.cancelada = 0 \n  AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH) \n  AND os.created_at BETWEEN DATE_FORMAT(CURDATE() - INTERVAL 2 MONTH, '%Y-%m-01') AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)\n  AND co.deleted_at IS NULL\nGROUP BY empresa_nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 08:06:26,169 INFO: PERGUNTA: quero saber qual foi o faturamento de cortesias no mês passado agrupado por empresas? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 08:06:26,169 INFO: RESPOSTA: Hum, vamos lá. A pergunta quer saber o faturamento de cortesias no mês passado, que significa que temos que focar nas notas fiscais referentes às cortesias. Isso envolve utilizar as colunas e condições corretas para garantir que apenas as notas fiscais não canceladas, ativas e emitidas no mês passado no contexto das cortesias sejam consideradas. 
+
+As cortesias são um tipo específico de serviço que precisa ser extraído das tabelas relacionadas, incluindo "cortesias", "cortesia_os", "notas_fiscais" e "os". Temos que garantir que nossos joins não causem duplicações no somatório das notas fiscais.
+
+Vou precisar calcular o mês passado em relação à data atual. Assim, se estivermos em outubro de 2023, o mês alvo é setembro de 2023. Outra consideração importante é garantir que estamos buscando apenas cortesias, o que significa observar corretamente a associação entre "cortesias" e notas fiscais cujo mês de emissão seja o mês alvo, garantindo que "os" seja do mês anterior.
+
+Outro ponto crítico é agrupar esses valores emitidos pelas empresas, dado que o agrupamento é por empresas.
+
+Vamos à consulta...
+
+1. Extrairemos as notas fiscais associadas às cortesias (certificando-se de que são únicas) cujo mês de emissão corresponde ao mês passado.
+2. Garantimos que a data de criação das "os" associadas a estas notas fiscais corresponde a dois meses anteriores (ou seja, mês passado menos um).
+3. Agrupamos por empresas, as quais estão associadas nas tabelas de entrada, para calcular o total bruto das notas fiscais.
+
+Depois de tudo isso, agora formulo a consulta SQL:
+
+```sql
+SELECT 
+    e.nome AS nome_empresa, 
+    SUM(DISTINCT nf.valor_bruto) AS valor_total_faturamento
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesias c ON nf.cortesia_id = c.id
+JOIN 
+    cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN 
+    os o ON co.os_id = o.id
+JOIN 
+    empresas e ON c.empresa_id = e.id
+WHERE 
+    nf.cancelada = 0 
+    AND nf.ativo = 1 
+    AND c.cancelada = 0
+    AND c.ativo = 1
+    AND nf.data_emissao BETWEEN DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01') 
+    AND LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH) 
+    AND o.created_at BETWEEN DATE_FORMAT(CURRENT_DATE - INTERVAL 2 MONTH, '%Y-%m-01') 
+    AND LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH)
+GROUP BY 
+    e.nome;
+```
+
+Essa query considera todos os cuidados para evitar valores duplicados e atende o pedido de verificar o faturamento de cortesias agrupado por empresas, referente ao mês passado. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 08:06:26,169 INFO: QUERIES: ["SELECT \n    e.nome AS nome_empresa, \n    SUM(DISTINCT nf.valor_bruto) AS valor_total_faturamento\nFROM \n    notas_fiscais nf\nJOIN \n    cortesias c ON nf.cortesia_id = c.id\nJOIN \n    cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN \n    os o ON co.os_id = o.id\nJOIN \n    empresas e ON c.empresa_id = e.id\nWHERE \n    nf.cancelada = 0 \n    AND nf.ativo = 1 \n    AND c.cancelada = 0\n    AND c.ativo = 1\n    AND nf.data_emissao BETWEEN DATE_FORMAT(CURRENT_DATE - INTERVAL 1 MONTH, '%Y-%m-01') \n    AND LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH) \n    AND o.created_at BETWEEN DATE_FORMAT(CURRENT_DATE - INTERVAL 2 MONTH, '%Y-%m-01') \n    AND LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH)\nGROUP BY \n    e.nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 08:06:58,105 INFO: PERGUNTA: quero saber qual foi o faturamento de cortesias no mês passado agrupado por empresas? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 08:06:58,105 INFO: RESPOSTA: Ah, quer saber sobre o faturamento de cortesias no mês passado, agrupado por empresas. O termo "faturamento" implica que estamos lidando com notas fiscais emitidas, enquanto "cortesias" refere-se a um cenário específico em que serviços são concedidos sem custo direto para o cliente, geralmente associados a parcerias ou promoções.
+
+Para abordar essa questão, primeiro preciso identificar o mês passado, pois o faturamento de cortesias de um determinado mês pode ser vinculado a ordens de serviço criadas no mês anterior. Isso está claro na estrutura de dados onde a vinculação entre cortesias e ordens de serviço está estabelecida pela tabela 'cortesia_os'. Além disso, como isso se refere a "empresas", preciso me certificar de que estamos agrupando pelo campo relevante na tabela 'empresas'.
+
+A lógica da consulta deve ser construída de forma a somar o valor total de notas fiscais não canceladas associadas a cortesias que foram emitidas no mês passado. Já que a consulta envolve cortesias, é crucial estar atento à duplicidade de registros e garantir a seleção de registros únicos, possivelmente usando DISTINCT ou agregação adequada. As colunas relacionadas ao tempo, como 'created_at' e 'data_emissao', desempenharão papéis vitais aqui, juntamente com joins específicos para ligar corretamente as notas fiscais a cortesias e eventualmente a empresas.
+
+É importante ressaltar que somente notas fiscais com status e tipo válidos para faturamento devem ser consideradas, de acordo com as regras estabelecidas no schema. Como tal, ao formular a consulta, devo validar que estou usando todas essas condições ao aplicar as colunas certas no filtro.
+
+Aqui está a consulta SQL que captura esses detalhes:
+
+```sql
+SELECT e.nome AS nome_empresa, SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias
+FROM notas_fiscais nf
+JOIN cortesias c ON nf.cortesia_id = c.id
+JOIN empresas e ON c.empresa_id = e.id
+JOIN cortesia_os co ON c.id = co.cortesia_id
+JOIN os o ON co.os_id = o.id
+WHERE nf.cancelada = 0
+AND c.cancelada = 0 AND c.ativo = 1
+AND nf.data_emissao BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 MONTH) - INTERVAL DAYOFMONTH(LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 2 MONTH))) DAY 
+AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+AND o.created_at BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 MONTH) - INTERVAL DAYOFMONTH(LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 3 MONTH))) DAY 
+AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 2 MONTH))
+AND co.deleted_at IS NULL
+GROUP BY e.id;
+```
+
+Este SQL faz o agrupamento pelo nome da empresa e calcula o total das notas fiscais de cortesias emitidas no mês passado. O uso de `DISTINCT` em `SUM(DISTINCT nf.valor_bruto)` assegura que não haja duplicidade na soma dos valores de notas fiscais para cortesias. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 08:06:58,105 INFO: QUERIES: ['SELECT e.nome AS nome_empresa, SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias\nFROM notas_fiscais nf\nJOIN cortesias c ON nf.cortesia_id = c.id\nJOIN empresas e ON c.empresa_id = e.id\nJOIN cortesia_os co ON c.id = co.cortesia_id\nJOIN os o ON co.os_id = o.id\nWHERE nf.cancelada = 0\nAND c.cancelada = 0 AND c.ativo = 1\nAND nf.data_emissao BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 MONTH) - INTERVAL DAYOFMONTH(LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 2 MONTH))) DAY \nAND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))\nAND o.created_at BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 MONTH) - INTERVAL DAYOFMONTH(LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 3 MONTH))) DAY \nAND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 2 MONTH))\nAND co.deleted_at IS NULL\nGROUP BY e.id;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 09:07:39,786 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 09:07:40,210 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 09:08:13,662 INFO: PERGUNTA: quero saber qual foi o faturamento de cortesias no mês passado agrupado por empresas? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 09:08:13,662 INFO: RESPOSTA: Para determinar o faturamento de cortesias no mês passado agrupado por empresas, precisamos considerar as notas fiscais vinculadas a cortesias, cujo mês de emissão corresponde ao último mês, e que são relacionadas a ordens de serviço (OS) criadas no mês anterior ao último mês. Vamos utilizar as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, `os` e `empresas` para compor a consulta. Lembre-se, apenas consideramos notas fiscais que não são canceladas e associadas a cortesias ativas.
+
+```sql
+WITH cortesias_mes_passado AS (
+    SELECT 
+        nf.empresa_id,
+        SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias
+    FROM 
+        notas_fiscais nf
+    JOIN 
+        cortesia_os co ON nf.cortesia_id = co.cortesia_id
+    JOIN 
+        cortesias cor ON cor.id = co.cortesia_id
+    JOIN 
+        os ON co.os_id = os.id
+    WHERE 
+        nf.cancelada = 0 
+        AND cor.ativo = 1 
+        AND cor.cancelada = 0 
+        AND nf.data_emissao BETWEEN DATE_FORMAT(LAST_DAY(CURDATE() - INTERVAL 1 MONTH) + INTERVAL 1 DAY - INTERVAL 1 MONTH, '%Y-%m-01')
+        AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)
+        AND os.created_at BETWEEN DATE_FORMAT(LAST_DAY(CURDATE() - INTERVAL 2 MONTH) + INTERVAL 1 DAY - INTERVAL 1 MONTH, '%Y-%m-01')
+        AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)
+        AND co.deleted_at IS NULL
+    GROUP BY 
+        nf.empresa_id
+)
+
+SELECT 
+    e.nome AS nome_empresa,
+    cm.valor_total_cortesias
+FROM 
+    cortesias_mes_passado cm
+JOIN 
+    empresas e ON cm.empresa_id = e.id;
+```
+
+**Explicação da Consulta SQL:**
+
+1. **Comum CTE (`WITH`)**: Criamos uma expressão de tabela comum (CTE) chamada `cortesias_mes_passado` para calcular a soma distinta do `valor_bruto` das notas fiscais relacionadas a cortesias, agrupadas por `empresa_id`.
+
+2. **Joins Necessários**: Usamos joins entre as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, e `os` para alinhar as informações entre cortesias e ordens de serviço.
+
+3. **Filtros de Datas**: Utilizamos o filtro de data para garantir que apenas notas fiscais do mês passado (`nf.data_emissao`) sejam consideradas, alinhadas com ordens de serviço criadas no mês anterior ao mês passado (`os.created_at`).
+
+4. **Condições de Validade**: Consideramos apenas registros onde as notas fiscais não foram canceladas, e as cortesias estão ativas e não canceladas.
+
+5. **Agrupamento e Soma**: Agrupamos por `empresa_id` e somamos os valores distintos de `valor_bruto` para evitar duplicidade potencial de registros.
+
+6. **Agrupamento Final por Empresas**: Associamos os `empresa_id` calculados no CTE à tabela `empresas` para recuperar e exibir o nome da empresa juntamente com o faturamento total. 
+
+Esta abordagem nos garante um resultado preciso e alinhado à regra de negócios, sem incorrer em duplicidades inadvertidas. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 09:08:13,662 INFO: QUERIES: ["WITH cortesias_mes_passado AS (\n    SELECT \n        nf.empresa_id,\n        SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias\n    FROM \n        notas_fiscais nf\n    JOIN \n        cortesia_os co ON nf.cortesia_id = co.cortesia_id\n    JOIN \n        cortesias cor ON cor.id = co.cortesia_id\n    JOIN \n        os ON co.os_id = os.id\n    WHERE \n        nf.cancelada = 0 \n        AND cor.ativo = 1 \n        AND cor.cancelada = 0 \n        AND nf.data_emissao BETWEEN DATE_FORMAT(LAST_DAY(CURDATE() - INTERVAL 1 MONTH) + INTERVAL 1 DAY - INTERVAL 1 MONTH, '%Y-%m-01')\n        AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH)\n        AND os.created_at BETWEEN DATE_FORMAT(LAST_DAY(CURDATE() - INTERVAL 2 MONTH) + INTERVAL 1 DAY - INTERVAL 1 MONTH, '%Y-%m-01')\n        AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH)\n        AND co.deleted_at IS NULL\n    GROUP BY \n        nf.empresa_id\n)\n\nSELECT \n    e.nome AS nome_empresa,\n    cm.valor_total_cortesias\nFROM \n    cortesias_mes_passado cm\nJOIN \n    empresas e ON cm.empresa_id = e.id;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 09:20:53,783 INFO: PERGUNTA: quero saber qual foi o faturamento de cortesias no mês passado agrupado por empresas? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 09:20:53,783 INFO: RESPOSTA: Para atender a sua pergunta sobre o faturamento de cortesias do mês passado, agrupado por empresas, precisaremos consultar as tabelas relacionadas a cortesias e notas fiscais. Vamos analisar as notas fiscais cujo campo de cortesia está associado a cada empresa e, em seguida, realizar a soma dos valores brutos dessas notas fiscais, agrupando os resultados por empresa.
+
+**Entendimento da Pergunta:**
+Você deseja obter o valor total do faturamento de cortesias, originado no mês passado, agrupado por cada empresa.
+
+**Análise e Construção da Consulta SQL:**
+1. Localize os registros na tabela `notas_fiscais` com o campo `cortesia_id` não nulo e as condições de cancelamento apropriadas.
+2. Filtre esses registros para incluir apenas aqueles emitidos no mês passado.
+3. Considere apenas as `os` criadas no mês anterior ao filtro de emissão.
+4. Agregue os dados por empresa considerando as `notas fiscais` válidas.
+
+Com base nesses passos, aqui está a consulta SQL otimizada:
+
+```sql
+SELECT e.nome AS empresa_nome, 
+       SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias 
+FROM notas_fiscais nf 
+JOIN cortesias c ON nf.cortesia_id = c.id 
+JOIN cortesia_os co ON c.id = co.cortesia_id 
+JOIN empresas e ON c.empresa_id = e.id 
+JOIN os o ON co.os_id = o.id 
+WHERE nf.cortesia_id IS NOT NULL 
+  AND nf.cancelada = 0 
+  AND c.ativo = 1 
+  AND c.cancelada = 0 
+  AND nf.data_emissao BETWEEN DATE_SUB(LAST_DAY(CURDATE() - INTERVAL 1 MONTH), INTERVAL DAY(LAST_DAY(CURDATE() - INTERVAL 1 MONTH)) - 1 DAY) AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH) 
+  AND o.created_at BETWEEN DATE_SUB(LAST_DAY(CURDATE() - INTERVAL 2 MONTH), INTERVAL DAY(LAST_DAY(CURDATE() - INTERVAL 2 MONTH)) - 1 DAY) AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH) 
+  AND co.deleted_at IS NULL 
+GROUP BY e.id;
+```
+
+**Explicação da Consulta:**
+- Estamos selecionando o `nome` da empresa e a soma dos valores brutos das notas fiscais de cortesias.
+- A junção entre as tabelas é realizada para garantir que todas as relações necessárias entre notas fiscais, cortesias, `cortesia_os`, empresas e `os` estão adequadamente vinculadas.
+- A condição `AND nf.data_emissao BETWEEN ...` garante que apenas notas fiscais emitidas no mês passado sejam consideradas.
+- A condição `AND o.created_at BETWEEN ...` assegura que as ordens de serviço classificadas como cortesias foram criadas no mês anterior ao mês de emissão.
+- A soma é realizada utilizando `SUM(DISTINCT nf.valor_bruto)`, garantindo que valores duplicados de notas de cortesias não sejam somados mais de uma vez.
+- Finalmente, agrupamos os resultados por empresa para gerar o relatório solicitado. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 09:20:53,784 INFO: QUERIES: ['SELECT e.nome AS empresa_nome, \n       SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias \nFROM notas_fiscais nf \nJOIN cortesias c ON nf.cortesia_id = c.id \nJOIN cortesia_os co ON c.id = co.cortesia_id \nJOIN empresas e ON c.empresa_id = e.id \nJOIN os o ON co.os_id = o.id \nWHERE nf.cortesia_id IS NOT NULL \n  AND nf.cancelada = 0 \n  AND c.ativo = 1 \n  AND c.cancelada = 0 \n  AND nf.data_emissao BETWEEN DATE_SUB(LAST_DAY(CURDATE() - INTERVAL 1 MONTH), INTERVAL DAY(LAST_DAY(CURDATE() - INTERVAL 1 MONTH)) - 1 DAY) AND LAST_DAY(CURDATE() - INTERVAL 1 MONTH) \n  AND o.created_at BETWEEN DATE_SUB(LAST_DAY(CURDATE() - INTERVAL 2 MONTH), INTERVAL DAY(LAST_DAY(CURDATE() - INTERVAL 2 MONTH)) - 1 DAY) AND LAST_DAY(CURDATE() - INTERVAL 2 MONTH) \n  AND co.deleted_at IS NULL \nGROUP BY e.id;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 11:19:28,401 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 11:19:29,017 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 11:21:09,812 INFO: PERGUNTA: quanto emitimos de notas de cortesias mes passado por empresa? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 11:21:09,812 INFO: RESPOSTA: Para responder à sua pergunta, precisamos encontrar o valor emitido em notas fiscais de cortesias no mês passado, separadas por empresa. Utilizaremos as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, e `empresas`. Focaremos nas notas de cortesias com base no relacionamento através da coluna `cortesia_id` e considerando os requisitos de validade, como `cancelada = 0` e `ativo = 1` nas tabelas relevantes.
+
+**Passos para a elaboração da consulta:**
+
+1. **Identificar o mês passado:** Usaremos funções de data para determinar o primeiro e o último dias do mês anterior.
+2. **Considerar apenas notas válidas:** Filtro nas colunas `cancelada = 0` nas tabelas `notas_fiscais` e `cortesias`.
+3. **Relacionar com a tabela de empresas:** Precisamos contabilizar com base na empresa responsável pelas notas.
+4. **Tabelas principais e relacionamentos:**
+   - `notas_fiscais`: Onde procuramos por `cortesia_id` e valores financeiros.
+   - `cortesia_os`: Para garantir que estamos consultando dentro do contexto de cortesias.
+   - `cortesias`: Para determinar o `empresa_id`.
+   - `empresas`: Trazer o nome das empresas, ao invés de apenas IDs.
+
+```sql
+SELECT 
+    e.nome AS nome_empresa,
+    SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesia_os co ON nf.cortesia_id = co.cortesia_id 
+JOIN 
+    cortesias cor ON cor.id = co.cortesia_id
+JOIN 
+    empresas e ON cor.empresa_id = e.id
+JOIN 
+    os ON co.os_id = os.id
+WHERE 
+    nf.cortesia_id = cor.id 
+    AND nf.cancelada = 0 
+    AND cor.ativo = 1 
+    AND cor.cancelada = 0 
+    AND nf.data_emissao BETWEEN DATE_SUB(LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH), INTERVAL DAY(LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH)) - 1 DAY) 
+    AND LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH)
+    AND os.created_at BETWEEN DATE_SUB(LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH), INTERVAL DAY(LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH)) - 1 DAY)
+    AND LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH)
+    AND co.deleted_at IS NULL
+GROUP BY 
+    e.nome;
+```
+
+**Explicação:**
+
+- **`DATE_SUB(LAST_DAY(...))`**: É usado para determinar o primeiro dia do mês passado.
+- **`LAST_DAY(...)`**: Determina o último dia do mês passado.
+- **Junções e filtros**: A consulta faz junções e aplica filtros apenas nas notas ativas e não canceladas, garantindo que dados inválidos não sejam incluídos no cálculo do valor total.
+- **`SUM(DISTINCT nf.valor_bruto)`**: Usado para evitar a duplicação de somas devido aos possíveis múltiplos relacionamentos na tabela `cortesia_os`.
+- **Agrupamento por empresa**: A consulta está agrupando por `e.nome` para trazer o valor total emitido para cada empresa individualmente. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 11:21:09,812 INFO: QUERIES: ['SELECT \n    e.nome AS nome_empresa,\n    SUM(DISTINCT nf.valor_bruto) AS valor_total_cortesias\nFROM \n    notas_fiscais nf\nJOIN \n    cortesia_os co ON nf.cortesia_id = co.cortesia_id \nJOIN \n    cortesias cor ON cor.id = co.cortesia_id\nJOIN \n    empresas e ON cor.empresa_id = e.id\nJOIN \n    os ON co.os_id = os.id\nWHERE \n    nf.cortesia_id = cor.id \n    AND nf.cancelada = 0 \n    AND cor.ativo = 1 \n    AND cor.cancelada = 0 \n    AND nf.data_emissao BETWEEN DATE_SUB(LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH), INTERVAL DAY(LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH)) - 1 DAY) \n    AND LAST_DAY(CURRENT_DATE - INTERVAL 1 MONTH)\n    AND os.created_at BETWEEN DATE_SUB(LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH), INTERVAL DAY(LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH)) - 1 DAY)\n    AND LAST_DAY(CURRENT_DATE - INTERVAL 2 MONTH)\n    AND co.deleted_at IS NULL\nGROUP BY \n    e.nome;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 11:23:17,591 INFO: PERGUNTA: qual valor emitimos de notas fiscais para concessionaria byd raja em dezembro de 2024? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 11:23:17,592 INFO: RESPOSTA: Para responder à pergunta sobre o valor das notas fiscais emitidas para a concessionária "Byd Raja" em dezembro de 2024, devemos fazer uma consulta que:
+
+1. Selecione o valor total das notas fiscais.
+2. Filtre as notas fiscais que não foram canceladas (cancelada = 0).
+3. Considerar as "notas fiscais" emitidas dentro de dezembro de 2024.
+4. Faça um join entre as tabelas "notas_fiscais" e "concessionarias", garantindo que estamos lidando especificamente com a concessionária "Byd Raja".
+
+Considerando o schema das tabelas, a consulta SQL seria:
+
+```sql
+SELECT SUM(nf.valor_bruto) AS total_valor_emitido
+FROM notas_fiscais nf
+JOIN os ON nf.os_id = os.id
+JOIN concessionarias con ON os.concessionaria_id = con.id
+WHERE nf.cancelada = 0
+AND con.nome LIKE '%byd%raja%'
+AND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31';
+```
+
+**Explicação da Consulta:**
+
+- **SELECT SUM(nf.valor_bruto) AS total_valor_emitido**: Calculamos a soma dos valores brutos das notas fiscais emitidas, que ainda não foram canceladas.
+  
+- **JOIN concessionarias con ON os.concessionaria_id = con.id**: Estabelecemos a ligação entre a nota fiscal e a concessionária, usando a relação existente com a tabela "os".
+
+- **WHERE nf.cancelada = 0**: Garantimos que apenas notas não canceladas sejam consideradas.
+
+- **con.nome LIKE '%byd%raja%'**: Filtramos especificamente pela concessionária "Byd Raja", utilizando o operador LIKE para inclusão de variações nos espaços.
+
+- **nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31'**: Limitamos a seleção às notas fiscais emitidas no mês de dezembro de 2024. 
+
+Esta consulta lhe fornecerá o valor total de notas fiscais emitidas para a concessionária "Byd Raja" em dezembro de 2024. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 11:23:17,592 INFO: QUERIES: ["SELECT SUM(nf.valor_bruto) AS total_valor_emitido\nFROM notas_fiscais nf\nJOIN os ON nf.os_id = os.id\nJOIN concessionarias con ON os.concessionaria_id = con.id\nWHERE nf.cancelada = 0\nAND con.nome LIKE '%byd%raja%'\nAND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 11:26:26,979 INFO: PERGUNTA: traga as notas fiscais emitidas para concessionaria byd raja em dezembro de 2024? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 11:26:26,979 INFO: RESPOSTA: Para responder à sua pergunta sobre as notas fiscais emitidas para a concessionária "BYD Raja" em dezembro de 2024, consideraremos o schema das tabelas relacionadas, particularmente as tabelas `notas_fiscais` e `concessionarias`. Primeiro, precisamos fazer um JOIN entre as tabelas `notas_fiscais` e `concessionarias` para relacionar as notas fiscais à concessionária específica, que é "BYD Raja". Em seguida, aplicaremos um filtro pela data de emissão das notas fiscais em dezembro de 2024.
+
+Vamos à elaboração da consulta SQL:
+
+1. **Relacionamento das Tabelas**:
+   - Usar a tabela `notas_fiscais` e associá-la à tabela `concessionarias` para filtrar as notas fiscais relacionadas à concessionária desejada.
+   
+2. **Filtragem por Concessionária**:
+   - Usar a cláusula `LIKE` com tratamento para espaços em branco, utilizando `%`, para localizar a concessionária "BYD Raja".
+
+3. **Filtragem por Data de Emissão**:
+   - Selecionar notas fiscais cuja `data_emissao` esteja no mês de dezembro de 2024.
+
+4. **Consideração de Validade da Nota Fiscal**:
+   - Incluir condições para garantir que as notas fiscais não tenham sido canceladas.
+
+Com base nisso, a consulta SQL formulada será:
+
+```sql
+SELECT nf.id, nf.numero_nota, nf.valor_bruto, nf.valor_liquido, nf.data_emissao
+FROM notas_fiscais nf
+JOIN os ON nf.os_id = os.id
+JOIN concessionarias c ON os.concessionaria_id = c.id
+WHERE c.nome LIKE '%BYD%Raja%'
+AND nf.cancelada = 0
+AND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31';
+```
+
+### Explicação da Consulta:
+
+- A consulta seleciona o `id`, `numero_nota`, `valor_bruto`, `valor_liquido` e `data_emissao` das notas fiscais, mostrando informações essenciais para identificação dessas notas.
+- As tabelas `notas_fiscais` e `concessionarias` são relacionadas através da tabela `os` para garantir que estamos obtendo as notas fiscais da concessionária correta.
+- A cláusula `WHERE` utiliza `LIKE` para localizar a concessionária pelo nome "BYD Raja", garantindo que o nome seja buscado corretamente, mesmo que o formato possa variar.
+- Notas fiscais canceladas são excluídas da seleção garantindo que apenas dados válidos sejam retornados.
+
+Esta consulta está otimizada para obter resultados precisos e claros em relação à sua solicitação sobre as notas fiscais da concessionária mencionada no período especificado. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 11:26:26,979 INFO: QUERIES: ["SELECT nf.id, nf.numero_nota, nf.valor_bruto, nf.valor_liquido, nf.data_emissao\nFROM notas_fiscais nf\nJOIN os ON nf.os_id = os.id\nJOIN concessionarias c ON os.concessionaria_id = c.id\nWHERE c.nome LIKE '%BYD%Raja%'\nAND nf.cancelada = 0\nAND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31';"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 11:27:16,489 INFO: PERGUNTA: traga as notas fiscais de cortesia emitidas para concessionaria byd raja em dezembro de 2024? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 11:27:16,489 INFO: RESPOSTA: Para atender a solicitação, precisamos identificar as notas fiscais de cortesias emitidas para a concessionária "BYD Raja" em dezembro de 2024. Devemos nos certificar de que o valor da coluna `data_emissao` seja no mês de dezembro de 2024 e considerar apenas as ordens de serviço do mês anterior, ou seja, novembro de 2024.
+
+Vamos formular a consulta SQL para obter essas informações.
+
+```sql
+SELECT
+    nf.id AS nota_fiscal_id,
+    nf.valor_bruto,
+    nf.valor_liquido,
+    nf.data_emissao,
+    con.nome AS concessionaria_nome
+FROM
+    notas_fiscais nf
+JOIN
+    cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN
+    cortesias cor ON cor.id = co.cortesia_id
+JOIN
+    concessionarias con ON cor.concessionaria_id = con.id
+JOIN
+    os ON co.os_id = os.id
+WHERE
+    nf.cancelada = 0
+    AND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31'
+    AND os.created_at BETWEEN '2024-11-01' AND '2024-11-30'
+    AND co.deleted_at IS NULL
+    AND con.nome LIKE '%byd%raja%'
+GROUP BY
+    nf.id;
+```
+
+### Explicação:
+
+- **Junções (JOINs):** As tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, `concessionarias` e `os` são unidas com base nas chaves relevantes para conectar uma cortesia a uma concessionária específica e suas notas fiscais.
+
+- **Condições (WHERE):** 
+  - Filtramos as notas fiscais que não estão canceladas (`nf.cancelada = 0`).
+  - Consideramos apenas as notas fiscais emitidas em dezembro de 2024 (`nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31'`).
+  - As ordens de serviço devem ser do mês anterior, novembro de 2024 (`os.created_at BETWEEN '2024-11-01' AND '2024-11-30'`).
+  - A concessionária específica é filtrada através de um operador `LIKE` para "byd raja".
+  - Apenas registros válidos na tabela `cortesia_os` são considerados (`co.deleted_at IS NULL`).
+
+- **Agrupamento (GROUP BY):** Utilizamos `GROUP BY nf.id` para garantir que cada nota fiscal seja considerada uma única vez.
+
+Esta consulta trará as notas fiscais de cortesias emitidas para a concessionária "BYD Raja" durante o mês específico de dezembro de 2024, respeitando as condições impostas pela estrutura de dados. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 11:27:16,489 INFO: QUERIES: ["SELECT\n    nf.id AS nota_fiscal_id,\n    nf.valor_bruto,\n    nf.valor_liquido,\n    nf.data_emissao,\n    con.nome AS concessionaria_nome\nFROM\n    notas_fiscais nf\nJOIN\n    cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN\n    cortesias cor ON cor.id = co.cortesia_id\nJOIN\n    concessionarias con ON cor.concessionaria_id = con.id\nJOIN\n    os ON co.os_id = os.id\nWHERE\n    nf.cancelada = 0\n    AND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31'\n    AND os.created_at BETWEEN '2024-11-01' AND '2024-11-30'\n    AND co.deleted_at IS NULL\n    AND con.nome LIKE '%byd%raja%'\nGROUP BY\n    nf.id;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 11:31:19,640 INFO: PERGUNTA: traga as notas fiscais de cortesia referente ao mes de novembro de 2024 da concessionaria byd raja [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 11:31:19,640 INFO: RESPOSTA: **Entendimento Inicial**:
+
+Para atender à solicitação, precisamos buscar as notas fiscais de cortesia referentes ao mês de novembro de 2024 da concessionária "BYD Raja". Isso implica que preciso extrair todas as notas fiscais relacionadas a cortesias emitidas em novembro de 2024, considerando que as ordens de serviço associadas a essas cortesias foram criadas no mês anterior, outubro de 2024.
+
+**Análise e Solução**:
+
+1. **Tabelas envolvidas**:
+   - `notas_fiscais` para obter as notas fiscais de cortesias.
+   - `cortesia_os` para relacionar as cortesias com as ordens de serviço.
+   - `cortesias` para identificar as cortesias conforme os critérios necessários (ativo, não cancelada).
+   - `os` para verificar as ordens de serviço, considerando o mês de criação.
+   - `concessionarias` para garantir que a consulta seja restrita à concessionária "BYD Raja".
+
+2. **Filtros principais**:
+   - Data de emissão das notas fiscais entre 01 de novembro de 2024 e 30 de novembro de 2024.
+   - O mês de criação das ordens de serviço associado deve ser outubro de 2024.
+   - O nome da concessionária deve conter "BYD Raja".
+   - Garantir que registros sejam válidos (utilizando os campos `deleted_at` e `cancelada`).
+
+3. **Consideração de duplicidade**: 
+   - É necessário usar `DISTINCT` ou um `GROUP BY` de maneira apropriada para que as notas fiscais relacionadas a uma cortesia não resultem em duplicidades na contagem de valores.
+
+**Consulta SQL Otimizada**:
+
+```sql
+SELECT DISTINCT nf.id, nf.numero_nota, nf.valor_bruto, nf.valor_liquido, nf.data_emissao
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias cor ON cor.id = co.cortesia_id
+JOIN os ON co.os_id = os.id
+JOIN concessionarias c ON cor.concessionaria_id = c.id
+WHERE nf.cortesia_id = cor.id
+AND nf.cancelada = 0
+AND cor.ativo = 1
+AND cor.cancelada = 0
+AND nf.data_emissao BETWEEN '2024-11-01' AND '2024-11-30'
+AND os.created_at BETWEEN '2024-10-01' AND '2024-10-31'
+AND c.nome LIKE '%BYD%RAJA%'
+AND co.deleted_at IS NULL;
+```
+
+**Explicação**:
+- A consulta seleciona as notas fiscais de cortesia considerando o mês de novembro de 2024 para a concessionária que tem "BYD Raja" no nome. Foi garantido que a cortesia é ativa e não cancelada.
+- Utilizei `DISTINCT` para garantir que cada nota fiscal listada seja única no resultado, prevenindo duplicidades de registros causadas pelas relações com as tabelas de cortesias e ordens de serviço.
+- Os filtros de data garantem que estamos buscando o período correto conforme a referência de emissão e criação das ordens de serviço associadas às cortesias. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 11:31:19,640 INFO: QUERIES: ["SELECT DISTINCT nf.id, nf.numero_nota, nf.valor_bruto, nf.valor_liquido, nf.data_emissao\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias cor ON cor.id = co.cortesia_id\nJOIN os ON co.os_id = os.id\nJOIN concessionarias c ON cor.concessionaria_id = c.id\nWHERE nf.cortesia_id = cor.id\nAND nf.cancelada = 0\nAND cor.ativo = 1\nAND cor.cancelada = 0\nAND nf.data_emissao BETWEEN '2024-11-01' AND '2024-11-30'\nAND os.created_at BETWEEN '2024-10-01' AND '2024-10-31'\nAND c.nome LIKE '%BYD%RAJA%'\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 11:33:00,368 INFO: PERGUNTA: traga as notas fiscais de cortesia mes de referecia novembro de 2024 da concessionaria byd raja [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 11:33:00,368 INFO: RESPOSTA: Para atender ao seu pedido, precisamos buscar as notas fiscais de cortesias com o mês de referência em novembro de 2024 e que estejam associadas à concessionária "BYD Raja". Deve-se tomar cuidado para evitar duplicidades ao retornar as notas fiscais.
+
+A abordagem incluirá:
+1. Realizar a junção entre as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, `concessionarias` e `os`.
+2. Filtrar pelas notas fiscais canceladas e ativas na tabela de cortesias.
+3. Considerar apenas as `os` criadas no mês anterior da data de emissão das notas fiscais, ou seja, em outubro de 2024.
+4. Garantir que a concessionária seja 'BYD Raja'.
+
+Aqui está a consulta SQL otimizada:
+
+```sql
+SELECT DISTINCT nf.id, nf.valor_bruto, nf.valor_liquido, nf.data_emissao, con.nome AS concessionaria_nome
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias cor ON cor.id = co.cortesia_id
+JOIN concessionarias con ON cor.concessionaria_id = con.id
+JOIN os ON co.os_id = os.id
+WHERE nf.cortesia_id = cor.id
+AND nf.cancelada = 0
+AND cor.ativo = 1
+AND cor.cancelada = 0
+AND nf.data_emissao BETWEEN '2024-11-01' AND '2024-11-30'
+AND os.created_at BETWEEN '2024-10-01' AND '2024-10-31'
+AND con.nome LIKE '%BYD%RAJA%'
+AND co.deleted_at IS NULL;
+```
+
+**Explicação da Consulta:**
+- **Notáveis Juntas (`JOIN`)**: As junções são usadas para agregar informações entre as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, `concessionarias` e `os`.
+- **Filtragem de Condições**: Filtramos as notas fiscais que não foram canceladas. Também verificamos se as cortesias estão ativas e não canceladas.
+- **Filtro Temporal de Emissão**: As notas fiscais buscadas devem ter a data de emissão em novembro de 2024. Para assegurar que as `os`s pertinentes são do mês anterior, usamos um filtro nas datas de criação de `os`.
+- **Descrição da Concessionária**: Concessionária chamada 'BYD Raja' é buscada com o uso de cláusula `LIKE`, facilitando a comparação em casos de variações de capitalização ou espaçamento.
+
+Garantimos que a consulta é otimizada para evitar duplicação de registros. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 11:33:00,368 INFO: QUERIES: ["SELECT DISTINCT nf.id, nf.valor_bruto, nf.valor_liquido, nf.data_emissao, con.nome AS concessionaria_nome\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias cor ON cor.id = co.cortesia_id\nJOIN concessionarias con ON cor.concessionaria_id = con.id\nJOIN os ON co.os_id = os.id\nWHERE nf.cortesia_id = cor.id\nAND nf.cancelada = 0\nAND cor.ativo = 1\nAND cor.cancelada = 0\nAND nf.data_emissao BETWEEN '2024-11-01' AND '2024-11-30'\nAND os.created_at BETWEEN '2024-10-01' AND '2024-10-31'\nAND con.nome LIKE '%BYD%RAJA%'\nAND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 11:35:48,726 INFO: PERGUNTA: traga as notas fiscais de cortesia mes de referecia novembro de 2024 da concessionaria byd raja [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 11:35:48,726 INFO: RESPOSTA: Para responder a essa pergunta, precisamos buscar as notas fiscais relacionadas a cortesias no mês de referência de novembro de 2024, para a concessionária com nome "BYD Raja". A abordagem será a seguinte:
+
+1. **Identificar os Registros Pertinentes:**
+   - Precisamos encontrar as `ordens de serviço` (OS) criadas até outubro de 2024, já que o mês de referência de novembro de 2024 implica que essas OS foram criadas no mês anterior.
+   - Apenas cortesias ativas, não canceladas e emitidas no período de novembro devem ser consideradas.
+
+2. **Relacionar Tabelas Relevantes:**
+   - Utilizaremos as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, `concessionarias` e `os` para montar a consulta.
+   - Consideramos apenas notas fiscais que não foram canceladas e cujo `cortesia_id` coincide.
+
+3. **Filtrar pela Concessionária e Data:**
+   - Aplicamos o filtro do nome da concessionária "BYD Raja", utilizando a condição `LIKE` para abranger pequenas variações.
+
+4. **Prevenir Duplicatas:**
+   - Garantimos que, ao somar, não contamos duplicadamente as notas fiscais usando `DISTINCT` na soma de valores.
+
+Aqui está a consulta SQL que atende a esse cenário:
+
+```sql
+SELECT DISTINCT nf.id, nf.numero_nota, nf.valor_bruto, nf.data_emissao
+FROM notas_fiscais nf
+JOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN cortesias cor ON cor.id = co.cortesia_id
+JOIN concessionarias con ON cor.concessionaria_id = con.id
+JOIN os ON co.os_id = os.id
+WHERE nf.cortesia_id = cor.id 
+  AND nf.cancelada = 0 
+  AND cor.ativo 
+  AND cor.cancelada = 0 
+  AND nf.data_emissao BETWEEN '2024-11-01' AND '2024-11-30' 
+  AND os.created_at BETWEEN '2024-10-01' AND '2024-10-31' 
+  AND con.nome LIKE '%BYD%Raja%'
+  AND co.deleted_at IS NULL;
+```
+
+**Explicação:**
+
+- **Joins e Relações:** A consulta utiliza um conjunto de joins para conectar as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, `concessionarias`, e `os`, qualificando quais OS e cortesias são válidas.
+- **Filtros de Data:** As datas de emissão das notas fiscais são filtradas para o mês de novembro de 2024, garantindo que apenas as OS criadas no mês de outubro sejam consideradas.
+- **Filtro de Concessionária:** A busca por `con.nome LIKE '%BYD%Raja%'` permite que a concessão corresponda parcialmente ao nome especificado, tolerando pequenas variações na denominação.
+- **Distinct & Condições de Validade:** O uso de `DISTINCT` assegura que a emissão de notas fiscais duplicadas sejam ignoradas, garantindo dados precisos e evitando superestimação nos valores calculados ou consultados. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 11:35:48,726 INFO: QUERIES: ["SELECT DISTINCT nf.id, nf.numero_nota, nf.valor_bruto, nf.data_emissao\nFROM notas_fiscais nf\nJOIN cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN cortesias cor ON cor.id = co.cortesia_id\nJOIN concessionarias con ON cor.concessionaria_id = con.id\nJOIN os ON co.os_id = os.id\nWHERE nf.cortesia_id = cor.id \n  AND nf.cancelada = 0 \n  AND cor.ativo \n  AND cor.cancelada = 0 \n  AND nf.data_emissao BETWEEN '2024-11-01' AND '2024-11-30' \n  AND os.created_at BETWEEN '2024-10-01' AND '2024-10-31' \n  AND con.nome LIKE '%BYD%Raja%'\n  AND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 14:21:55,778 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 14:21:56,190 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 14:23:22,883 INFO: PERGUNTA: eu quero as notas de cortesias emitidas para concessionaria byd raja com mês de referencia dezembro de 2024? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 14:23:22,884 INFO: RESPOSTA: Para abordar sua pergunta, precisamos buscar as notas fiscais de cortesias emitidas para a concessionária especificada, cujo mês de referência é dezembro de 2024. A consulta envolve as tabelas `notas_fiscais`, `cortesia_os`, `cortesias`, `os` e `concessionarias`. Devemos garantir que os registros são válidos (não cancelados ou excluídos) e que consideramos cortesias do mês anterior.
+
+Abaixo está a consulta SQL otimizada:
+
+```sql
+SELECT 
+    nf.numero_nota, 
+    nf.valor_bruto, 
+    nf.valor_liquido, 
+    nf.data_emissao
+FROM 
+    notas_fiscais nf
+JOIN 
+    cortesia_os co ON nf.cortesia_id = co.cortesia_id
+JOIN
+    cortesias cor ON cor.id = co.cortesia_id
+JOIN 
+    os ON co.os_id = os.id
+JOIN 
+    concessionarias con ON cor.concessionaria_id = con.id
+WHERE 
+    nf.cortesia_id = cor.id 
+    AND nf.cancelada = 0 
+    AND cor.ativo = 1 
+    AND cor.cancelada = 0 
+    AND con.nome LIKE '%byd%raja%' 
+    AND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31'
+    AND os.created_at BETWEEN '2024-11-01' AND '2024-11-30'
+    AND co.deleted_at IS NULL;
+```
+
+### Explicação:
+
+- **Seletiva Inicial**: Seleciona as notas fiscais (`numero_nota`, `valor_bruto`, `valor_liquido`, `data_emissao`) das cortesias.
+  
+- **Joins**: 
+  - **Join com `cortesia_os`**: Relaciona notas fiscais com suas respectivas ordens de serviço (OS) de cortesias.
+  - **Join com `cortesias`**: Especialmente importante para acessar informações de cortesias e para filtrar por concessionárias.
+  - **Join com `os`**: Permite acessar a data de criação da ordem de serviço para validar o mês anterior.
+  - **Join com `concessionarias`**: Filtra pela concessionária específica nomeada "byd raja".
+
+- **Condições**:
+  - `nf.cancelada = 0`, `cor.ativo = 1`, `cor.cancelada = 0`, `co.deleted_at IS NULL`: Filtram apenas registros válidos.
+  - `con.nome LIKE '%byd%raja%'`: Filtra pela concessionária relevante, fazendo uso de caracteres coringa para acomodar variações na nomenclatura.
+  - Intervalo de `nf.data_emissao` pela data de emissão no mês de referência.
+  - Utilização de `os.created_at` para referenciar dados do mês anterior ao desejado, garantindo que as cortesias foram geradas para OS no mês de novembro de 2024.
+
+Esta consulta foi formulada garantindo máxima eficiência e clareza com base na estrutura de dados fornecida. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 14:23:22,884 INFO: QUERIES: ["SELECT \n    nf.numero_nota, \n    nf.valor_bruto, \n    nf.valor_liquido, \n    nf.data_emissao\nFROM \n    notas_fiscais nf\nJOIN \n    cortesia_os co ON nf.cortesia_id = co.cortesia_id\nJOIN\n    cortesias cor ON cor.id = co.cortesia_id\nJOIN \n    os ON co.os_id = os.id\nJOIN \n    concessionarias con ON cor.concessionaria_id = con.id\nWHERE \n    nf.cortesia_id = cor.id \n    AND nf.cancelada = 0 \n    AND cor.ativo = 1 \n    AND cor.cancelada = 0 \n    AND con.nome LIKE '%byd%raja%' \n    AND nf.data_emissao BETWEEN '2024-12-01' AND '2024-12-31'\n    AND os.created_at BETWEEN '2024-11-01' AND '2024-11-30'\n    AND co.deleted_at IS NULL;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 15:05:49,979 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 15:05:50,395 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 15:06:36,526 INFO: PERGUNTA: quero saber qual foi o faturamento total por empresa desse mes? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 15:06:36,526 INFO: RESPOSTA: Para responder à sua pergunta sobre o faturamento total por empresa neste mês, precisamos focar na tabela `notas_fiscais`, que contém informações de notas fiscais emitidas. Assumiremos que você deseja o faturamento considerando apenas as notas fiscais válidas, ou seja, não canceladas (`cancelada = 0`), e dentro do período do mês atual. Vamos aos passos para construir a consulta:
+
+### Entendimento Inicial
+- **Contexto**: Deseja-se saber o faturamento total por empresa do mês atual.
+- **Propósito**: Obter a soma dos valores das notas fiscais emitidas por cada empresa neste mês.
+- **Requisitos e Restrições**: Considerar apenas notas não canceladas e agrupá-las por empresa.
+
+### Análise e Solução
+1. **Tabelas e Colunas Relevantes**:
+   - Tabela `notas_fiscais`: Contém colunas relacionadas a valores (`valor_bruto`, `valor_liquido`), status de cancelamento (`cancelada`), data de emissão (`data_emissao`) e a empresa relacionada (`empresa_id`).
+   - Tabela `empresas`: Será usada para obter os nomes das empresas relacionadas ao `empresa_id`.
+
+2. **Construção da Consulta SQL**:
+   - Precisamos filtrar as notas não canceladas e emitidas no mês atual.
+   - Agrupar os resultados por `empresa_id` e somar o `valor_liquido` de cada nota para obter uma visão clara do faturamento total por empresa.
+
+3. **Consulta SQL Otimizada**:
+   - A consulta utilizará o `JOIN` entre as tabelas `notas_fiscais` e `empresas` para relacionar as notas fiscais aos nomes das empresas.
+   - Usaremos `CURRENT_DATE` para referenciar a data atual e determinar o mês em curso.
+
+### Consulta SQL Final
+```sql
+SELECT 
+    e.nome AS nome_empresa,
+    SUM(nf.valor_liquido) AS faturamento_total
+FROM 
+    notas_fiscais nf
+JOIN 
+    empresas e ON nf.empresa_id = e.id
+WHERE 
+    nf.cancelada = 0 
+    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() ,'%Y-%m-01') 
+    AND LAST_DAY(CURDATE())
+GROUP BY 
+    e.nome
+ORDER BY 
+    faturamento_total DESC;
+```
+
+### Explicação da Consulta SQL
+- **`e.nome AS nome_empresa`**: Seleciona o nome da empresa a partir da tabela `empresas` para exibir no resultado.
+- **`SUM(nf.valor_liquido) AS faturamento_total`**: Faz a soma dos valores líquidos das notas fiscais para calcular o faturamento total por empresa.
+- **`JOIN`**: Relaciona as notas fiscais à tabela de empresas usando o campo `empresa_id`.
+- **`WHERE` filtros**: 
+  - `nf.cancelada = 0` garante que apenas notas não canceladas sejam consideradas.
+  - A condição de data seleciona apenas notas emitidas no mês atual.
+- **`GROUP BY`**: Agrupa os resultados por nome da empresa para obter o faturamento total de cada uma.
+- **`ORDER BY faturamento_total DESC`**: Ordena os resultados de maneira decrescente pelo faturamento, destacando as empresas com maiores receitas.
+
+Essa consulta dá uma visão abrangente do faturamento por empresa neste mês, respeitando os critérios fornecidos. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 15:06:36,527 INFO: QUERIES: ["SELECT \n    e.nome AS nome_empresa,\n    SUM(nf.valor_liquido) AS faturamento_total\nFROM \n    notas_fiscais nf\nJOIN \n    empresas e ON nf.empresa_id = e.id\nWHERE \n    nf.cancelada = 0 \n    AND nf.data_emissao BETWEEN DATE_FORMAT(CURDATE() ,'%Y-%m-01') \n    AND LAST_DAY(CURDATE())\nGROUP BY \n    e.nome\nORDER BY \n    faturamento_total DESC;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 15:28:15,722 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 15:28:16,136 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 15:32:39,769 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 15:32:40,182 INFO: ChatSQL Bot startup [in /home/lenovo/code/chat_smart/app/__init__.py:28]
+2025-02-28 15:40:24,530 INFO: PERGUNTA: quero saber quanto vendemos de ppf este mês por concessionaria? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 15:40:24,530 INFO: RESPOSTA: Para atender à sua solicitação, precisamos determinar o valor das vendas do serviço "PPF" (película de proteção de pintura) realizado neste mês, agrupado por concessionária.
+
+### Análise do Schema
+
+- **Tabela `os`**: Contém informações sobre as ordens de serviço, incluindo detalhes sobre o pagamento e o status.
+- **Tabela `os_servicos`**: Relaciona as ordens de serviço aos serviços específicos executados.
+- **Tabela `servicos`**: Inclui detalhes dos serviços, como nome e categoria.
+- **Tabela `concessionarias`**: Contém informações sobre as concessionárias onde os serviços foram realizados.
+
+### Estratégia para Construir a Consulta
+
+1. Filtrar registros da tabela `os` para o mês atual considerando ordens pagas.
+2. Utilizar `os_servicos` para obter os serviços realizados por cada `os`.
+3. Filtrar o serviço cujo nome contém "PPF".
+4. Agrupar os resultados por concessionária e somar os valores de venda dos serviços.
+
+### Formulação da Consulta SQL
+
+```sql
+SELECT 
+    con.nome AS nome_concessionaria,
+    SUM(osv.valor_venda_real) AS total_vendas_ppf
+FROM os
+JOIN os_servicos osv ON os.id = osv.os_id
+JOIN servicos s ON osv.servico_id = s.id
+JOIN concessionarias con ON os.concessionaria_id = con.id
+WHERE 
+    os.paga = 1 
+    AND os.cancelada = 0
+    AND s.nome LIKE '%ppf%'
+    AND os.created_at BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())
+GROUP BY con.nome;
+```
+
+### Explicação da Consulta
+
+- **JOINs**: Utilizamos junções para conectar as tabela `os`, `os_servicos`, `servicos`, e `concessionarias`.
+- **Filtros**:
+  - `os.paga = 1 AND os.cancelada = 0`: Filtro para considerar somente ordens de serviço pagas e não canceladas.
+  - `s.nome LIKE '%ppf%'`: Filtra serviços cujo nome contém a string "ppf".
+  - `os.created_at BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())`: Limita os registros ao mês atual.
+- **Agregação**: Agrupa por nome da concessionária e soma o valor das vendas do serviço "PPF".
+  
+Essa consulta fornecerá o valor total de vendas do serviço "PPF" para cada concessionária no mês atual. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 15:40:24,530 INFO: QUERIES: ["SELECT \n    con.nome AS nome_concessionaria,\n    SUM(osv.valor_venda_real) AS total_vendas_ppf\nFROM os\nJOIN os_servicos osv ON os.id = osv.os_id\nJOIN servicos s ON osv.servico_id = s.id\nJOIN concessionarias con ON os.concessionaria_id = con.id\nWHERE \n    os.paga = 1 \n    AND os.cancelada = 0\n    AND s.nome LIKE '%ppf%'\n    AND os.created_at BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE())\nGROUP BY con.nome;"]. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]
+2025-02-28 15:45:49,703 INFO: PERGUNTA: quais concessionarias estão mim devendo? [in /home/lenovo/code/chat_smart/app/services/openai_service.py:73]
+2025-02-28 15:45:49,703 INFO: RESPOSTA: **Entendimento Inicial:**
+
+A consulta busca identificar quais concessionárias estão devendo, ou seja, aquelas com ordens de serviço (OS) registradas mas ainda não pagas, de acordo com a tabela `os` onde a coluna `paga` deve ser igual a 0, indicando uma dívida.
+
+**Análise e Solução:**
+
+Para obter essa informação, precisamos considerar as concessionárias que têm `os` (ordens de serviço) não pagas. Isso envolve verificar a coluna `paga` na tabela `os`. A relação entre concessionárias e suas ordens de serviço é feita através do `concessionaria_id` na tabela `os`. 
+
+Concessionárias que estão 'devendo' seriam aquelas que têm OSs com `paga = 0`.
+
+**Query SQL Gerada:**
+
+```sql
+SELECT DISTINCT c.nome AS concessionaria_nome
+FROM concessionarias c
+JOIN os o ON c.id = o.concessionaria_id
+WHERE o.paga = 0 AND o.ativo = 1 AND c.ativo = 1
+AND o.deleted_at IS NULL AND c.deleted_at IS NULL;
+```
+
+**Explicação da Consulta:**
+
+1. **SELECT DISTINCT c.nome AS concessionaria_nome**: Seleciona nomes de concessionárias de forma distinta para eliminar duplicações.
+
+2. **FROM concessionarias c JOIN os o ON c.id = o.concessionaria_id**: Realiza um join entre as tabelas `concessionarias` e `os` com base no campo `concessionaria_id`, ligando cada concessionária às suas ordens de serviço.
+
+3. **WHERE o.paga = 0 AND o.ativo = 1 AND c.ativo = 1**: Filtra somente as OSs que não foram pagas, assegurando que tanto as OSs quanto as concessionárias estão ativas.
+
+4. **AND o.deleted_at IS NULL AND c.deleted_at IS NULL**: Garante que apenas registros não marcados como deletados participem da consulta.
+
+Essa consulta traz uma lista única de nomes de concessionárias que possuem ordens de serviço pendentes de pagamento. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:74]
+2025-02-28 15:45:49,704 INFO: QUERIES: ['SELECT DISTINCT c.nome AS concessionaria_nome\nFROM concessionarias c\nJOIN os o ON c.id = o.concessionaria_id\nWHERE o.paga = 0 AND o.ativo = 1 AND c.ativo = 1\nAND o.deleted_at IS NULL AND c.deleted_at IS NULL;']. [in /home/lenovo/code/chat_smart/app/services/openai_service.py:75]

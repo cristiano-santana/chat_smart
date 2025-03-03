@@ -8,7 +8,7 @@ bp = Blueprint('main', __name__)
 # Definição do schema do banco de dados
 SCHEMA = {
     "os": {
-        "descricao": "Tabela de 'os' (ordens de serviço). As 'os_tipo_id' na tabela 'os', validos para o faturamento são: 1,2,3,4,5!",
+        "descricao": "Tabela de 'os' (ordens de serviço). Uma 'os' É CONSIDERADA PAGA QUANDO A COLUNA 'paga' = 1 A COLUNA 'cancelada' = 0! A COLUNA 'fechada' INDICA QUE OS SERVIÇOS FORAM EXECUTADOS! A COLUNA 'finalizada' INDICA QUE A 'os' FOI PAGA E OS SERVIÇOS FORAM EXECUTADOS! As 'os_tipo_id' na tabela 'os', validos para o faturamento são: 1,2,3,4,5! O que indica uma 'OS' finalizada é esta 'OS' ter um ou mais registros na tabela: 'caixas' e todos os servicos estarem 'fechados' na tabela 'os_servicos'! A coluna 'concessionaria_id' na tabela 'os' se refere a uma loja onde prestamos serviços de estetica automotiva! O pagamento de uma 'os' significa que uma 'os' tem um ou mais registros na tabela 'caixas', esta tem uma relação N:1 com a tabela 'os'.",
         "colunas": ["id","os_concessionaria","tipo_atendimento","retencao_iss","paga","data_pagamento","fechada","data_fechamento","finalizada","data_finalizacao","cancelada","data_cancelamento","solicitado_cancelamento","os_retorno","cortesia_migrada","nivel_indicador1","nivel_indicador2","indicador1_id","indicador2_id","departamento_id","vendedor_id","concessionaria_id","cliente_carro_id","cliente_id","os_tipo_id","proposta_id","os_retorno_id","os_migracao_cortesia_id","ativo","created_at","deleted_at","id_antigo"],
         "relacionamentos": {
             "cliente_carros": "cliente_carros.id = os.cliente_carro_id",
@@ -24,7 +24,7 @@ SCHEMA = {
         }
     },
     "os_servicos": {
-        "descricao": "Tabela de os_servicos (serviços de ordens de serviço). tabela pivot entre 'os' e 'servicos'.",
+        "descricao": "Tabela de os_servicos (serviços de ordens de serviço). tabela pivot entre 'os' e 'servicos'. A coluna 'valor_venda_real' é a que guarda o valor do serviço depois de quaisquer descontos dado ao serviço! A coluna 'cancelado' deve ser igual a 0! A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","codigo","valor_venda","valor_original","desconto_supervisao","desconto_migracao_cortesia","desconto_avista","valor_venda_real","os_tipo_id","desconto_bonus","fechado","codigo_fechamento","data_fechamento","fechado_sem_codigo","justificativa_sem_codigo","cancelado","data_cancelamento","solicitado_cancelamento","os_id","servico_id","tonalidade_id","combo_id","produtivo_id","concessionaria_execucao_id","ativo","created_at","deleted_at","plotter_corte_id"],
         "relacionamentos": {
             "combos": "combos.id = os_servicos.combo_id",
@@ -57,7 +57,7 @@ SCHEMA = {
         "relacionamentos": {}
     },
     "caixas": {
-        "descricao": "Tabela de caixas (movimentações financeiras, se tiver um ou mais registros na tabela caixas a 'os' referente a este caixa foi paga!).",
+        "descricao": "Tabela de caixas (movimentações financeiras, se tiver um ou mais registros na tabela caixas a 'os' referente a este caixa foi paga!). A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","valor","data_vencimento","data_pagamento","cancelado","data_cancelamento","fechado","data_fechamento","classificado","data_classificacao","finalizado","verificado","data_verificacao","data_finalizacao","parcela","quant_parcelas","nome_depositante","codigo_transacao","nome_titular","doc_titular","telefone_titular","tid_cielo","bandeira_cartao","codigo_autorizacao","numero_autorizacao","nome_cartao","cc_conciliado","pix_payload","pix_info_pagador","pix_e2ed_id","pix_rtr_id","observacao_financeiro","caixa_preto","usuario_pagamento_id","usuario_verificacao_id","caixa_conta_id","caixa_tipo_id","caixa_pendente_id","caixa_status_id","caixa_fechamento_id","caixa_original_id","empresa_faturamento_id","financeiro_malote_classificacao_id","financeiro_caixa_destino_id","os_id","ativo","created_at","deleted_at"],
         "relacionamentos": {
             "caixa_contas": "caixa_contas.id = caixas.caixa_conta_id",
@@ -74,7 +74,7 @@ SCHEMA = {
         }
     },
     "caixas_pendentes": {
-        "descricao": "Tabela de caixas pendentes (movimentações financeiras pendentes, se tiver registro existe uma promessa de pagamento).",
+        "descricao": "Tabela de caixas pendentes (movimentações financeiras pendentes, se tiver registro existe uma promessa de pagamento). A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","valor","codigo_transacao","expiracao","pix_tx_id","pix_payload","pix_tentativas","pix_br_code","pix_info_pagador","pix_e2ed_id","pix_rtr_id","data_criacao_cobranca","data_expiracao_cobranca","fechado","data_fechamento","finalizado","data_finalizacao","cancelado","data_cancelamento","caixa_tipo_id","caixa_status_id","caixa_fechamento_id","os_id","empresa_id","remessa_os_id","tipo_remessa_id","usuario_pagamento_id","created_at","deleted_at"],
         "relacionamentos": {
             "caixa_fechamentos": "caixa_fechamentos.id = caixas_pendentes.caixa_fechamento_id",
@@ -125,7 +125,7 @@ SCHEMA = {
         "relacionamentos": {}
     },
     "notas_fiscais": {
-        "descricao": "Tabela de notas fiscais: Os valores da coluna 'tipo_nota' validos para o faturamento são: 'S', 'P' e 'C'! Os valores da coluna 'status_nota' validos para o faturamentos são: 3, 4! Os valores da coluna 'tipo_nota' faz referência a: 'S' = NFSE, 'P' = NFE, 'C' = NFCE, 'D' = 'DEVOLUCAO'! Notas fiscais de cortesias: o valor da coluna 'cortesia_id' deve ser igual ao valor da coluna 'id' da tabela 'cortesias', o valor da coluna 'cancelada' = 0, o valor da coluna 'ativo' = 1 na tabela 'cortesias'! EXISTE notas fiscais relacionada a cortesisa! Quer dizer, que uma nota fiscal nem sempre estará vinculada a uma 'os' uma nota fiscal pode está vinculada a uma cortesia! UMA cortesia NÃO QUER DIZER UM 'tipo_nota' = 'C'! O 'tipo_nota' = 'C', SIGNIFICA NOTA DE CONSUMIDOR FINAL! UMA 'cortesia' PODE TER VÁRIAS 'o.s', POR ISSO CUIDADO COM A DUPLICIDADE AO BUSCAR 'notas_fiscais' DE 'cortesias', JÁ QUE UMA cortesia tem uma ou duas notas fiscais na tabela 'notas_fiscais'! Notas fiscais relacionadas a tabela 'cortesias' tem o valor da coluna 'data_emissao' é igual ao mês / ano mencionado na pergunta e o valor da coluna 'created_at' da tabela 'os' no mês anterior ao mencionado na pergunta!",
+        "descricao": "Tabela de notas fiscais: Os valores da coluna 'tipo_nota' validos para o faturamento são: 'S', 'P' e 'C'! Os valores da coluna 'status_nota' validos para o faturamentos são: 3, 4! Os valores da coluna 'tipo_nota' faz referência a: 'S' = NFSE, 'P' = NFE, 'C' = NFCE, 'D' = 'DEVOLUCAO'! Notas fiscais de cortesias: o valor da coluna 'cortesia_id' deve ser igual ao valor da coluna 'id' da tabela 'cortesias', o valor da coluna 'cancelada' = 0, o valor da coluna 'ativo' = 1 na tabela 'cortesias'! EXISTE notas fiscais relacionada a cortesisa! Quer dizer, que uma nota fiscal nem sempre estará vinculada a uma 'os' uma nota fiscal pode está vinculada a uma cortesia! UMA cortesia NÃO QUER DIZER UM 'tipo_nota' = 'C'! O 'tipo_nota' = 'C', SIGNIFICA NOTA DE CONSUMIDOR FINAL! UMA 'cortesia' PODE TER VÁRIAS 'o.s', POR ISSO CUIDADO COM A DUPLICIDADE AO BUSCAR 'notas_fiscais' DE 'cortesias', JÁ QUE UMA cortesia tem uma ou duas notas fiscais na tabela 'notas_fiscais'! Notas fiscais relacionadas a tabela 'cortesias' tem o valor da coluna 'data_emissao' é igual ao mês / ano mencionado na pergunta e o valor da coluna 'created_at' da tabela 'os' no mês anterior ao mencionado na pergunta! A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","valor_bruto","valor_liquido","retencao_iss","data_emissao","tipo_nota","serie","bancotoyota","numero_nota","chave_nota","numero_registro","status_nota","danfe_emitida","email_enviado","url_danfe","resposta_erro","cancelada","data_cancelamento","solicitado_cancelamento","motivo_cancelamento","devolvida","data_devolucao","solicitado_devolucao","cancelamento_extemporaneo","data_cancelamento_extemporaneo","solicitado_cancelamento_extemporaneo","observacao_devolucao","devolucao_pelo_cliente","chave_nfe_referencia","chave_cte_referencia","observacao","info_adicional","natureza_operacao","boleto_emitido","url_boleto","data_emissao_boleto","data_vencimento_boleto","boleto_registrado","data_registro_boleto","lancado_moneycare","data_lancamento_moneycare","os_id","cortesia_id","fornecedor_id","parent_id","boleto_remessa_id","empresa_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "boleto_remessas": "boleto_remessas.id = notas_fiscais.boleto_remessa_id",
@@ -138,7 +138,7 @@ SCHEMA = {
         }
     },
     "estornos": {
-        "descricao": "Tabela de estornos (estornos de movimentações financeiras se uma 'os' tem um ou mais registros aqui, o caixa dessa 'os' foi estornado!).",
+        "descricao": "Tabela de estornos (estornos de movimentações financeiras se uma 'os' tem um ou mais registros aqui, o caixa dessa 'os' foi estornado!). A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","tipo","valor","motivo","status","pix_rtr_id","justificativa","solicitado_por","atendido_por","os_id","caixa_id","created_at","updated_at","deleted_at","estornos_solicitado_por_foreign","estornos_atendido_por_foreign","estornos_os_id_foreign","estornos_caixa_id_foreign"],
         "relacionamentos": {
             "funcionarios": "funcionarios.id = estornos.solicitado_por",
@@ -261,7 +261,7 @@ SCHEMA = {
         }
     },
     "os_retornos": {
-        "descricao": "Tabela de 'os' que o cliente voltou reclamando da qualidade do servico",
+        "descricao": "Tabela de 'os' que o cliente voltou reclamando da qualidade do servico. A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","descricao","data_solicitacao","data_aprovacao","data_recusa","os_origem_id","os_destino_id","retorno_motivo_id","retorno_classificacao_id","usuario_solicitacao_id","usuario_aprovacao_id","usuario_recusa_id","aprovado","recusado","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "os": "os.id = os_retornos.os_origem_id",
@@ -279,7 +279,7 @@ SCHEMA = {
         }
     },
     "produtos": {
-        "descricao": "Tabela de produtos usados em serviços",
+        "descricao": "Tabela de produtos usados em serviços. A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","nome","codigo","envio_maximo","fracionavel","fracao_rastreavel","rastreavel","fecha_servico","diferencia_tonalidade","diferencia_modelo","diferencia_tamanho","medida_id","grupo_produto_id","subgrupo_produto_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "grupos_produtos": "grupos_produtos.id = produtos.grupo_produto_id",
@@ -325,7 +325,7 @@ SCHEMA = {
         }
     },
     "servicos": {
-        "descricao": "Tabela de servicos",
+        "descricao": "Tabela de servicos. A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","nome","custo_fixo","codigo_nf","fecha_kit","fecha_peca_avulsa","fecha_peca","fecha_produto","fecha_produtivo","diferencia_departamento_preco","diferencia_porte","diferencia_departamento","diferencia_porte_comissao","diferencia_tempo_departamento","diferencia_tempo_cor","credito_necessario","valor_desconto_cortesia","aceita_desconto_cortesia","segunda_aplicacao","grupo_servico_id","subgrupo_servico_id","servico_categoria_id","tags","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "grupos_servicos": "grupos_servicos.id = servicos.grupo_servico_id",
@@ -353,7 +353,7 @@ SCHEMA = {
         "relacionamentos": {}
     },
     "cortesia_os": {
-        "descricao": "Esta é uma tabela pivot que pode causar registros duplicados na tabela 'notas_fiscais'. Certifique-se de que a agregação leve isso em conta. esta tabela contém uma coluna 'deleted_at'. Apenas registros onde 'deleted_at' IS NULL devem ser considerados. As 'os`s' relacionadas a uma cortesia estão nessa tabela e não na tabela 'notas_fiscais'! Utilize DISTINCT ou uma subquery apropriada para evitar duplicação de valores ao somar 'valor_bruto' ou 'valor_liquido' na tabela 'notas_fiscais'!",
+        "descricao": "Esta é uma tabela pivot que pode causar registros duplicados na tabela 'notas_fiscais'. Certifique-se de que a agregação leve isso em conta. esta tabela contém uma coluna 'deleted_at'. Apenas registros onde 'deleted_at' IS NULL devem ser considerados. As 'os`s' relacionadas a uma cortesia estão nessa tabela e não na tabela 'notas_fiscais'! Utilize DISTINCT ou uma subquery apropriada para evitar duplicação de valores ao somar 'valor_bruto' ou 'valor_liquido' na tabela 'notas_fiscais'! A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","os_id","cortesia_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "cortesias": "cortesias.id = cortesia_os.cortesia_id",
@@ -361,7 +361,7 @@ SCHEMA = {
         }
     },
     "cortesias": {
-        "descricao": "Esta tabela agrupa varias os`s. Uma consulta que envolve cortesias, deve incluir JOINs necessários entre as tabelas notas_fiscais, cortesias, 'cortesia_os' e os. CUIDADO COM DUPLICIDADE! Utilize DISTINCT ou uma subquery apropriada para evitar duplicação de valores ao somar os totais",
+        "descricao": "Esta tabela agrupa varias os`s. Uma consulta que envolve cortesias, deve incluir JOINs necessários entre as tabelas notas_fiscais, cortesias, 'cortesia_os' e os. CUIDADO COM DUPLICIDADE! Utilize DISTINCT ou uma subquery apropriada para evitar duplicação de valores ao somar os totais. A COLUNA 'deleted_at' IS NULL DEVE SER INCLUIDA NA CONSULTA! CASO A COLUNA 'ativo' EXISTA NESTA TABELA, INCLUA 'ativo' = 1!",
         "colunas": ["id","mes_referencia","valor_bruto","valor_liquido","retensao_iss","paga","data_pagamento","valor_pago","fechada","data_fechamento","finalizada","data_finalizacao","cancelada","data_cancelamento","solicitado_cancelamento","motivo_cancelamento","observacao","email_enviado","data_envio_email","pagamento_deposito","concessionaria_id","departamento_id","empresa_id","funcionario_cancelamento_id","ativo","created_at","updated_at","deleted_at"],
         "relacionamentos": {
             "concessionarias": "concessionarias.id = cortesias.concessionaria_id",
